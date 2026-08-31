@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>うちはイタチ — UCHIHA ITACHI</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@400;600;800&family=Zen+Kaku+Gothic+New:wght@300;500;900&family=Cinzel:wght@400;700;900&family=Space+Grotesk:wght@300;400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+<!-- ══════════ PRELOADER ══════════ -->
+<div class="loader" id="loader">
+  <div class="loader__inner">
+    <div class="loader__glyph">写輪眼</div>
+    <div class="loader__bar"><span id="loaderFill"></span></div>
+    <div class="loader__meta">
+      <span>起動中 / INITIALIZING</span>
+      <span id="loaderPct">00</span>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════ AMBIENT LAYERS ══════════ -->
+<div class="grain" aria-hidden="true"></div>
+<div class="vignette" aria-hidden="true"></div>
+<div class="scanlines" aria-hidden="true"></div>
+
+<!-- ══════════ AMATERASU — 黒炎 / BLACK FLAME HEM ══════════ -->
+<div class="amaterasu-bed" aria-hidden="true"></div>
+<canvas class="amaterasu" id="amaterasuCanvas" aria-hidden="true"></canvas>
+
+<!-- ══════════ STORM ══════════ -->
+<div class="storm" aria-hidden="true">
+  <div class="storm__flash" id="stormFlash"></div>
+  <svg class="storm__bolt" id="stormBolt" viewBox="0 0 1000 1000" preserveAspectRatio="none">
+    <path id="boltPath" d="" fill="none" stroke="#fff" stroke-width="2"
+          stroke-linejoin="round" stroke-linecap="round"/>
+    <path id="boltGlow" d="" fill="none" stroke="#9fd8ff" stroke-width="9"
+          stroke-linejoin="round" stroke-linecap="round" opacity=".45"/>
+  </svg>
+</div>
+<div class="cursor" id="cursor" aria-hidden="true"><span></span></div>
+
+<!-- ══════════ FIXED CHROME ══════════ -->
+<header class="chrome">
+  <div class="chrome__mark">
+    <svg viewBox="0 0 100 100" class="uchiwa" aria-hidden="true">
+      <circle cx="50" cy="50" r="46" fill="none" stroke="currentColor" stroke-width="2"/>
+      <path d="M50 12 A38 38 0 0 1 50 88 A19 19 0 0 1 50 50 A19 19 0 0 0 50 12Z" fill="currentColor" opacity=".9"/>
+      <circle cx="50" cy="31" r="6" fill="var(--ink)"/>
+      <circle cx="50" cy="69" r="6" fill="currentColor"/>
+    </svg>
+    <span>UCHIHA</span>
+  </div>
+  <nav class="chrome__nav">
+    <a href="#eyes" data-jp="眼">EYES</a>
+    <a href="#jutsu" data-jp="術">JUTSU</a>
+    <a href="#end" data-jp="終">END</a>
+    <button class="chrome__sound" id="soundToggle" type="button"
+            aria-pressed="false" title="雷鳴 / thunder audio">
+      <span class="chrome__sound-jp">音</span>
+      <span class="chrome__sound-state" id="soundState">OFF</span>
+    </button>
+  </nav>
+</header>
+
+<div class="rail rail--left" aria-hidden="true">
+  <span>暁 · AKATSUKI · 木ノ葉隠れの里</span>
+</div>
+<div class="rail rail--right" aria-hidden="true">
+  <span id="railScroll">SCROLL 000%</span>
+</div>
+
+<div class="hint" id="hint">
+  <span class="hint__jp">下へ</span>
+  <span class="hint__line"></span>
+  <span class="hint__en">SCROLL TO OPEN HIS EYES</span>
+</div>
+
+<main>
+
+<!-- ══════════ ACT I — SCROLL SCRUB ══════════ -->
+<section class="scrub" id="scrub">
+  <div class="scrub__sticky">
+    <canvas id="mainCanvas"></canvas>
+    <div class="scrub__glow" id="scrubGlow"></div>
+
+    <!-- phase captions -->
+    <div class="phase" data-phase="0">
+      <h1 class="phase__jp">静寂</h1>
+      <p class="phase__en">SILENCE</p>
+      <p class="phase__sub">「一人で背負うと決めた。」 — He chose to carry it alone.</p>
+    </div>
+    <div class="phase" data-phase="1">
+      <h2 class="phase__jp">覚醒</h2>
+      <p class="phase__en">AWAKENING</p>
+      <p class="phase__sub">「本当の力は、目を開けた者にしか見えない。」</p>
+    </div>
+    <div class="phase" data-phase="2">
+      <h2 class="phase__jp">写輪眼</h2>
+      <p class="phase__en">SHARINGAN</p>
+      <p class="phase__sub">Three tomoe. Nothing escapes them.</p>
+    </div>
+    <div class="phase" data-phase="3">
+      <h2 class="phase__jp">烏</h2>
+      <p class="phase__en">A THOUSAND CROWS</p>
+      <p class="phase__sub">「幻術も、真実も、同じ羽で運ばれる。」</p>
+    </div>
+
+    <!-- Title lockup, only in the first beat -->
+    <div class="titleblock" id="titleblock">
+      <p class="titleblock__kicker">木ノ葉隠れの里 · 暁</p>
+      <h1 class="titleblock__jp">うちは<span>イタチ</span></h1>
+      <p class="titleblock__en">U C H I H A &nbsp; I T A C H I</p>
+    </div>
+
+    <canvas id="featherCanvas" class="feathers"></canvas>
+  </div>
+</section>
+
+<!-- ══════════ ACT II — MOUSE-TRACKED EYES ══════════ -->
+<section class="eyes" id="eyes">
+  <div class="eyes__sticky">
+    <canvas id="eyeCanvas"></canvas>
+    <div class="eyes__flare" id="eyeFlare"></div>
+    <div class="eyes__frame">
+      <div class="eyes__label eyes__label--tl">万華鏡写輪眼</div>
+      <div class="eyes__label eyes__label--tr">MANGEKYŌ · LIVE TRACK</div>
+      <div class="eyes__label eyes__label--bl" id="eyeReadout">視線 左 00.0 / FRAME 00</div>
+      <div class="eyes__label eyes__label--br">動かせ · MOVE YOUR CURSOR</div>
+    </div>
+    <div class="eyes__copy">
+      <h2>見つめ<span>返せ</span></h2>
+      <p>彼はあなたを見ている。 — Wherever you move, he follows.</p>
+      <p class="eyes__note">瞳孔追尾 · nine measured gaze positions, mapped left to right</p>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════ ACT III — JUTSU GRID ══════════ -->
+<section class="jutsu" id="jutsu">
+  <!-- background plate revealed under the ghost cursor -->
+  <div class="jutsu__reveal" id="jutsuReveal" aria-hidden="true"></div>
+  <div class="jutsu__rain" aria-hidden="true"></div>
+  <!-- ported reactbits.dev ghost-cursor, raw WebGL -->
+  <canvas class="ghost" id="ghostCanvas" aria-hidden="true"></canvas>
+
+  <div class="jutsu__inner">
+    <div class="jutsu__head">
+      <span class="eyebrow" data-px="0.10">禁術 · FORBIDDEN ARTS</span>
+      <h2 data-px="0.18">其の眼に<br>宿る術</h2>
+      <p data-px="0.26">The techniques that lived behind those eyes — and the price each one demanded. He never used a single one of them for himself.</p>
+      <div class="jutsu__meta" data-px="0.34">
+        <span><i>血継限界</i>KEKKEI GENKAI</span>
+        <span><i>暁 · 潜入</i>INFILTRATION</span>
+        <span><i>四つの術</i>FOUR ARTS</span>
+      </div>
+      <p class="jutsu__hint" data-px="0.40">動かせ · burn the dark away</p>
+    </div>
+
+   
+
+    <div class="jutsu__foot" data-px="0.14">
+      <span>「命を賭して、里を守る。」</span>
+      <span>TO PROTECT THE VILLAGE, HE GAVE UP BEING LOVED BY IT</span>
+    </div>
+  </div>
+
+  <!-- bottom-right anchor -->
+  <div class="jutsu__amaterasu" aria-hidden="true">
+    <span class="jutsu__amaterasu-jp">天照</span>
+    <span class="jutsu__amaterasu-ro">AMATERASU</span>
+    <span class="jutsu__amaterasu-sub">黒炎 · 七日七夜 · 消えぬ火</span>
+  </div>
+</section>
+
+<!-- ══════════ ACT IV — QUOTE ══════════ -->
+<!-- <section class="quote">
+  <div class="quote__jp">許せ、サスケ<span class="dots">…</span></div>
+  <blockquote>
+    <p>“Those who cannot acknowledge their true selves are bound to fail. People live their lives bound by what they accept as correct and true — that's how they define reality.”</p>
+    <cite>うちはイタチ · UCHIHA ITACHI</cite>
+  </blockquote>
+  <div class="quote__mark">これで最後だ</div>
+</section> -->
+
+<!-- ══════════ FOOTER ══════════ -->
+<!-- <footer id="end">
+  <div class="footer__big">木ノ葉の意志</div>
+  <div class="footer__row">
+    <span>WILL OF FIRE</span>
+    <span>六月九日 — 三月二十五日</span>
+    <span>「いつまでも、愛してるよ。」</span>
+  </div>
+</footer> -->
+
+</main>
+
+<!-- ══════════ STICKY BADGE ══════════ -->
+<div class="sticky-badge" id="stickyBadge">
+  <span class="sticky-badge__jp">写輪眼</span>
+  <span class="sticky-badge__en">SHARINGAN</span>
+</div>
+
+<script src="main.js"></script>
+</body>
+</html>

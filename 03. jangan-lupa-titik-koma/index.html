@@ -1,0 +1,796 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Jangan Lupa Titik Koma</title>
+<style>
+  *{margin:0;padding:0;box-sizing:border-box}
+  :root{
+    --bg:#0d1117; --panel:#161b22; --panel2:#0f141b; --border:#22282f;
+    --text:#c9d1d9; --dim:#8b949e; --gutter:#484f58;
+    --amber:#f0883e; --green:#3fb950; --red:#f85149;
+    --kw:#ff7b72; --str:#a5d6ff; --num:#79c0ff; --fn:#d2a8ff; --com:#6e7681; --punc:#8b949e;
+    --mono:ui-monospace,"SF Mono",SFMono-Regular,Menlo,Consolas,"Liberation Mono",monospace;
+  }
+  html,body{height:100%}
+  body{
+    background:
+      radial-gradient(1200px 600px at 50% -10%, #12212e 0%, transparent 60%),
+      var(--bg);
+    color:var(--text);font-family:var(--mono);
+    -webkit-user-select:none;user-select:none;overflow:hidden;
+  }
+  .app{
+    height:100vh;height:100dvh;display:flex;flex-direction:column;
+    max-width:1100px;margin:0 auto;padding:16px 14px 14px;
+  }
+  .win{flex:1;min-height:0;display:flex;flex-direction:column;
+    background:var(--panel);border:1px solid var(--border);border-radius:12px;
+    box-shadow:0 24px 70px -20px #000a, 0 0 0 1px #ffffff08 inset;overflow:hidden}
+  .titlebar{display:flex;align-items:center;gap:12px;padding:10px 14px;
+    background:linear-gradient(#1a212b,#151b23);border-bottom:1px solid var(--border)}
+  .dots{display:flex;gap:7px}
+  .dot{width:12px;height:12px;border-radius:50%}
+  .dot.r{background:#ff5f57}.dot.y{background:#febc2e}.dot.g{background:#28c840}
+  .tab{display:flex;align-items:center;gap:8px;font-size:12.5px;color:var(--dim);
+    background:var(--panel);padding:6px 13px;border-radius:9px;
+    border:1px solid var(--border);margin:0 0 10px 2px;width:max-content}
+  .tab b{color:var(--text);font-weight:600}
+  .err-badge{display:inline-flex;align-items:center;gap:5px;font-size:11px;color:var(--red);
+    background:#f851491a;border:1px solid #f8514933;padding:2px 7px;border-radius:20px}
+  .err-badge::before{content:"";width:6px;height:6px;border-radius:50%;background:var(--red);
+    box-shadow:0 0 8px var(--red)}
+  .spacer{flex:1}
+  .titlebar .meta{font-size:11.5px;color:var(--gutter);letter-spacing:.02em}
+
+  .editor{position:relative;flex:1;min-height:0}
+  canvas{display:block;width:100%;height:100%;cursor:crosshair;touch-action:none}
+
+  .statusbar{display:flex;align-items:center;font-size:12px;
+    background:#12181f;border-top:1px solid var(--border);color:var(--dim)}
+  .statusbar .seg{padding:7px 12px;display:flex;align-items:center;gap:7px;
+    border-right:1px solid var(--border);white-space:nowrap}
+  .statusbar .seg b{color:var(--text);font-variant-numeric:tabular-nums;font-weight:600}
+  .statusbar .clock b{color:var(--amber)}
+  .statusbar .grow{flex:1;border-right:none}
+  .hintbtn{margin:4px 6px 4px 0;font-family:var(--mono);font-size:11.5px;cursor:pointer;
+    color:var(--amber);background:#f0883e14;border:1px solid #f0883e3a;
+    padding:5px 11px;border-radius:7px;transition:.15s}
+  .hintbtn:hover{background:#f0883e26}
+  .hintbtn:disabled{opacity:.35;cursor:default}
+
+  .overlay{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
+    background:#0d1117d9;-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);z-index:5;padding:20px}
+  .overlay.hide{display:none}
+  .card{width:min(500px,100%);background:linear-gradient(#161d26,#121820);
+    border:1px solid var(--border);border-radius:14px;padding:26px 26px 24px;
+    box-shadow:0 30px 80px -20px #000c}
+  .card h1{margin:0 0 4px;font-size:23px;letter-spacing:-.01em;color:var(--text)}
+  .card h1 .semi{color:var(--amber)}
+  .card .lead{margin:0 0 18px;color:var(--dim);font-size:13px;line-height:1.55}
+  .card .lead code{color:var(--kw);background:#ff7b7218;padding:1px 5px;border-radius:4px}
+  .rules{list-style:none;margin:0 0 20px;padding:0;display:grid;gap:9px}
+  .rules li{font-size:12.5px;color:var(--dim);line-height:1.5;padding-left:24px;position:relative}
+  .rules li::before{content:attr(data-i);position:absolute;left:0;top:0;color:var(--amber);
+    font-weight:700;font-size:11px}
+  .rules li b{color:var(--text);font-weight:600}
+  .diff{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:18px}
+  .diff button{font-family:var(--mono);cursor:pointer;color:var(--dim);text-align:left;
+    background:var(--panel);border:1px solid var(--border);border-radius:9px;padding:11px 12px;transition:.15s}
+  .diff button .n{display:block;font-size:17px;color:var(--text);font-weight:700;font-variant-numeric:tabular-nums}
+  .diff button .l{display:block;font-size:10.5px;letter-spacing:.05em;text-transform:uppercase;margin-top:2px}
+  .diff button:hover{border-color:#f0883e66;background:#f0883e10}
+  .diff button.on{border-color:var(--amber);background:#f0883e18;box-shadow:0 0 0 1px var(--amber) inset}
+  .diff button.on .l{color:var(--amber)}
+  .field-label{font-size:10.5px;letter-spacing:.07em;text-transform:uppercase;color:var(--dim);margin:0 0 7px 2px}
+  .langs{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-bottom:16px}
+  .langs button{font-family:var(--mono);cursor:pointer;color:var(--dim);text-align:left;
+    background:var(--panel);border:1px solid var(--border);border-radius:9px;padding:9px 12px;
+    font-size:13px;display:flex;align-items:center;justify-content:space-between;transition:.15s}
+  .langs button .ext{font-size:10.5px;color:var(--gutter)}
+  .langs button:hover{border-color:#f0883e66;background:#f0883e10}
+  .langs button.on{border-color:var(--amber);background:#f0883e18;color:var(--text);box-shadow:0 0 0 1px var(--amber) inset}
+  .langs button.on .ext{color:var(--amber)}
+  .tut{width:100%;margin-top:10px;font-family:var(--mono);font-size:12.5px;cursor:pointer;
+    color:var(--dim);background:transparent;border:1px dashed var(--border);border-radius:10px;
+    padding:10px;transition:.15s}
+  .tut:hover{color:var(--text);border-color:#f0883e66;background:#f0883e0c}
+  .tut b{color:var(--amber);font-weight:600}
+  .play{width:100%;font-family:var(--mono);font-weight:700;font-size:14px;cursor:pointer;
+    color:#0d1117;background:linear-gradient(#f7a25a,var(--amber));border:none;border-radius:10px;
+    padding:13px;letter-spacing:.02em;box-shadow:0 8px 24px -8px #f0883e88;transition:.15s}
+  .play:hover{filter:brightness(1.06)}
+
+  .win-card .eyebrow{color:var(--dim);font-size:12px;letter-spacing:.08em;text-transform:uppercase}
+  .win-card .big{font-size:44px;font-weight:800;letter-spacing:-.02em;margin:2px 0 2px;
+    color:var(--green);font-variant-numeric:tabular-nums}
+  .stats{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin:0 0 20px}
+  .stats .box{background:var(--panel);border:1px solid var(--border);border-radius:9px;padding:12px 10px;text-align:center}
+  .stats .box .v{font-size:20px;font-weight:700;color:var(--text);font-variant-numeric:tabular-nums}
+  .stats .box .k{font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:var(--dim);margin-top:3px}
+  .found-line{font-size:12px;color:var(--dim);text-align:center;margin:0 0 18px}
+  .found-line b{color:var(--green)}
+  .win-card.giveup .big{color:var(--red)}
+  .win-card.giveup .found-line b{color:var(--amber)}
+
+  .sbtn{margin:4px 6px 4px 0;font-family:var(--mono);font-size:11.5px;cursor:pointer;
+    color:var(--amber);background:#f0883e14;border:1px solid #f0883e3a;
+    padding:5px 11px;border-radius:7px;transition:.15s;white-space:nowrap}
+  .sbtn:hover{background:#f0883e26}
+  .sbtn:disabled{opacity:.35;cursor:default}
+  .sbtn.ok{color:var(--green);background:#3fb95018;border-color:#3fb95040}
+  .sbtn.give{color:var(--red);background:#f851491a;border-color:#f8514933}
+  .sbtn.give:hover{background:#f8514926}
+
+  .resume{width:100%;margin-bottom:16px;font-family:var(--mono);font-size:13px;cursor:pointer;
+    text-align:left;color:var(--text);background:#3fb95014;border:1px solid #3fb95055;border-radius:10px;
+    padding:12px 14px;transition:.15s;display:flex;align-items:center;gap:11px;line-height:1.4}
+  .resume:hover{background:#3fb95024;border-color:var(--green)}
+  .resume .ico{color:var(--green);font-size:15px}
+  .resume .g{color:var(--green);font-weight:700}
+  .hide{display:none !important}
+
+  @media (max-width:560px){
+    .app{padding:8px}
+    .statusbar{font-size:11px}
+    .statusbar .seg{padding:8px 9px}
+    .statusbar .hidem{display:none}
+    .sbtn{font-size:11px;padding:6px 9px;margin:4px 4px 4px 0}
+    .tab{font-size:11.5px;margin-bottom:8px}
+    .titlebar{padding:9px 12px;gap:9px}
+    .titlebar .meta{font-size:10.5px}
+    /* menu / win card fits small screens */
+    .overlay{padding:14px;overflow:auto;align-items:flex-start}
+    .card{padding:20px 18px 20px;margin:auto 0}
+    .card h1{font-size:20px}
+    .card .lead{font-size:12.5px;margin-bottom:15px}
+    .diff{gap:6px}
+    .diff button{padding:9px 9px}
+    .diff button .n{font-size:15px}
+    .win-card .big{font-size:38px}
+    .stats .box{padding:10px 6px}
+    .stats .box .v{font-size:17px}
+  }
+  /* hide the desktop-only SyntaxError note on very narrow screens */
+  @media (max-width:440px){
+    .titlebar .spacer + .meta{display:none}
+  }
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="tab">
+    <span>📄</span><b id="fname">legacy_engine.js</b>
+    <span class="err-badge">1 error</span>
+  </div>
+  <div class="win">
+    <div class="titlebar">
+      <div class="dots"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span></div>
+      <span class="meta" id="fpath">~/project/src/legacy_engine.js</span>
+      <span class="spacer"></span>
+      <span class="meta">Uncaught SyntaxError: Unexpected token</span>
+    </div>
+    <div class="editor">
+      <canvas id="cv"></canvas>
+
+      <div class="overlay" id="menu">
+        <div class="card">
+          <button class="resume hide" id="resumeBtn"></button>
+          <h1>Jangan Lupa Titik Koma <span class="semi">;</span></h1>
+          <p class="lead">Di antara ribuan baris kode, tepat <b>satu</b> pernyataan lupa diakhiri <code>;</code> — dan itu bikin seluruh file gagal. Temukan barisnya, klik, selesai.</p>
+          <div class="field-label">Bahasa</div>
+          <div class="langs" id="langs">
+            <button data-l="js" class="on">JavaScript <span class="ext">.js</span></button>
+            <button data-l="php">PHP <span class="ext">.php</span></button>
+            <button data-l="java">Java <span class="ext">.java</span></button>
+            <button data-l="c">C <span class="ext">.c</span></button>
+          </div>
+          <div class="field-label">Tingkat kesulitan</div>
+          <div class="diff" id="diff">
+            <button data-n="100"><span class="n">100</span><span class="l">Ringan</span></button>
+            <button data-n="1000" class="on"><span class="n">1.000</span><span class="l">Sedang</span></button>
+            <button data-n="10000"><span class="n">10.000</span><span class="l">Gila</span></button>
+          </div>
+          <button class="play" id="startBtn">Mulai berburu &rarr;</button>
+          <button class="tut" id="tutBtn">Baru pertama? Coba <b>Tutorial</b> &mdash; 10 baris saja</button>
+        </div>
+      </div>
+
+      <div class="overlay hide" id="win">
+        <div class="card win-card">
+          <div class="eyebrow">Titik koma ditemukan</div>
+          <div class="big" id="winTime">00:00</div>
+          <div class="found-line" id="foundLine"></div>
+          <div class="stats">
+            <div class="box"><div class="v" id="sTime">&ndash;</div><div class="k">Waktu</div></div>
+            <div class="box"><div class="v" id="sTries">&ndash;</div><div class="k">Salah klik</div></div>
+            <div class="box"><div class="v" id="sLines">&ndash;</div><div class="k">Baris</div></div>
+          </div>
+          <button class="play" id="againBtn">Main lagi</button>
+        </div>
+      </div>
+    </div>
+    <div class="statusbar">
+      <div class="seg clock">&#9201; <b id="clock">00:00</b></div>
+      <div class="seg">&#10007; salah <b id="tries">0</b></div>
+      <div class="seg hidem">baris <b id="lines">0</b></div>
+      <div class="seg grow hidem" id="pos">&ndash;</div>
+      <button class="sbtn" id="saveBtn" disabled title="Simpan progres — bisa dilanjutkan nanti">&#128190; Simpan</button>
+      <button class="sbtn give" id="giveBtn" disabled title="Menyerah & lihat jawaban">&#127937; Menyerah</button>
+    </div>
+  </div>
+</div>
+
+<script>
+(function(){
+  "use strict";
+  const C = {
+    bg:"#0d1117", hover:"#1f6feb18", hintband:"#f0883e12",
+    gutter:"#484f58", text:"#c9d1d9",
+    kw:"#ff7b72", str:"#a5d6ff", num:"#79c0ff", fn:"#d2a8ff", com:"#6e7681", punc:"#8b949e", def:"#c9d1d9"
+  };
+  const isTouch = matchMedia("(pointer:coarse)").matches || ("ontouchstart" in window);
+  const LH = isTouch ? 26 : 20, FONT = '13px ui-monospace,"SF Mono",Menlo,Consolas,monospace', GUTTER_W = 66, PAD = 10, SB_W = isTouch ? 18 : 14;
+  const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  const cv = document.getElementById("cv");
+  const ctx = cv.getContext("2d");
+  let CW = 7.8, dpr = 1;
+
+  const S = {
+    lines:[], flags:[], tok:[], buggy:-1, count:0,
+    scroll:0, maxScroll:0, hover:-1,
+    running:false, won:false, gaveUp:false, start:0, penalty:0, tries:0,
+    flashLine:-1, flashAt:0, revealUntil:0,
+    dragSB:false, dragOff:0
+  };
+
+  /* ---------- code generator ---------- */
+  const R = a => a[(Math.random()*a.length)|0];
+  const RI = (a,b) => a + ((Math.random()*(b-a+1))|0);
+  const NAMES=["count","index","result","buffer","payload","token","offset","value","node","handler","config","session","cursor","matrix","packet","stream","cache","record","entry","status","length","ratio","delta","origin","target","source","output","input","frame","pixel","vertex","weight","score","level","state","queue","stack","graph","flag","limit","total","chunk","depth","width","height","angle","radius","velocity","bounds","segment","checksum","threshold","capacity"];
+  const FUNCS=["compute","render","update","fetchData","parse","encode","decode","validate","connect","dispatch","resolve","transform","serialize","normalize","process","handle","build","merge","filter","reduce","sample","commit","flush","append","lookup","allocate","release","sync","emit","poll","clamp","interpolate","traverse","rebalance","hydrate"];
+  const OBJS=["user","app","db","ctx","game","engine","store","api","net","ui","fs","math","vec","sys","pool","scene","world"];
+  const PROPS=["id","name","type","size","data","next","prev","head","tail","key","val","len","pos","dir","tag","ref","active","raw","max","min","count","ready","dirty"];
+  const WORDS=["init the buffer before use","legacy path, do not touch","fixup for edge case","retry on transient failure","cached for perf","see ticket #4412","temporary workaround","normalize coordinates","guard against overflow","assumes sorted input","hot loop, keep tight"];
+  const nm=()=>R(NAMES), fn=()=>R(FUNCS), ob=()=>R(OBJS), pr=()=>R(PROPS);
+
+  // ---- profil bahasa ----
+  const CMP_STRICT=["<",">","===","!==","<=",">=","&&","||"];
+  const CMP_C=["<",">","==","!=","<=",">=","&&","||"];
+  const LANGS={
+    js:{ name:"JavaScript", file:"legacy_engine.js",
+      kw:new Set(["const","let","var","function","return","if","else","for","while","switch","case","break","continue","new","true","false","null","typeof","void","of","in","this"]),
+      cmp:CMP_STRICT, str:w=>"'"+w+"'", v:n=>n, member:(o,p)=>o+"."+p,
+      decl:(n,e)=>(Math.random()<.5?"const ":"let ")+n+" = "+e+";",
+      forHead:(i,n)=>"for (let "+i+" = 0; "+i+" < "+n+"; "+i+"++) {",
+      funcHead:(f,p)=>"function "+f+"("+p.join(", ")+") {",
+      param:()=>nm(), arrow:true,
+      pre:()=>[["// auto-generated bundle — DO NOT EDIT by hand",0],["'use strict';",1],["",0]] },
+    php:{ name:"PHP", file:"legacy_engine.php",
+      kw:new Set(["function","return","if","else","elseif","for","foreach","while","switch","case","break","continue","new","true","false","null","echo","print","as","use","namespace","class","public","private","static","$this"]),
+      cmp:CMP_STRICT, str:w=>"'"+w+"'", v:n=>"$"+n, member:(o,p)=>"$"+o+"->"+p,
+      decl:(n,e)=>"$"+n+" = "+e+";",
+      forHead:(i,n)=>"for ($"+i+" = 0; $"+i+" < "+n+"; $"+i+"++) {",
+      funcHead:(f,p)=>"function "+f+"("+p.join(", ")+") {",
+      param:()=>"$"+nm(), arrow:false,
+      pre:()=>[["<?php",0],["",0],["// legacy engine — keep in sync with core",0],["",0]] },
+    java:{ name:"Java", file:"LegacyEngine.java",
+      kw:new Set(["public","private","protected","static","final","void","int","long","double","float","boolean","char","String","return","if","else","for","while","switch","case","break","continue","new","true","false","null","this","class"]),
+      cmp:CMP_C, str:w=>'"'+w+'"', v:n=>n, member:(o,p)=>o+"."+p,
+      decl:(n,e)=>R(["int","double","long","float","var"])+" "+n+" = "+e+";",
+      forHead:(i,n)=>"for (int "+i+" = 0; "+i+" < "+n+"; "+i+"++) {",
+      funcHead:(f,p)=>R(["private","public","void","static void"])+" "+f+"("+p.join(", ")+") {",
+      param:()=>R(["int","double","String","long"])+" "+nm(), arrow:false,
+      pre:()=>[["// package com.legacy.engine;",0],["// generated stub — do not edit",0],["",0]] },
+    c:{ name:"C", file:"legacy_engine.c",
+      kw:new Set(["int","long","double","float","char","void","unsigned","const","struct","sizeof","return","if","else","for","while","switch","case","break","continue","NULL","static"]),
+      cmp:CMP_C, str:w=>'"'+w+'"', v:n=>n, member:(o,p)=>o+"->"+p,
+      decl:(n,e)=>R(["int","long","double","float"])+" "+n+" = "+e+";",
+      forHead:(i,n)=>"for (int "+i+" = 0; "+i+" < "+n+"; "+i+"++) {",
+      funcHead:(f,p)=>R(["int","void","double","static int"])+" "+f+"("+p.join(", ")+") {",
+      param:()=>R(["int","double","char*","long"])+" "+nm(), arrow:false,
+      pre:()=>[['#include <stdlib.h>',0],['#include "engine.h"',0],["",0]] }
+  };
+  let LANG=LANGS.js;
+  const V=()=>LANG.v(nm());
+  const MEM=()=>LANG.member(ob(),pr());
+
+  function expr(d){
+    d=d||0;
+    const roll = Math.random();
+    if(d>2) return Math.random()<.5 ? V() : String(RI(0,9999));
+    if(roll<.16) return String(RI(0,99999));
+    if(roll<.24) return (RI(0,999)/10).toFixed(2);
+    if(roll<.34) return LANG.str(R(NAMES));
+    if(roll<.46) return MEM();
+    if(roll<.58) return fn()+"("+args(d)+")";
+    if(roll<.68) return V()+"["+RI(0,63)+"]";
+    if(roll<.82) return expr(d+1)+" "+R(["+","-","*"])+" "+expr(d+1);
+    return V();
+  }
+  function args(d){
+    const n=RI(0,3), a=[];
+    for(let i=0;i<n;i++)a.push(expr((d||0)+1));
+    return a.join(", ");
+  }
+  function cond(){
+    const l = Math.random()<.5 ? V() : MEM();
+    return l+" "+R(LANG.cmp)+" "+expr(1);
+  }
+
+  let out, flg;
+  function push(depth,text,stmt){ out.push("  ".repeat(depth)+text); flg.push(!!stmt); }
+
+  function stmt(depth){
+    const r=Math.random();
+    if(r<.30) push(depth,LANG.decl(nm(),expr()),1);
+    else if(r<.48) push(depth,MEM()+" = "+expr()+";",1);
+    else if(r<.60) push(depth,V()+"["+RI(0,63)+"] = "+expr()+";",1);
+    else if(r<.78) push(depth,fn()+"("+args()+");",1);
+    else if(r<.88) push(depth,V()+" += "+expr()+";",1);
+    else push(depth,"return "+expr()+";",1);
+  }
+  function comment(depth){ push(depth,"// "+R(WORDS),0); }
+  function params(){ const n=RI(0,3), a=[]; for(let i=0;i<n;i++)a.push(LANG.param()); return a; }
+
+  function block(depth,left,target){
+    const r=Math.random(), ps=params();
+    let head, arrow=false;
+    if(r<.30) head="if ("+cond()+") {";
+    else if(r<.52){ const i=R(["i","j","k","n"]); head=LANG.forHead(i, RI(4,512)); }
+    else if(r<.68) head="while ("+cond()+") {";
+    else if(r<.86) head=LANG.funcHead(fn(), ps);
+    else if(LANG.arrow){ head=ob()+"."+fn()+"("+(ps.length?ps.join(", ")+", ":"")+"() => {"; arrow=true; }
+    else head=LANG.funcHead(fn(), ps);
+    push(depth,head,0);
+    const n=RI(2,6);
+    for(let i=0;i<n && out.length<target;i++){
+      if(left>0 && Math.random()<.32 && out.length<target-6) block(depth+1,left-1,target);
+      else if(Math.random()<.10) comment(depth+1);
+      else stmt(depth+1);
+    }
+    push(depth, arrow ? "});" : "}", 0);
+    if(Math.random()<.5) push(depth,"",0);
+  }
+
+  function candidates(){
+    const c=[];
+    for(let i=0;i<out.length;i++) if(flg[i] && out[i].trim().endsWith(";")) c.push(i);
+    return c;
+  }
+  function generate(target){
+    out=[]; flg=[];
+    LANG.pre().forEach(p=>push(0,p[0],p[1]));
+    const small = target<=14;
+    while(out.length<target){
+      const r=Math.random();
+      if(small){                       // tutorial: mostly pernyataan rata, sedikit blok
+        if(r<.18) block(0,1,target);
+        else if(r<.30) comment(0);
+        else stmt(0);
+      } else {
+        if(r<.55) block(0,3,target);
+        else if(r<.62) comment(0);
+        else if(r<.66) push(0,"",0);
+        else stmt(0);
+      }
+    }
+    let cand=candidates(), guard=0;      // pastikan selalu ada pernyataan berakhiran ;
+    while(cand.length===0 && guard++<60){ stmt(0); cand=candidates(); }
+    const buggy = cand[(Math.random()*cand.length)|0];
+    out[buggy] = out[buggy].replace(/;\s*$/, "");
+    S.lines=out; S.flags=flg; S.buggy=buggy; S.count=out.length;
+    S.tok=new Array(out.length);
+  }
+
+  /* ---------- tokenizer (mengikuti bahasa aktif) ---------- */
+  const RE=/(\/\/.*$)|('[^']*'|"[^"]*")|(\$[A-Za-z_][A-Za-z0-9_]*)|(\d+\.?\d*)|([A-Za-z_][A-Za-z0-9_]*)|(\s+)|([^\s])/g;
+  function tokenize(line){
+    const toks=[]; let m;
+    RE.lastIndex=0;
+    while((m=RE.exec(line))){
+      let t=m[0], c=C.def;
+      if(m[1]) c=C.com;
+      else if(m[2]) c=C.str;
+      else if(m[3]) c=C.num;         // $variabel (PHP)
+      else if(m[4]) c=C.num;
+      else if(m[5]){
+        if(LANG.kw.has(t)) c=C.kw;
+        else {
+          const rest=line.slice(RE.lastIndex);
+          c=/^\s*\(/.test(rest) ? C.fn : C.def;
+        }
+      }
+      else if(m[6]) c=null;
+      else c=C.punc;
+      toks.push({t:t,c:c});
+    }
+    return toks;
+  }
+  function getTok(i){ let x=S.tok[i]; if(!x){ x=tokenize(S.lines[i]); S.tok[i]=x; } return x; }
+
+  /* ---------- rendering ---------- */
+  let need=true;
+  function invalidate(){ need=true; }
+
+  function resize(){
+    dpr=Math.min(window.devicePixelRatio||1,2);
+    const r=cv.getBoundingClientRect();
+    cv.width=Math.max(1,Math.round(r.width*dpr));
+    cv.height=Math.max(1,Math.round(r.height*dpr));
+    ctx.setTransform(dpr,0,0,dpr,0,0);
+    ctx.font=FONT;
+    CW=ctx.measureText("MMMMMMMMMM").width/10;
+    recalcMax();
+    invalidate();
+  }
+  function viewH(){ return cv.getBoundingClientRect().height; }
+  function viewW(){ return cv.getBoundingClientRect().width; }
+  function recalcMax(){ S.maxScroll=Math.max(0, S.count*LH - viewH() + LH); if(S.scroll>S.maxScroll)S.scroll=S.maxScroll; }
+
+  function roundRect(x,y,w,h,r){
+    ctx.beginPath();
+    ctx.moveTo(x+r,y);ctx.arcTo(x+w,y,x+w,y+h,r);ctx.arcTo(x+w,y+h,x,y+h,r);
+    ctx.arcTo(x,y+h,x,y,r);ctx.arcTo(x,y,x+w,y,r);ctx.closePath();
+  }
+
+  function draw(){
+    const w=viewW(), h=viewH();
+    ctx.setTransform(dpr,0,0,dpr,0,0);
+    ctx.fillStyle=C.bg; ctx.fillRect(0,0,w,h);
+    if(!S.count) return;
+
+    const revealOn = performance.now()<S.revealUntil;
+    const first=Math.max(0,Math.floor(S.scroll/LH));
+    const last=Math.min(S.count-1, Math.floor((S.scroll+h)/LH));
+    ctx.font=FONT; ctx.textBaseline="middle";
+
+    for(let i=first;i<=last;i++){
+      const y=Math.round(i*LH - S.scroll);
+      const marked = (S.won || revealOn) && i===S.buggy;
+
+      if(i===S.hover && S.running && !S.won){ ctx.fillStyle=C.hover; ctx.fillRect(0,y,w-SB_W,LH); }
+      if(i===S.flashLine){
+        let a=1; if(!reduce){ const dt=performance.now()-S.flashAt; a=Math.max(0,1-dt/650); }
+        if(a>0){ ctx.fillStyle="rgba(248,81,73,"+(0.28*a)+")"; ctx.fillRect(0,y,w-SB_W,LH); }
+      }
+      if(marked){ ctx.fillStyle="rgba(63,185,80,0.20)"; ctx.fillRect(0,y,w-SB_W,LH); }
+
+      ctx.globalAlpha = 1;
+      ctx.fillStyle=(i===S.hover&&S.running)?"#8b949e":C.gutter;
+      ctx.textAlign="right";
+      ctx.fillText(String(i+1), GUTTER_W-12, y+LH/2);
+      ctx.textAlign="left";
+
+      const toks=getTok(i);
+      let x=GUTTER_W+PAD;
+      for(let k=0;k<toks.length;k++){
+        const tk=toks[k];
+        if(tk.c!==null && tk.t){ ctx.fillStyle=tk.c; ctx.fillText(tk.t, x, y+LH/2); }
+        x+=tk.t.length*CW;
+        if(x>w-SB_W) break;
+      }
+      if(marked){
+        const endX=GUTTER_W+PAD+S.lines[i].length*CW;
+        if(endX<w-SB_W-14){
+          ctx.save();
+          ctx.fillStyle="#3fb950"; ctx.shadowColor="#3fb950"; ctx.shadowBlur=10;
+          ctx.fillText(";", endX, y+LH/2);
+          ctx.restore();
+        }
+      }
+      ctx.globalAlpha=1;
+    }
+
+    ctx.fillStyle="#1c222b"; ctx.fillRect(GUTTER_W-1,0,1,h);
+
+    if(S.maxScroll>0){
+      const trackH=h;
+      const thumbH=Math.max(34, trackH*(h/(S.count*LH+LH)));
+      const thumbY=(S.scroll/S.maxScroll)*(trackH-thumbH);
+      ctx.fillStyle="#0d1117"; ctx.fillRect(w-SB_W,0,SB_W,h);
+      ctx.fillStyle=S.dragSB?"#5b636d":"#343b44";
+      roundRect(w-SB_W+3,thumbY+2,SB_W-6,thumbH-4,4); ctx.fill();
+      if(S.won || performance.now()<S.revealUntil){
+        const my=(S.buggy/(S.count-1))*(trackH-6)+3;
+        ctx.fillStyle="#3fb950"; roundRect(w-SB_W+1,my-1.5,SB_W-2,3,1.5); ctx.fill();
+      }
+    }
+  }
+
+  function loop(){
+    if(need || (performance.now()<S.revealUntil) || (S.flashLine>=0 && performance.now()-S.flashAt<680)){
+      draw(); need=false;
+    }
+    requestAnimationFrame(loop);
+  }
+
+  /* ---------- interaction ---------- */
+  function lineAt(clientY){
+    const r=cv.getBoundingClientRect();
+    return Math.floor(((clientY-r.top)+S.scroll)/LH);
+  }
+  function onScroll(dy){
+    S.scroll=Math.min(S.maxScroll, Math.max(0, S.scroll+dy));
+    updatePos(); invalidate();
+  }
+  cv.addEventListener("wheel",e=>{ if(!S.running)return; e.preventDefault(); onScroll(e.deltaY); },{passive:false});
+
+  cv.addEventListener("mousemove",e=>{
+    const r=cv.getBoundingClientRect(), x=e.clientX-r.left;
+    if(S.dragSB){
+      const h=viewH(), thumbH=Math.max(34,h*(h/(S.count*LH+LH)));
+      const frac=((e.clientY-r.top)-S.dragOff)/(h-thumbH);
+      S.scroll=Math.min(S.maxScroll,Math.max(0,frac*S.maxScroll));
+      updatePos(); invalidate(); return;
+    }
+    if(!S.running||S.won) return;
+    if(x> r.width-SB_W){ if(S.hover!==-1){S.hover=-1;invalidate();} return; }
+    const ln=lineAt(e.clientY);
+    if(ln!==S.hover && ln>=0 && ln<S.count){ S.hover=ln; invalidate(); }
+  });
+  cv.addEventListener("mouseleave",()=>{ if(S.hover!==-1){S.hover=-1;invalidate();} });
+
+  cv.addEventListener("mousedown",e=>{
+    if(!S.running)return;
+    const r=cv.getBoundingClientRect(), x=e.clientX-r.left;
+    if(x> r.width-SB_W && S.maxScroll>0){
+      const h=viewH(), thumbH=Math.max(34,h*(h/(S.count*LH+LH)));
+      const thumbY=(S.scroll/S.maxScroll)*(h-thumbH);
+      const y=e.clientY-r.top;
+      if(y>=thumbY && y<=thumbY+thumbH){ S.dragSB=true; S.dragOff=y-thumbY; }
+      else { S.dragSB=true; S.dragOff=thumbH/2;
+             const frac=(y-thumbH/2)/(h-thumbH); S.scroll=Math.min(S.maxScroll,Math.max(0,frac*S.maxScroll)); updatePos(); invalidate(); }
+      e.preventDefault();
+    }
+  });
+  window.addEventListener("mouseup",()=>{ if(S.dragSB){S.dragSB=false;invalidate();} });
+
+  cv.addEventListener("click",e=>{
+    if(!S.running||S.won)return;
+    const r=cv.getBoundingClientRect(), x=e.clientX-r.left;
+    if(x> r.width-SB_W) return;
+    const ln=lineAt(e.clientY);
+    if(ln>=0&&ln<S.count) guess(ln);
+  });
+  cv.addEventListener("contextmenu",e=>e.preventDefault());
+
+  /* ---------- touch: drag to scroll, tap to guess (mobile) ---------- */
+  let tId=null, tMoved=false, tStartX=0, tStartY=0, tPrevY=0, tStartT=0, tPrevT=0, tVel=0, momRAF=0;
+  function stopMom(){ if(momRAF){ cancelAnimationFrame(momRAF); momRAF=0; } }
+  function momentum(){
+    tVel*=0.93;
+    if(Math.abs(tVel)<0.02 || !S.running){ stopMom(); return; }
+    onScroll(tVel*16);
+    momRAF=requestAnimationFrame(momentum);
+  }
+  cv.addEventListener("touchstart",e=>{
+    if(!S.running||S.won) return;
+    stopMom();
+    const t=e.changedTouches[0];
+    tId=t.identifier; tMoved=false;
+    tStartX=t.clientX; tStartY=tPrevY=t.clientY; tStartT=tPrevT=performance.now(); tVel=0;
+  },{passive:true});
+  cv.addEventListener("touchmove",e=>{
+    if(tId===null||!S.running) return;
+    let t=null; for(const x of e.changedTouches){ if(x.identifier===tId){ t=x; break; } }
+    if(!t) return;
+    e.preventDefault();
+    if(Math.abs(t.clientY-tStartY)>8 || Math.abs(t.clientX-tStartX)>8) tMoved=true;
+    const dy=tPrevY-t.clientY;
+    onScroll(dy);
+    const now=performance.now(), dt=now-tPrevT;
+    if(dt>0) tVel=dy/dt;
+    tPrevY=t.clientY; tPrevT=now;
+  },{passive:false});
+  cv.addEventListener("touchend",e=>{
+    if(tId===null) return;
+    let t=null; for(const x of e.changedTouches){ if(x.identifier===tId){ t=x; break; } }
+    tId=null;
+    if(!t||!S.running||S.won) return;
+    const dur=performance.now()-tStartT;
+    if(!tMoved && dur<350){
+      const r=cv.getBoundingClientRect(), x=t.clientX-r.left;
+      if(x<=r.width-SB_W){ const ln=lineAt(t.clientY); if(ln>=0&&ln<S.count) guess(ln); }
+    } else if(tMoved && performance.now()-tPrevT<80 && Math.abs(tVel)>0.12){
+      momentum();
+    }
+  },{passive:false});
+  cv.addEventListener("touchcancel",()=>{ tId=null; stopMom(); });
+
+  window.addEventListener("keydown",e=>{
+    if(!S.running||S.won)return;
+    if(e.key==="ArrowDown"){onScroll(LH);e.preventDefault();}
+    else if(e.key==="ArrowUp"){onScroll(-LH);e.preventDefault();}
+    else if(e.key==="PageDown"){onScroll(viewH()-LH);e.preventDefault();}
+    else if(e.key==="PageUp"){onScroll(-(viewH()-LH));e.preventDefault();}
+    else if(e.key==="Home"){S.scroll=0;updatePos();invalidate();e.preventDefault();}
+    else if(e.key==="End"){S.scroll=S.maxScroll;updatePos();invalidate();e.preventDefault();}
+  });
+
+  function guess(ln){
+    if(ln===S.buggy){ winGame(); return; }
+    S.tries++; S.penalty+=10;
+    S.flashLine=ln; S.flashAt=performance.now();
+    document.getElementById("tries").textContent=S.tries;
+    invalidate();
+  }
+
+  /* ---------- HUD ---------- */
+  function fmt(t){ t=Math.max(0,Math.floor(t)); const m=(t/60)|0,s=t%60; return String(m).padStart(2,"0")+":"+String(s).padStart(2,"0"); }
+  function elapsed(){ return (performance.now()-S.start)/1000 + S.penalty; }
+  function updatePos(){
+    const first=Math.floor(S.scroll/LH)+1;
+    const lastV=Math.min(S.count, Math.floor((S.scroll+viewH())/LH)+1);
+    document.getElementById("pos").textContent="melihat "+first+"–"+lastV;
+  }
+  let clockT, lastSaveT=0;
+  function tick(){
+    if(S.running&&!S.won){
+      document.getElementById("clock").textContent=fmt(elapsed());
+      const now=performance.now();
+      if(now-lastSaveT>5000){ lastSaveT=now; saveProgress(); }
+    }
+  }
+
+  function gotoLine(i){
+    if(i<0||i>=S.count)return;
+    S.scroll=Math.min(S.maxScroll, Math.max(0, i*LH - viewH()/2 + LH));
+    S.revealUntil=performance.now()+5000;
+    updatePos(); invalidate();
+  }
+
+  /* ---------- pintu belakang untuk Console ---------- */
+  // Buka Console (F12), lalu jalankan salah satu:
+  //   cari()   -> mencari & menyorot baris yang kehilangan titik koma
+  //   game.lines -> array kode mentah (kalau mau menganalisis sendiri)
+  window.game = {
+    get lines(){ return S.lines.slice(); },
+    get answer(){ return S.buggy+1; },
+    goto:gotoLine
+  };
+  window.cari = function(){
+    if(!S.count){ console.log("%cMulai dulu gamenya, baru jalankan cari().","color:#f0883e"); return; }
+    // Cari baris pernyataan yang TIDAK diakhiri ; { } , dan bukan komentar/kosong.
+    const L=S.lines;
+    let bug=-1;
+    for(let i=0;i<L.length;i++){
+      const t=L[i].trim();
+      if(!t || t.startsWith("//") || t.startsWith("#") || t.startsWith("<?") || t.startsWith("?>")) continue;
+      if(!/[{};,]$/.test(t)){ bug=i; break; }
+    }
+    if(bug<0){ console.log("Tidak ketemu (?)"); return; }
+    console.log("%c✓ Titik koma hilang di baris "+(bug+1),
+      "color:#3fb950;font-weight:700;font-size:14px");
+    console.log("   "+L[bug].trim()+"  ← kurang ;");
+    gotoLine(bug);
+    return bug+1;
+  };
+
+  /* ---------- game flow ---------- */
+  const menu=document.getElementById("menu"), winEl=document.getElementById("win");
+  let chosen=1000, chosenLang="js";
+  document.querySelectorAll("#diff button").forEach(b=>{
+    b.addEventListener("click",()=>{
+      document.querySelectorAll("#diff button").forEach(x=>x.classList.remove("on"));
+      b.classList.add("on"); chosen=+b.dataset.n;
+    });
+  });
+  document.querySelectorAll("#langs button").forEach(b=>{
+    b.addEventListener("click",()=>{
+      document.querySelectorAll("#langs button").forEach(x=>x.classList.remove("on"));
+      b.classList.add("on"); chosenLang=b.dataset.l;
+    });
+  });
+
+  function startGame(count){
+    LANG=LANGS[chosenLang]||LANGS.js;
+    generate(count||chosen);
+    document.getElementById("fname").textContent=LANG.file;
+    document.getElementById("fpath").textContent="~/project/src/"+LANG.file;
+    document.getElementById("lines").textContent=S.count.toLocaleString("id-ID");
+    document.getElementById("tries").textContent="0";
+    S.scroll=0; S.hover=-1; S.tries=0; S.penalty=0; S.flashLine=-1; S.won=false; S.gaveUp=false;
+    S.revealUntil=0;
+    recalcMax(); updatePos();
+    menu.classList.add("hide"); winEl.classList.add("hide");
+    S.running=true; S.start=performance.now(); lastSaveT=performance.now();
+    setBtns(true); clearSave(); saveProgress();
+    if(clockT)clearInterval(clockT); clockT=setInterval(tick,250);
+    invalidate();
+  }
+  function endRound(win){
+    S.won=true; S.running=false; S.gaveUp=!win;
+    clearSave();
+    setBtns(false);
+    const t=elapsed();
+    document.getElementById("clock").textContent=fmt(t);
+    S.scroll=Math.min(S.maxScroll, Math.max(0, S.buggy*LH - viewH()/2 + LH));
+    invalidate();
+    const card=document.querySelector("#win .win-card");
+    card.classList.toggle("giveup", !win);
+    document.querySelector("#win .eyebrow").textContent = win ? "Titik koma ditemukan" : "Kamu menyerah 🏳️";
+    document.getElementById("winTime").textContent=fmt(t);
+    document.getElementById("sTime").textContent=fmt(t);
+    document.getElementById("sTries").textContent=S.tries;
+    document.getElementById("sLines").textContent=S.count.toLocaleString("id-ID");
+    document.getElementById("foundLine").innerHTML=(win?"Titik koma hilang ada di ":"Jawabannya di ")+"<b>baris "+(S.buggy+1).toLocaleString("id-ID")+"</b>";
+    document.getElementById("againBtn").textContent = win ? "Main lagi" : "Coba lagi";
+    setTimeout(()=>winEl.classList.remove("hide"), reduce?0:550);
+  }
+  function winGame(){ endRound(true); }
+  function giveUp(){ if(S.running && !S.won) endRound(false); }
+
+  /* ---------- simpan / lanjutkan progres ---------- */
+  const SAVE_KEY="jltk_save_v1", LANG_NAMES={js:"JavaScript",php:"PHP",java:"Java",c:"C"};
+  function saveProgress(){
+    if(!S.running || S.won) return false;
+    try{
+      localStorage.setItem(SAVE_KEY, JSON.stringify({
+        lang:chosenLang, lines:S.lines, buggy:S.buggy,
+        scroll:Math.round(S.scroll), tries:S.tries, elapsed:elapsed(), at:Date.now()
+      }));
+      return true;
+    }catch(e){ return false; }
+  }
+  function loadSave(){ try{ const s=localStorage.getItem(SAVE_KEY); return s?JSON.parse(s):null; }catch(e){ return null; } }
+  function clearSave(){ try{ localStorage.removeItem(SAVE_KEY); }catch(e){} }
+
+  function setBtns(on){
+    document.getElementById("saveBtn").disabled=!on;
+    document.getElementById("giveBtn").disabled=!on;
+  }
+  function refreshResume(){
+    const s=loadSave(), b=document.getElementById("resumeBtn");
+    if(s && s.lines && s.lines.length){
+      b.innerHTML="<span class='ico'>▶</span><span><span class='g'>Lanjutkan permainan</span><br>"+
+        (LANG_NAMES[s.lang]||s.lang)+" · "+s.lines.length.toLocaleString("id-ID")+" baris · "+fmt(s.elapsed||0)+
+        (s.tries?(" · "+s.tries+" salah"):"")+"</span>";
+      b.classList.remove("hide");
+    } else b.classList.add("hide");
+  }
+  function resumeGame(){
+    const s=loadSave(); if(!s||!s.lines) return;
+    chosenLang=s.lang; LANG=LANGS[s.lang]||LANGS.js;
+    S.lines=s.lines; S.count=s.lines.length; S.buggy=s.buggy; S.tok=new Array(S.count);
+    document.getElementById("fname").textContent=LANG.file;
+    document.getElementById("fpath").textContent="~/project/src/"+LANG.file;
+    document.getElementById("lines").textContent=S.count.toLocaleString("id-ID");
+    S.tries=s.tries||0; document.getElementById("tries").textContent=S.tries;
+    S.penalty=0; S.hover=-1; S.flashLine=-1; S.won=false; S.gaveUp=false; S.revealUntil=0;
+    recalcMax();
+    S.scroll=Math.min(S.maxScroll, Math.max(0, s.scroll||0));
+    updatePos();
+    menu.classList.add("hide"); winEl.classList.add("hide");
+    S.running=true; S.start=performance.now()-(s.elapsed||0)*1000; lastSaveT=performance.now();
+    setBtns(true);
+    if(clockT)clearInterval(clockT); clockT=setInterval(tick,250);
+    invalidate();
+  }
+
+  document.getElementById("resumeBtn").addEventListener("click",resumeGame);
+  document.getElementById("giveBtn").addEventListener("click",giveUp);
+  document.getElementById("saveBtn").addEventListener("click",()=>{
+    const b=document.getElementById("saveBtn");
+    if(saveProgress()){ b.textContent="✓ Tersimpan"; b.classList.add("ok"); }
+    else { b.textContent="✗ Gagal"; }
+    setTimeout(()=>{ b.innerHTML="💾 Simpan"; b.classList.remove("ok"); }, 1400);
+  });
+
+  document.getElementById("startBtn").addEventListener("click",()=>startGame(chosen));
+  document.getElementById("tutBtn").addEventListener("click",()=>startGame(11));
+  document.getElementById("againBtn").addEventListener("click",()=>{ winEl.classList.add("hide"); menu.classList.remove("hide"); S.count=0; refreshResume(); invalidate(); });
+
+  window.addEventListener("beforeunload",saveProgress);
+  document.addEventListener("visibilitychange",()=>{ if(document.hidden) saveProgress(); });
+
+  window.addEventListener("resize",resize);
+  refreshResume();
+  resize();
+  requestAnimationFrame(loop);
+})();
+</script>
+</body>
+</html>

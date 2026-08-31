@@ -1,0 +1,675 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+<title>Haystack Hunt — Find the Needle</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { width: 100%; height: 100%; overflow: hidden; background: #1a1207; font-family: system-ui, -apple-system, sans-serif; }
+  #app { position: fixed; inset: 0; }
+  canvas { display: block; cursor: grab; }
+  canvas:active { cursor: grabbing; }
+
+  #hud {
+    position: fixed; top: 0; left: 0; right: 0;
+    display: flex; justify-content: center; gap: 10px; flex-wrap: wrap;
+    padding: 12px 14px; pointer-events: none;
+    color: #ffe9b0; text-shadow: 0 1px 3px rgba(0,0,0,.8);
+  }
+  #hud .stat {
+    background: rgba(30,20,8,.7); border: 1px solid rgba(255,200,90,.25);
+    border-radius: 10px; padding: 7px 13px; font-size: 14px; font-weight: 600;
+    backdrop-filter: blur(4px);
+  }
+  #hud .stat span { color: #fff; }
+
+  #title {
+    position: fixed; top: 54px; left: 50%; transform: translateX(-50%);
+    color: #ffe9b0; text-shadow: 0 1px 4px rgba(0,0,0,.9);
+    font-size: 15px; font-weight: 700; letter-spacing: .3px; pointer-events: none;
+    opacity: .85;
+  }
+
+  #hint {
+    position: fixed; bottom: 76px; left: 50%; transform: translateX(-50%);
+    background: rgba(30,20,8,.85); color: #ffe9b0;
+    border: 1px solid rgba(255,200,90,.25); border-radius: 20px;
+    padding: 8px 18px; font-size: 14px; pointer-events: none;
+    opacity: 0; transition: opacity .3s; text-align: center; max-width: 90vw;
+  }
+  #hint.show { opacity: 1; }
+
+  #controls {
+    position: fixed; bottom: 16px; left: 50%; transform: translateX(-50%);
+    display: flex; gap: 10px; flex-wrap: wrap; justify-content: center;
+  }
+  button {
+    background: linear-gradient(180deg,#d9a441,#b57a1f); color: #2a1c05;
+    border: none; border-radius: 10px; padding: 10px 16px;
+    font-size: 14px; font-weight: 700; cursor: pointer;
+    box-shadow: 0 3px 0 #7d520f, 0 4px 10px rgba(0,0,0,.4);
+    transition: transform .05s;
+  }
+  button:hover { filter: brightness(1.08); }
+  button:active { transform: translateY(2px); box-shadow: 0 1px 0 #7d520f; }
+  button.ghost { background: rgba(40,28,10,.85); color: #ffe9b0; box-shadow: 0 3px 0 #000; }
+
+  .levels { display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; }
+  .levels button {
+    display: flex; flex-direction: column; align-items: center; gap: 3px;
+    min-width: 118px; padding: 12px 14px;
+    background: rgba(40,28,10,.85); color: #ffe9b0; box-shadow: 0 3px 0 #000;
+  }
+  .levels button small { font-size: 11px; opacity: .65; font-weight: 600; }
+  .levels button.active {
+    outline: 2px solid #ffe9b0;
+    background: linear-gradient(180deg,#d9a441,#b57a1f); color: #2a1c05; box-shadow: 0 3px 0 #7d520f;
+  }
+  .levels button.active small { opacity: .8; }
+  .startrow { display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; }
+
+  #overlay {
+    position: fixed; inset: 0; display: flex; flex-direction: column;
+    align-items: center; justify-content: center; gap: 18px;
+    background: radial-gradient(ellipse at center, rgba(40,28,10,.55), rgba(10,7,2,.92));
+    color: #ffe9b0; text-align: center; padding: 24px; z-index: 10;
+  }
+  #overlay h1 { font-size: clamp(26px, 6vw, 44px); text-shadow: 0 2px 10px rgba(0,0,0,.6); }
+  #overlay p { font-size: 15px; max-width: 480px; line-height: 1.6; opacity: .92; }
+  #overlay.hidden { display: none; }
+  .badge { font-size: 60px; }
+
+  .tag {
+    display: inline-block; background: rgba(255,200,90,.14);
+    border: 1px solid rgba(255,200,90,.3); border-radius: 8px;
+    padding: 3px 10px; margin: 2px; font-size: 13px;
+  }
+
+  /* ----- Mobile / touch ----- */
+  @media (max-width: 640px), (pointer: coarse) {
+    #title { display: none; }
+    #hud { padding: 8px; gap: 6px; }
+    #hud .stat { font-size: 12px; padding: 6px 9px; }
+    #controls { bottom: max(12px, env(safe-area-inset-bottom)); }
+    button { padding: 13px 18px; }           /* larger tap targets */
+    #overlay { gap: 14px; }
+    #overlay p { font-size: 14px; }
+    #overlay h1 { font-size: clamp(22px, 7vw, 34px); }
+    .badge { font-size: 48px; }
+  }
+</style>
+</head>
+<body>
+<div id="app"></div>
+
+<div id="title">🌾 Clear the hay one strand at a time to find the 🪡 needle</div>
+
+<div id="hud">
+  <div class="stat">⏱️ <span id="time">0.0</span>s</div>
+  <div class="stat">🌾 Cleared: <span id="removed">0</span> / <span id="total">0</span></div>
+</div>
+
+<div id="hint"></div>
+
+<div id="controls">
+  <button id="saveBtn" class="ghost">💾 Save</button>
+  <button id="restartBtn" class="ghost">🔄 Restart</button>
+  <button id="exitBtn" class="ghost">🚪 Exit</button>
+</div>
+
+<div id="overlay">
+  <div class="badge">🪡</div>
+  <h1>Find the Needle in the Haystack</h1>
+  <p>
+    One <b>needle</b> is buried in the haystack.
+    Remove the hay one strand at a time until the needle shows, then tap the needle to win!
+  </p>
+
+  <div class="levels" id="levels">
+    <button data-count="1000">📘 Tutorial</button>
+    <button data-count="10000" class="active">🟢 Easy</button>
+    <button data-count="50000">🟡 Normal</button>
+    <button data-count="100000">🔴 Hard</button>
+  </div>
+
+  <p class="tags">
+    <span class="tag">👆 Tap hay = remove</span>
+    <span class="tag">✋ Drag = rotate</span>
+    <span class="tag">🤏 Pinch / scroll = zoom</span>
+  </p>
+
+  <div class="startrow">
+    <button id="startBtn">▶️ Start Digging</button>
+    <button id="resumeBtn" class="ghost" style="display:none">⏩ Continue Progress</button>
+  </div>
+</div>
+
+<script type="importmap">
+{
+  "imports": {
+    "three": "https://unpkg.com/three@0.160.0/build/three.module.js",
+    "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/"
+  }
+}
+</script>
+
+<script type="module">
+import * as THREE from 'three';
+import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+
+// ---------- Scene setup ----------
+const app = document.getElementById('app');
+const scene = new THREE.Scene();
+scene.background = new THREE.Color(0x1a1207);
+scene.fog = new THREE.Fog(0x1a1207, 16, 34);
+
+const camera = new THREE.PerspectiveCamera(55, innerWidth / innerHeight, 0.1, 100);
+camera.position.set(0, 7, 13);
+
+const renderer = new THREE.WebGLRenderer({ antialias: true });
+renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+renderer.setSize(innerWidth, innerHeight);
+renderer.shadowMap.enabled = true;
+renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+app.appendChild(renderer.domElement);
+
+const controls = new OrbitControls(camera, renderer.domElement);
+controls.enableDamping = true;
+controls.dampingFactor = 0.08;
+controls.minDistance = 4;
+controls.maxDistance = 24;
+controls.maxPolarAngle = Math.PI * 0.52;
+controls.target.set(0, 1.6, 0);
+
+// ---------- Lights ----------
+scene.add(new THREE.HemisphereLight(0xfff0d0, 0x2a1c08, 0.7));
+const sun = new THREE.DirectionalLight(0xfff2cc, 1.4);
+sun.position.set(9, 15, 7);
+sun.castShadow = true;
+sun.shadow.mapSize.set(2048, 2048);
+Object.assign(sun.shadow.camera, { near: 1, far: 44, left: -16, right: 16, top: 16, bottom: -16 });
+scene.add(sun);
+const fill = new THREE.PointLight(0xffcf7a, 0.5, 34);
+fill.position.set(-7, 6, -5);
+scene.add(fill);
+
+// ---------- Ground ----------
+const ground = new THREE.Mesh(
+  new THREE.CircleGeometry(34, 48),
+  new THREE.MeshStandardMaterial({ color: 0x3a2a12, roughness: 1 })
+);
+ground.rotation.x = -Math.PI / 2;
+ground.receiveShadow = true;
+scene.add(ground);
+
+// ---------- Config ----------
+let STRAW_COUNT = 10000;
+const PILE_RADIUS = 5.5;
+const PILE_HEIGHT = 4.2;
+const HOVER_LIMIT = 20000;   // above this, skip per-move hover raycast (too costly)
+const SHADOW_LIMIT = 20000;  // above this, needles stop casting shadows (keeps FPS up)
+
+// seeded RNG so a pile can be reproduced exactly when loading a saved game
+function mulberry32(seed) {
+  let a = seed >>> 0;
+  return function () {
+    a |= 0; a = (a + 0x6D2B79F5) | 0;
+    let t = Math.imul(a ^ (a >>> 15), 1 | a);
+    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+  };
+}
+let currentSeed = 1;
+let rng = Math.random;   // set to a seeded generator while building the pile
+
+// ---------- Haystack (InstancedMesh, per-straw removable) ----------
+const haystack = new THREE.Group();
+scene.add(haystack);
+
+// the pile is made of golden HAY straws
+const strawGeo = new THREE.CylinderGeometry(0.035, 0.02, 1, 5, 1);
+const strawColors = [0xd9b25a, 0xc99a3f, 0xe0c070, 0xbfa04f, 0xd4a94e, 0xcaa856];
+
+let strawMesh = null;             // single InstancedMesh holding all straws
+let strawMatrices = [];           // current matrix per instance
+let sPos = [], sQuat = [], sScale = []; // decomposed transform per instance
+let removed = null;               // Uint8Array flag per instance
+let removedCount = 0;
+let settle = [];                  // straws currently falling to fill gaps
+const ZERO = new THREE.Matrix4().makeScale(0, 0, 0); // "hidden" transform
+
+const tmp = new THREE.Object3D();
+
+function buildHaystack() {
+  if (strawMesh) { haystack.remove(strawMesh); strawMesh.dispose(); }
+  strawMatrices = []; sPos = []; sQuat = []; sScale = [];
+  removed = new Uint8Array(STRAW_COUNT);
+  removedCount = 0;
+  settle = [];
+
+  const mat = new THREE.MeshStandardMaterial({ roughness: 0.9, metalness: 0 });
+  strawMesh = new THREE.InstancedMesh(strawGeo, mat, STRAW_COUNT);
+  const heavy = STRAW_COUNT > SHADOW_LIMIT;
+  strawMesh.castShadow = !heavy;      // shadows for a huge pile tank the framerate
+  strawMesh.receiveShadow = !heavy;
+  strawMesh.instanceColor = new THREE.InstancedBufferAttribute(new Float32Array(STRAW_COUNT * 3), 3);
+
+  const col = new THREE.Color();
+  for (let i = 0; i < STRAW_COUNT; i++) {
+    const a = rng() * Math.PI * 2;
+    const r = Math.sqrt(rng()) * PILE_RADIUS;
+    const maxH = PILE_HEIGHT * Math.cos((r / PILE_RADIUS) * Math.PI * 0.5);
+    const h = rng() * Math.max(0.3, maxH);
+    const len = 0.8 + rng() * 1.5;
+
+    tmp.position.set(Math.cos(a) * r, h + 0.1, Math.sin(a) * r);
+    tmp.rotation.set((rng() - 0.5) * Math.PI, rng() * Math.PI * 2, (rng() - 0.5) * Math.PI);
+    tmp.scale.set(1, len, 1);
+    tmp.updateMatrix();
+
+    strawMesh.setMatrixAt(i, tmp.matrix);
+    strawMatrices.push(tmp.matrix.clone());
+    sPos.push(tmp.position.clone());
+    sQuat.push(tmp.quaternion.clone());
+    sScale.push(tmp.scale.clone());
+
+    col.setHex(strawColors[(rng() * strawColors.length) | 0]);
+    strawMesh.setColorAt(i, col);
+  }
+  strawMesh.instanceMatrix.needsUpdate = true;
+  strawMesh.instanceColor.needsUpdate = true;
+  haystack.add(strawMesh);
+
+  document.getElementById('total').textContent = STRAW_COUNT;
+  document.getElementById('removed').textContent = '0';
+}
+
+// ---------- The hidden target: a single NEEDLE ----------
+const needle = new THREE.Group();
+const needleMat = new THREE.MeshStandardMaterial({
+  color: 0xdfe6ee, metalness: 1, roughness: 0.12,
+  emissive: 0x223344, emissiveIntensity: 0.35
+});
+// a slim shiny steel needle with an eye and a pointed tip
+needle.add(new THREE.Mesh(new THREE.CylinderGeometry(0.028, 0.012, 1.1, 12), needleMat));
+const eye = new THREE.Mesh(new THREE.TorusGeometry(0.045, 0.016, 8, 16), needleMat);
+eye.position.y = 0.55; needle.add(eye);
+const tip = new THREE.Mesh(new THREE.ConeGeometry(0.012, 0.12, 12), needleMat);
+tip.position.y = -0.6; needle.add(tip);
+needle.traverse(o => { if (o.isMesh) o.castShadow = true; });
+haystack.add(needle);
+
+function placeNeedle() {
+  // random spot anywhere in the pile, but NEVER exposed at the surface
+  const HALF = 0.5;   // half-length of the straw target
+  const COVER = 0.7;  // needles that must remain above it so it stays hidden
+  let x = 0, z = 0, h = PILE_HEIGHT * 0.4, found = false;
+
+  for (let attempt = 0; attempt < 40; attempt++) {
+    const a = rng() * Math.PI * 2;
+    const r = Math.sqrt(rng()) * PILE_RADIUS * 0.9;
+    const surfaceH = PILE_HEIGHT * Math.cos((r / PILE_RADIUS) * Math.PI * 0.5);
+    const ceiling = surfaceH - HALF - COVER; // highest center that still leaves cover above
+    if (ceiling < 0.5) continue;             // pile too thin here → try another spot
+    x = Math.cos(a) * r;
+    z = Math.sin(a) * r;
+    h = 0.5 + rng() * (ceiling - 0.5);
+    found = true;
+    break;
+  }
+  if (!found) { x = 0; z = 0; h = PILE_HEIGHT * 0.4; } // safe fallback near the deep center
+
+  needle.position.set(x, h, z);
+  needle.rotation.set((rng() - 0.5) * Math.PI * 0.9, rng() * Math.PI * 2, (rng() - 0.5) * Math.PI * 0.9);
+}
+
+// glint sprite so a fully-exposed needle sparkles
+const glintTex = (() => {
+  const c = document.createElement('canvas'); c.width = c.height = 64;
+  const g = c.getContext('2d');
+  const grd = g.createRadialGradient(32, 32, 0, 32, 32, 32);
+  grd.addColorStop(0, 'rgba(255,255,255,0.9)');
+  grd.addColorStop(0.3, 'rgba(200,230,255,0.4)');
+  grd.addColorStop(1, 'rgba(255,255,255,0)');
+  g.fillStyle = grd; g.fillRect(0, 0, 64, 64);
+  return new THREE.CanvasTexture(c);
+})();
+const glint = new THREE.Sprite(new THREE.SpriteMaterial({
+  map: glintTex, color: 0xffffff, transparent: true,
+  blending: THREE.AdditiveBlending, depthWrite: false, opacity: 0
+}));
+glint.scale.setScalar(0.6);
+needle.add(glint);
+
+// ---------- Flying straw animation pool ----------
+const flyers = [];
+const flyMat = new THREE.MeshStandardMaterial({ roughness: 0.9, metalness: 0, transparent: true });
+function spawnFlyer(matrix, color) {
+  const m = new THREE.Mesh(strawGeo, flyMat.clone());
+  m.material.color.copy(color);
+  m.applyMatrix4(matrix);
+  m.castShadow = true;
+  scene.add(m);
+  flyers.push({
+    mesh: m, life: 1,
+    vel: new THREE.Vector3((Math.random() - 0.5) * 3, 4 + Math.random() * 3, (Math.random() - 0.5) * 3),
+    spin: new THREE.Vector3((Math.random() - 0.5) * 10, (Math.random() - 0.5) * 10, (Math.random() - 0.5) * 10),
+  });
+}
+function updateFlyers(dt) {
+  for (let i = flyers.length - 1; i >= 0; i--) {
+    const f = flyers[i];
+    f.vel.y -= 9.8 * dt;
+    f.mesh.position.addScaledVector(f.vel, dt);
+    f.mesh.rotation.x += f.spin.x * dt;
+    f.mesh.rotation.y += f.spin.y * dt;
+    f.mesh.rotation.z += f.spin.z * dt;
+    f.life -= dt * 1.1;
+    f.mesh.material.opacity = Math.max(0, f.life);
+    if (f.life <= 0) {
+      scene.remove(f.mesh);
+      f.mesh.material.dispose();
+      flyers.splice(i, 1);
+    }
+  }
+}
+
+// remove one straw instance by id (with flying animation + collapse)
+const _c = new THREE.Color();
+function removeStraw(id) {
+  if (removed[id]) return;
+  if (id === hoverId) hoverId = -1;   // it's leaving; don't restore its color later
+  removed[id] = 1;
+  removedCount++;
+  strawMesh.getColorAt(id, _c);
+  spawnFlyer(strawMatrices[id], _c);
+  strawMesh.setMatrixAt(id, ZERO);
+  strawMesh.instanceMatrix.needsUpdate = true;
+  document.getElementById('removed').textContent = removedCount;
+  collapseAround(id);
+}
+
+// when a straw is pulled out, nearby straws sitting above it drop to fill the gap
+const COLLAPSE_RADIUS = 0.55;
+function collapseAround(id) {
+  const p = sPos[id];
+  for (let j = 0; j < STRAW_COUNT; j++) {
+    if (removed[j] || j === id) continue;
+    const q = sPos[j];
+    if (q.y <= p.y) continue;                         // only straws above the gap fall
+    const dx = q.x - p.x, dz = q.z - p.z;
+    if (dx * dx + dz * dz > COLLAPSE_RADIUS * COLLAPSE_RADIUS) continue;
+    // queue a small downward drop with a little random settle
+    const drop = 0.12 + Math.random() * 0.22;
+    let s = settle.find(e => e.id === j);
+    if (s) s.remaining += drop;
+    else settle.push({ id: j, remaining: drop, vel: 0 });
+  }
+}
+
+// advance falling straws each frame (gravity-eased drop, then rest)
+const _m = new THREE.Matrix4();
+function updateSettle(dt) {
+  if (!settle.length) return;
+  let changed = false;
+  for (let i = settle.length - 1; i >= 0; i--) {
+    const s = settle[i];
+    if (removed[s.id]) { settle.splice(i, 1); continue; }
+    s.vel = Math.min(s.vel + 6 * dt, 3.5);            // accelerate downward
+    const step = Math.min(s.remaining, s.vel * dt);
+    sPos[s.id].y -= step;
+    s.remaining -= step;
+    _m.compose(sPos[s.id], sQuat[s.id], sScale[s.id]);
+    strawMatrices[s.id].copy(_m);
+    strawMesh.setMatrixAt(s.id, _m);
+    changed = true;
+    if (s.remaining <= 0.0005) settle.splice(i, 1);
+  }
+  if (changed) strawMesh.instanceMatrix.needsUpdate = true;
+}
+
+// ---------- Game state ----------
+const state = { playing: false, startTime: 0, penalty: 0, won: false };
+const raycaster = new THREE.Raycaster();
+const pointer = new THREE.Vector2();
+
+// hover highlight state
+let hoverId = -1;                       // straw instance currently highlighted
+const hoverOrigColor = new THREE.Color();
+const HILITE = new THREE.Color(0xfff6c0);
+
+function clearHover() {
+  if (hoverId >= 0 && !removed[hoverId]) {
+    strawMesh.setColorAt(hoverId, hoverOrigColor);
+    strawMesh.instanceColor.needsUpdate = true;
+  }
+  hoverId = -1;
+}
+
+const el = {
+  time: document.getElementById('time'),
+  removed: document.getElementById('removed'),
+  hint: document.getElementById('hint'),
+  overlay: document.getElementById('overlay'),
+};
+
+function showHint(text, ms = 2200) {
+  el.hint.textContent = text;
+  el.hint.classList.add('show');
+  clearTimeout(showHint._t);
+  showHint._t = setTimeout(() => el.hint.classList.remove('show'), ms);
+}
+
+const SAVE_KEY = 'jerami-in-needles-save';
+
+function newRound(saved) {
+  hoverId = -1;
+  // choose a seed (reuse saved seed to reproduce that exact pile)
+  currentSeed = saved ? (saved.seed >>> 0) : ((Math.random() * 4294967296) >>> 0);
+  if (saved) STRAW_COUNT = saved.count;
+  rng = mulberry32(currentSeed);
+  buildHaystack();
+  placeNeedle();
+  rng = Math.random;                 // back to true randomness for effects
+  flyers.splice(0).forEach(f => { scene.remove(f.mesh); f.mesh.material.dispose(); });
+  haystack.rotation.y = 0;
+
+  // re-apply previously removed needles (no animation, no collapse)
+  if (saved && saved.removed && saved.removed.length) {
+    for (const id of saved.removed) {
+      if (id >= 0 && id < STRAW_COUNT && !removed[id]) {
+        removed[id] = 1; removedCount++;
+        strawMesh.setMatrixAt(id, ZERO);
+      }
+    }
+    strawMesh.instanceMatrix.needsUpdate = true;
+    el.removed.textContent = removedCount;
+  }
+}
+
+// ---------- Save / load progress ----------
+function hasSave() { try { return !!localStorage.getItem(SAVE_KEY); } catch { return false; } }
+
+function saveProgress() {
+  const ids = [];
+  for (let i = 0; i < STRAW_COUNT; i++) if (removed[i]) ids.push(i);
+  const elapsed = state.playing ? (performance.now() - state.startTime) / 1000 + state.penalty : state.penalty;
+  const data = { seed: currentSeed, count: STRAW_COUNT, removed: ids, elapsed };
+  try {
+    localStorage.setItem(SAVE_KEY, JSON.stringify(data));
+    showHint('💾 Progress saved! You can continue later.');
+    refreshResumeBtn();
+  } catch {
+    showHint('⚠️ Save failed (storage full?).');
+  }
+}
+
+function resumeSaved() {
+  let saved; try { saved = JSON.parse(localStorage.getItem(SAVE_KEY)); } catch { saved = null; }
+  if (!saved) { showHint('No saved progress.'); return; }
+  // reflect the saved difficulty in the level buttons
+  document.querySelectorAll('#levels button').forEach(b =>
+    b.classList.toggle('active', +b.dataset.count === saved.count));
+  newRound(saved);
+  startGame();
+  state.penalty = saved.elapsed || 0;   // continue the timer from where it left off
+  showHint('⏩ Progress resumed!');
+}
+
+function refreshResumeBtn() {
+  const btn = document.getElementById('resumeBtn');
+  btn.style.display = hasSave() ? '' : 'none';
+}
+
+// stop the current game and go back to the front menu
+function exitToMenu() {
+  state.playing = false; state.won = false;
+  el.overlay.classList.remove('hidden');
+  el.overlay.querySelector('.badge').textContent = '🪡';
+  el.overlay.querySelector('h1').textContent = 'Find the Needle in the Haystack';
+  el.overlay.querySelector('p').innerHTML =
+    'One <b>needle</b> is buried in the haystack. ' +
+    'Remove the hay one strand at a time until the needle shows, then tap the needle to win!';
+  document.getElementById('startBtn').textContent = '▶️ Start Digging';
+  refreshResumeBtn();
+}
+
+function startGame() {
+  state.playing = true; state.won = false;
+  state.startTime = performance.now(); state.penalty = 0;
+  el.overlay.classList.add('hidden');
+}
+
+function winGame() {
+  state.playing = false; state.won = true;
+  const t = ((performance.now() - state.startTime) / 1000 + state.penalty).toFixed(1);
+  el.overlay.classList.remove('hidden');
+  el.overlay.querySelector('.badge').textContent = '🎉';
+  el.overlay.querySelector('h1').textContent = 'Found it! 🪡✨';
+  el.overlay.querySelector('p').innerHTML =
+    `You found the needle in <b>${t} seconds</b>, after clearing ` +
+    `<b>${removedCount}</b> strands of hay.<br>` +
+    (removedCount < 40 ? 'Sharp eyes! 🦅' : removedCount < 150 ? 'Nice work! 👏' : 'Patience pays off 😅');
+  document.getElementById('startBtn').textContent = '▶️ Play Again';
+  controls.target.copy(needle.getWorldPosition(new THREE.Vector3()));
+}
+
+// ---------- Interaction ----------
+let downPos = null;
+let lastPick = 0;                 // timestamp of last straw removal
+let lastBlockHint = 0;            // throttle the "too fast" feedback
+const PICK_COOLDOWN = 250;        // ms — blocks spam-clicking
+renderer.domElement.addEventListener('pointerdown', e => { downPos = { x: e.clientX, y: e.clientY }; });
+renderer.domElement.addEventListener('pointerup', e => {
+  if (!downPos) return;
+  const moved = Math.hypot(e.clientX - downPos.x, e.clientY - downPos.y);
+  downPos = null;
+  const tapSlop = e.pointerType === 'touch' ? 14 : 6; // fingers wobble more than a mouse
+  if (moved > tapSlop || !state.playing) return; // drag, not a tap
+
+  setPointer(e);
+  raycaster.setFromCamera(pointer, camera);
+
+  // check needle first — winning is never throttled
+  if (raycaster.intersectObject(needle, true).length) { winGame(); return; }
+
+  // throttle straw removal so rapid spam-clicking has no effect
+  const now = performance.now();
+  if (now - lastPick < PICK_COOLDOWN) {
+    if (now - lastBlockHint > 500) { showHint('⏳ Easy — one strand at a time!'); lastBlockHint = now; }
+    return;
+  }
+
+  // pick the front-most straw under the cursor
+  const hit = raycaster.intersectObject(strawMesh)[0];
+  if (hit && hit.instanceId != null && !removed[hit.instanceId]) {
+    lastPick = now;
+    removeStraw(hit.instanceId);
+  }
+});
+
+function setPointer(e) {
+  pointer.x = (e.clientX / innerWidth) * 2 - 1;
+  pointer.y = -(e.clientY / innerHeight) * 2 + 1;
+}
+
+// hover: highlight the straw (or target) that will be picked (desktop only)
+renderer.domElement.addEventListener('pointermove', e => {
+  if (e.pointerType === 'touch') return;  // no hover on touch; also skips costly raycasts
+  if (!state.playing) { renderer.domElement.style.cursor = 'grab'; return; }
+  if (STRAW_COUNT > HOVER_LIMIT) { renderer.domElement.style.cursor = 'grab'; return; } // huge pile: hover too costly
+  setPointer(e);
+  raycaster.setFromCamera(pointer, camera);
+
+  // what is under the cursor right now?
+  const overNeedle = raycaster.intersectObject(needle, true).length > 0;
+  let newHover = -1;
+  if (!overNeedle) {
+    const h = raycaster.intersectObject(strawMesh)[0];
+    if (h && h.instanceId != null && !removed[h.instanceId]) newHover = h.instanceId;
+  }
+  if (newHover !== hoverId) {
+    clearHover();
+    if (newHover >= 0) {
+      strawMesh.getColorAt(newHover, hoverOrigColor);
+      strawMesh.setColorAt(newHover, HILITE);
+      strawMesh.instanceColor.needsUpdate = true;
+      hoverId = newHover;
+    }
+  }
+  renderer.domElement.style.cursor = (overNeedle || newHover >= 0) ? 'pointer' : 'grab';
+});
+
+// ---------- Buttons ----------
+document.getElementById('startBtn').addEventListener('click', () => { newRound(); startGame(); });
+document.getElementById('restartBtn').addEventListener('click', () => { newRound(); startGame(); showHint('🔄 New pile — the needle is hidden again!'); });
+document.getElementById('saveBtn').addEventListener('click', () => {
+  if (!state.playing && !state.won) { showHint('Start playing before saving.'); return; }
+  saveProgress();
+});
+document.getElementById('resumeBtn').addEventListener('click', resumeSaved);
+document.getElementById('exitBtn').addEventListener('click', exitToMenu);
+
+// level selector on the front page — only sets the chosen difficulty
+document.querySelectorAll('#levels button').forEach(b => {
+  b.addEventListener('click', () => {
+    document.querySelectorAll('#levels button').forEach(x => x.classList.remove('active'));
+    b.classList.add('active');
+    STRAW_COUNT = +b.dataset.count;
+  });
+});
+
+// ---------- Resize ----------
+addEventListener('resize', () => {
+  camera.aspect = innerWidth / innerHeight;
+  camera.updateProjectionMatrix();
+  renderer.setSize(innerWidth, innerHeight);
+});
+
+// ---------- Init & animate ----------
+newRound();
+refreshResumeBtn();   // show "Continue Progress" if a save exists
+
+const clock = new THREE.Clock();
+function animate() {
+  requestAnimationFrame(animate);
+  const dt = Math.min(clock.getDelta(), 0.05);
+  const t = clock.elapsedTime;
+
+  updateFlyers(dt);
+  updateSettle(dt);
+
+  // needle: steady, no blinking (only a soft glint on the win screen)
+  glint.material.opacity = state.won ? 0.9 : 0;
+
+  if (state.won) haystack.rotation.y += 0.004;
+  if (state.playing) el.time.textContent = ((performance.now() - state.startTime) / 1000 + state.penalty).toFixed(1);
+
+  controls.update();
+  renderer.render(scene, camera);
+}
+animate();
+</script>
+</body>
+</html>
