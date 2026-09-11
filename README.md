@@ -8,19 +8,19 @@ A collection of daily web experiments — one day, one project. Each folder hold
 
 | # | Project | Category | Summary |
 | --- | --- | --- | --- |
-| 01 | [Haystack Hunt](01.%20haystack-hunt%20/) | 🎮 Game 3D | Find the needle in a haystack — dig strand by strand (Three.js). |
+| 01 | [Haystack Hunt](01.%20haystack-hunt%20/) | 🎮 Game | Find the needle in a haystack — dig strand by strand (Three.js). |
 | 02 | [Uchiha Itachi](02.%20itachi-landing-page/) | 🎬 Landing Page | Cinematic landing page with scroll-driven frame animation. |
-| 03 | [Jangan Lupa Titik Koma](03.%20jangan-lupa-titik-koma/) | 🧩 Game Puzzle | Find the one line of code missing a `;` among thousands. |
+| 03 | [Jangan Lupa Titik Koma](03.%20jangan-lupa-titik-koma/) | 🎮 Game | Find the one line of code missing a `;` among thousands. |
 | 04 | [Lab Coding Blok](04.%20block-coding-for-basic-logic-lab/) | 🎓 Education | Visual block-coding lab — snap blocks (move/loop/if) into a program and run it. 5 levels, 17 challenges. |
-| 05 | [Check Khodam](05.%20check-khodam/) | 🎲 Fun / Toy | A tongue-in-cheek "cek khodam" generator — type a name, get a random guardian spirit. |
+| 05 | [Gizi Seimbang](05.%20nutrition-health-literacy-game/) | 🎓 Education | Drag-and-drop nutrition game — build balanced meals with live calorie & macro scoring. |
 | 06 | [Pasar Saham Virtual](06.%20investment-simulator/) | 🎓 Education | Virtual investing simulator (SCORM/PWA) — manage Rp 10M across 5 rounds of economic news. |
-| 07 | [Gizi Seimbang](07.%20nutrition-health-literacy-game/) | 🎓 Education | Drag-and-drop nutrition game — build balanced meals with live calorie & macro scoring. |
-| 08 | [Foliage Coffee](08.%20coffee-shop/) | 🎬 Landing Page | Warm, editorial landing page for a slow coffee bar — floating cup hero, story, menu & beans. |
-| 09 | [Luminary Studio](09.%20digital-agency/) | 🎬 Landing Page | Bold dark landing page for a creative digital agency, with animated stats. |
-| 10 | [VELOURA](10.%20fashion-brand/) | 🎬 Landing Page | Editorial fashion landing page (AW 2025) — split hero, product grid & manifesto. |
-| 11 | [Aurum](11.%20fine-dining/) | 🎬 Landing Page | Luxury fine-dining landing page — dark-and-gold hero, tasting menu & reservations. |
-| 12 | [IRONFORGE Gym](12.%20fitness-gym/) | 🎬 Landing Page | High-energy gym landing page — oversized type, pricing tiers & class schedule. |
-| 13 | [Axion AI](13.%20saas-ai-assistant/) | 🎬 Landing Page | Clean SaaS landing page for an AI assistant — dashboard-mockup hero, pricing & FAQ. |
+| 07 | [Foliage Coffee](07.%20coffee-shop/) | 🎬 Landing Page | Warm, editorial landing page for a slow coffee bar — floating cup hero, story, menu & beans. |
+| 08 | [Luminary Studio](08.%20digital-agency/) | 🎬 Landing Page | Bold dark landing page for a creative digital agency, with animated stats. |
+| 09 | [VELOURA](09.%20fashion-brand/) | 🎬 Landing Page | Editorial fashion landing page (AW 2025) — split hero, product grid & manifesto. |
+| 10 | [Aurum](10.%20fine-dining/) | 🎬 Landing Page | Luxury fine-dining landing page — dark-and-gold hero, tasting menu & reservations. |
+| 11 | [IRONFORGE Gym](11.%20fitness-gym/) | 🎬 Landing Page | High-energy gym landing page — oversized type, pricing tiers & class schedule. |
+| 12 | [Axion AI](12.%20saas-ai-assistant/) | 🎬 Landing Page | Clean SaaS landing page for an AI assistant — dashboard-mockup hero, pricing & FAQ. |
+| 13 | [Check Khodam](13.%20check-khodam/) | 🎮 Game | A tongue-in-cheek "cek khodam" generator — type a name, get a random guardian spirit. |
 
 ## Running the catalog & projects
 
@@ -35,7 +35,7 @@ python3 -m http.server 8000
 cd "01. haystack-hunt " && python3 -m http.server 8000
 ```
 
-Purely static projects (e.g. `03`, `04`, `05`, `07`, and the landing pages `08`–`13`) can also be opened by double-clicking `index.html`.
+Purely static projects (e.g. `03`, `04`, `05`, `13`, and the landing pages `07`–`12`) can also be opened by double-clicking `index.html`.
 
 > **`06. investment-simulator`** needs an HTTP origin (Service Worker / PWA manifest), so run it through a local server rather than `file://`. It's still static — no backend required.
 
@@ -47,29 +47,26 @@ one-day-one-code/
 ├── README.md                           # This file
 ├── CLAUDE.md                           # Guidance for agents/contributors
 ├── favicon.svg                         # Catalog favicon
-├── 01. haystack-hunt /                 # Game 3D (Three.js) + preview.png
+├── 01. haystack-hunt /                 # Game — needle in a haystack (Three.js) + preview.png
 ├── 02. itachi-landing-page/            # Landing page + frames/ + preview.png
-├── 03. jangan-lupa-titik-koma/         # Coding puzzle + preview.png
+├── 03. jangan-lupa-titik-koma/         # Game — coding puzzle + preview.png
 ├── 04. block-coding-for-basic-logic-lab/  # Block-coding lab + preview.png
-├── 05. check-khodam/                   # "Cek khodam" toy + preview.png
+├── 05. nutrition-health-literacy-game/ # Nutrition game + preview.png
 ├── 06. investment-simulator/           # Virtual stock market (SCORM/PWA) + preview.png
-├── 07. nutrition-health-literacy-game/ # Nutrition game + preview.png
-├── 08. coffee-shop/                    # Coffee-bar landing page + preview.png
-├── 09. digital-agency/                 # Agency landing page + preview.png
-├── 10. fashion-brand/                  # Fashion landing page + preview.png
-├── 11. fine-dining/                    # Restaurant landing page + preview.png
-├── 12. fitness-gym/                    # Gym landing page + preview.png
-└── 13. saas-ai-assistant/              # SaaS landing page + preview.png
+├── 07. coffee-shop/                    # Coffee-bar landing page + preview.png
+├── 08. digital-agency/                 # Agency landing page + preview.png
+├── 09. fashion-brand/                  # Fashion landing page + preview.png
+├── 10. fine-dining/                    # Restaurant landing page + preview.png
+├── 11. fitness-gym/                    # Gym landing page + preview.png
+├── 12. saas-ai-assistant/              # SaaS landing page + preview.png
+└── 13. check-khodam/                   # "Cek khodam" web toy + preview.png
 ```
 
 ## Categories
 
-- **🎮 Game 3D** — interactive WebGL/Three.js projects.
-- **🎬 Landing Page** — cinematic presentation pages with animation.
-- **🧩 Game Puzzle** — lightweight DOM/JS logic games.
-- **🧰 Tool / App** — utilities & apps that need a runtime (e.g. Electron).
+- **🎮 Game** — interactive games & playful logic (3D/WebGL, puzzles, novelty toys).
+- **🎬 Landing Page** — cinematic presentation & marketing pages with animation.
 - **🎓 Education** — interactive learning labs & games (Ruang Murid, Rumah Pendidikan).
-- **🎲 Fun / Toy** — small novelty/meme web toys.
 
 ---
 

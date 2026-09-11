@@ -738,18 +738,15 @@ A single `index.html` — inline CSS + Vanilla JS, no framework and no build ste
 
 <script>
 const CATS = {
-  game3d:  { label:"Game 3D",      color:"#22c55e" },
+  game:    { label:"Game",         color:"#22c55e" },
   landing: { label:"Landing Page", color:"#a78bfa" },
-  puzzle:  { label:"Game Puzzle",  color:"#f97316" },
-  tool:    { label:"Tool / App",   color:"#38bdf8" },
   edu:     { label:"Education",    color:"#ec4899" },
-  fun:     { label:"Fun / Toy",    color:"#eab308" },
 };
 
 const PROJECTS = [
   {
     n:"01", id:"haystack", title:"Haystack Hunt",
-    jp:"Find the Needle in the Haystack", cat:"game3d",
+    jp:"Find the Needle in the Haystack", cat:"game",
     shot:"01. haystack-hunt /preview.png", folder:"01. haystack-hunt ",
     desc:"A 3D 'find the needle in a haystack' game. Clear the pile one strand at a time until the buried needle appears, then click to win.",
     tags:["Three.js","WebGL","InstancedMesh","localStorage"],
@@ -765,7 +762,7 @@ const PROJECTS = [
   },
   {
     n:"03", id:"titikkoma", title:"Jangan Lupa Titik Koma",
-    jp:"Find the Missing Semicolon", cat:"puzzle",
+    jp:"Find the Missing Semicolon", cat:"game",
     shot:"03. jangan-lupa-titik-koma/preview.png", folder:"03. jangan-lupa-titik-koma",
     desc:"A coding puzzle: among thousands of lines, exactly one statement is missing its ';'. Find the line, click it, done. Choose language & difficulty.",
     tags:["Vanilla JS","Puzzle","Multi-language","Timer"],
@@ -780,11 +777,11 @@ const PROJECTS = [
     entry:"index.html", openable:true
   },
   {
-    n:"05", id:"khodam", title:"Check Khodam",
-    jp:"Random Guardian-Spirit Generator", cat:"fun",
-    shot:"05. check-khodam/preview.png", folder:"05. check-khodam",
-    desc:"A tongue-in-cheek 'cek khodam' generator: type a name, get a random guardian spirit — from serious spirits to fried chicken. Results are logged to a table.",
-    tags:["Vanilla JS","fetch","localStorage","Meme"],
+    n:"05", id:"nutrition", title:"Gizi Seimbang",
+    jp:"Balanced Nutrition Literacy Game", cat:"edu",
+    shot:"05. nutrition-health-literacy-game/preview.png", folder:"05. nutrition-health-literacy-game",
+    desc:"A drag-and-drop nutrition game: build balanced meals, watch calories & macros update live, chase a 0–100 score. 5 levels, 14 challenges, real food data (TKPI).",
+    tags:["Vanilla JS","Drag & drop","localStorage","Education"],
     entry:"index.html", openable:true
   },
   {
@@ -796,59 +793,59 @@ const PROJECTS = [
     entry:"index.html", openable:true
   },
   {
-    n:"07", id:"nutrition", title:"Gizi Seimbang",
-    jp:"Balanced Nutrition Literacy Game", cat:"edu",
-    shot:"07. nutrition-health-literacy-game/preview.png", folder:"07. nutrition-health-literacy-game",
-    desc:"A drag-and-drop nutrition game: build balanced meals, watch calories & macros update live, chase a 0–100 score. 5 levels, 14 challenges, real food data (TKPI).",
-    tags:["Vanilla JS","Drag & drop","localStorage","Education"],
-    entry:"index.html", openable:true
-  },
-  {
-    n:"08", id:"coffee", title:"Foliage Coffee",
+    n:"07", id:"coffee", title:"Foliage Coffee",
     jp:"Foliage · Slow Coffee Bar", cat:"landing",
-    shot:"08. coffee-shop/preview.png", folder:"08. coffee-shop",
+    shot:"07. coffee-shop/preview.png", folder:"07. coffee-shop",
     desc:"A warm, editorial landing page for a slow coffee bar — floating cup hero with a live 'featured bean' card, story, menu, bean journey, and visit sections.",
     tags:["Single-file","CSS animation","Responsive","Coffee"],
     entry:"index.html", openable:true
   },
   {
-    n:"09", id:"agency", title:"Luminary Studio",
+    n:"08", id:"agency", title:"Luminary Studio",
     jp:"Luminary · Creative Digital Studio", cat:"landing",
-    shot:"09. digital-agency/preview.png", folder:"09. digital-agency",
+    shot:"08. digital-agency/preview.png", folder:"08. digital-agency",
     desc:"A bold, dark landing page for a creative digital agency — gradient hero with animated stats, services, work, process, about, and contact.",
     tags:["Single-file","Dark UI","Gradient","Agency"],
     entry:"index.html", openable:true
   },
   {
-    n:"10", id:"fashion", title:"VELOURA",
+    n:"09", id:"fashion", title:"VELOURA",
     jp:"VELOURA · Automne–Hiver 2025", cat:"landing",
-    shot:"10. fashion-brand/preview.png", folder:"10. fashion-brand",
+    shot:"09. fashion-brand/preview.png", folder:"09. fashion-brand",
     desc:"An editorial fashion landing page (AW 2025) — split hero, announcement bar, cart badge, a new-arrivals product grid, and a quiet-luxury manifesto.",
     tags:["Single-file","Editorial","E-commerce","Fashion"],
     entry:"index.html", openable:true
   },
   {
-    n:"11", id:"finedining", title:"Aurum",
+    n:"10", id:"finedining", title:"Aurum",
     jp:"Aurum · Fine Dining, Jakarta", cat:"landing",
-    shot:"11. fine-dining/preview.png", folder:"11. fine-dining",
+    shot:"10. fine-dining/preview.png", folder:"10. fine-dining",
     desc:"A luxury fine-dining landing page — cinematic dark-and-gold hero, signature dishes, a 7-course tasting menu, chef story, private dining, and reservations.",
     tags:["Single-file","Luxury","Reservation","Restaurant"],
     entry:"index.html", openable:true
   },
   {
-    n:"12", id:"gym", title:"IRONFORGE Gym",
+    n:"11", id:"gym", title:"IRONFORGE Gym",
     jp:"IRONFORGE · Forge Your Legend", cat:"landing",
-    shot:"12. fitness-gym/preview.png", folder:"12. fitness-gym",
+    shot:"11. fitness-gym/preview.png", folder:"11. fitness-gym",
     desc:"A high-energy gym landing page — oversized type, animated hero, programs, trainers, three pricing tiers, a weekly class schedule, and testimonials.",
     tags:["Single-file","Bold type","Pricing","Fitness"],
     entry:"index.html", openable:true
   },
   {
-    n:"13", id:"saas", title:"Axion AI",
+    n:"12", id:"saas", title:"Axion AI",
     jp:"Axion AI · Intelligent Work Assistant", cat:"landing",
-    shot:"13. saas-ai-assistant/preview.png", folder:"13. saas-ai-assistant",
+    shot:"12. saas-ai-assistant/preview.png", folder:"12. saas-ai-assistant",
     desc:"A clean SaaS landing page for an AI assistant — dashboard-mockup hero, feature grid, how-it-works, testimonials, pricing, and FAQ.",
     tags:["Single-file","SaaS","Dashboard UI","Pricing"],
+    entry:"index.html", openable:true
+  },
+  {
+    n:"13", id:"khodam", title:"Check Khodam",
+    jp:"Random Guardian-Spirit Generator", cat:"game",
+    shot:"13. check-khodam/preview.png", folder:"13. check-khodam",
+    desc:"A tongue-in-cheek 'cek khodam' generator: type a name, get a random guardian spirit — from serious spirits to fried chicken. Results are logged to a table.",
+    tags:["Vanilla JS","fetch","localStorage","Meme"],
     entry:"index.html", openable:true
   },
 ];
