@@ -1,0 +1,18 @@
+{
+  "name": "Pasar Saham Virtual — Investasi Pertamamu",
+  "short_name": "Pasar Saham",
+  "description": "Simulasi investasi virtual untuk warga belajar Paket C",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#1a56db",
+  "orientation": "portrait-primary",
+  "lang": "id",
+  "icons": [
+    {
+      "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📊</text></svg>",
+      "type": "image/svg+xml",
+      "sizes": "any"
+    }
+  ]
+}

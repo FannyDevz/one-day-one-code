@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="description" content="Simulasi investasi virtual untuk warga belajar Paket C — Pendidikan Kesetaraan">
+  <meta name="theme-color" content="#1a56db">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <title>Pasar Saham Virtual — Investasi Pertamamu</title>
+  <link rel="manifest" href="manifest.json">
+  <link rel="preload" as="image" href="pasar-saham.webp" type="image/webp">
+  <link rel="stylesheet" href="css/main.css">
+<link rel="icon" type="image/svg+xml" href="favicon.svg" />
+</head>
+<body>
+  <div id="app">
+
+    <!-- Desktop Sidebar (hidden on mobile) -->
+    <aside id="desktop-sidebar" class="sidebar" aria-label="Navigasi Sesi"></aside>
+
+    <!-- Right Column: Header + Screens -->
+    <div id="main-col">
+
+      <!-- Header (hidden on welcome screen) -->
+      <header id="app-header" class="app-header hidden">
+        <div class="header-top">
+          <button id="btn-back" class="btn-back" aria-label="Kembali ke menu">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M19 12H5M12 5l-7 7 7 7"/>
+            </svg>
+          </button>
+          <h1 id="header-title" class="header-title">Pasar Saham Virtual</h1>
+          <div id="header-score" class="header-score"></div>
+        </div>
+        <div class="progress-bar" role="progressbar" aria-label="Progress belajar" aria-valuemin="0" aria-valuemax="100">
+          <div id="progress-fill" class="progress-fill" style="width: 0%"></div>
+        </div>
+      </header>
+
+      <!-- Screen Container -->
+      <main id="screen-container" role="main">
+
+        <!-- Cover / Halaman Pembuka -->
+        <section id="screen-cover" class="screen active" aria-label="Halaman Pembuka"></section>
+
+        <!-- Welcome -->
+        <section id="screen-welcome" class="screen" aria-label="Halaman Selamat Datang"></section>
+
+        <!-- Menu -->
+        <section id="screen-menu" class="screen" aria-label="Menu Sesi"></section>
+
+        <!-- Unified Quiz Screen — shows ONLY the quiz, nothing else -->
+        <section id="screen-quiz" class="screen" aria-label="Kuis"></section>
+
+        <!-- Session 1 -->
+        <section id="screen-s1" class="screen" aria-label="Sesi 1 — Tabungan vs Investasi"></section>
+
+        <!-- Session 2 -->
+        <section id="screen-s2" class="screen" aria-label="Sesi 2 — Instrumen Investasi"></section>
+
+        <!-- Session 3 — Profile Quiz -->
+        <section id="screen-s3-profile" class="screen" aria-label="Sesi 3 — Profil Investor"></section>
+
+        <!-- Session 3 — Simulation -->
+        <section id="screen-s3-sim" class="screen" aria-label="Sesi 3 — Simulasi Investasi"></section>
+
+        <!-- Session 3 — Reflection -->
+        <section id="screen-s3-reflect" class="screen" aria-label="Sesi 3 — Refleksi"></section>
+
+        <!-- Session 4 -->
+        <section id="screen-s4" class="screen" aria-label="Sesi 4 — Analisis Portofolio"></section>
+
+        <!-- Session 5 -->
+        <section id="screen-s5" class="screen" aria-label="Sesi 5 — Investasi Nyata"></section>
+
+        <!-- Completion -->
+        <section id="screen-complete" class="screen" aria-label="Selesai"></section>
+
+      </main>
+    </div><!-- /#main-col -->
+
+    <!-- Modal (Tujuan Pembelajaran / Author) -->
+    <div id="modal-root" class="modal-backdrop" aria-hidden="true"></div>
+
+    <!-- Toast Notification -->
+    <div id="toast" class="toast" role="alert" aria-live="polite" aria-atomic="true"></div>
+
+  </div><!-- /#app -->
+
+  <script src="js/data.js"></script>
+  <script src="js/app.js"></script>
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('sw.js').catch(() => {});
+      });
+    }
+  </script>
+</body>
+</html>
