@@ -1,0 +1,373 @@
+<!doctype html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Lab Coding Blok: Logika Dasar | Ruang Murid</title>
+    <link rel="stylesheet" href="style.css" />
+  <link rel="icon" type="image/svg+xml" href="favicon.svg" />
+</head>
+  <body>
+    <!-- ══════════════════════════════════
+     SPLASH / HALAMAN PEMBUKA
+══════════════════════════════════ -->
+    <div id="screen-splash" class="screen">
+      <div class="splash-stage">
+        <img
+          class="splash-art"
+          src="lab-coding.png"
+          alt="Lab Coding Blok: Logika Dasar — susun blok, jalankan, selesaikan misi"
+        />
+
+        <!-- Panel ini duduk tepat di area kosong pada gambar -->
+        <div class="splash-panel">
+          <div class="splash-panel-head">
+            <div class="splash-eyebrow"></div>
+            <h2 class="splash-panel-title">Selamat Datang!</h2>
+            <p class="splash-panel-sub">
+              Susun blok instruksi seperti puzzle, jalankan programmu, dan lihat
+              hasilnya langsung. Tidak perlu instalasi apa pun.
+            </p>
+          </div>
+
+          <ul class="splash-facts">
+            <li><span>🎯</span> 5 Level · 17 Tantangan</li>
+            <li><span>⏱️</span> 30–45 menit per sesi</li>
+            <li><span>🏅</span> Skor &amp; lencana otomatis</li>
+          </ul>
+
+          <div class="splash-actions">
+            <button class="splash-btn splash-btn-main" id="btn-splash-start">
+              ▶ MULAI
+            </button>
+            <button class="splash-btn splash-btn-alt" id="btn-splash-goals">
+              🎓 Tujuan Pembelajaran
+            </button>
+            <button class="splash-btn splash-btn-ghost" id="btn-splash-author">
+              👤 Author &amp; Hak Cipta
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════
+     HOME SCREEN
+══════════════════════════════════ -->
+    <div id="screen-home" class="screen">
+      <header class="home-header">
+        <div class="logo">🔢</div>
+        <h1>Lab Coding Blok</h1>
+        <p class="subtitle">Logika Dasar</p>
+        <p class="tagline">
+          Belajar coding dengan cara yang menyenangkan — tanpa instalasi!
+        </p>
+      </header>
+
+      <div class="home-stats-bar">
+        <button
+          class="btn-reset-data"
+          id="btn-to-splash"
+          title="Kembali ke halaman pembuka"
+        >
+          ← Halaman Awal
+        </button>
+        <div class="stat-chip">
+          🏅 Skor Total: <strong id="total-score">0</strong>
+        </div>
+        <div class="stat-chip">
+          🎖️ Lencana: <strong id="badge-count">0</strong>
+        </div>
+        <button
+          class="btn-reset-data"
+          id="btn-reset-data"
+          title="Hapus semua progress"
+        >
+          🔄 Reset Progress
+        </button>
+      </div>
+
+      <div class="levels-grid" id="levels-grid">
+        <!-- Rendered by app.js -->
+      </div>
+
+      <footer class="home-footer">Copyright by Fanny Bagus Ramadhan</footer>
+    </div>
+
+    <!-- ══════════════════════════════════
+     GAME SCREEN
+══════════════════════════════════ -->
+    <div id="screen-game" class="screen">
+      <!-- Header bar -->
+      <div class="game-header">
+        <button class="btn-back" id="btn-back">← Kembali</button>
+        <div class="level-info">
+          <span class="level-title" id="level-title"></span>
+          <span class="level-concept" id="level-concept"></span>
+        </div>
+        <div class="game-stats">
+          <span class="score-badge"
+            >Skor: <strong id="score-display">0</strong></span
+          >
+          <span class="hint-badge"
+            >💡 <strong id="hint-display">3</strong></span
+          >
+          <span class="save-indicator" id="save-indicator" style="display: none"
+            >💾 Tersimpan</span
+          >
+        </div>
+      </div>
+
+      <!-- Challenge tabs -->
+      <div class="challenge-tabs" id="challenge-tabs"></div>
+
+      <!-- Mission -->
+      <div class="mission-box">
+        <div class="mission-title">📋 Misi</div>
+        <div id="mission-text"></div>
+      </div>
+
+      <!-- Mobile panel switcher (hidden on desktop) -->
+      <div class="mobile-panel-tabs" id="mobile-panel-tabs">
+        <button
+          class="mpanel-btn"
+          id="mpanel-palette"
+          onclick="switchMobilePanel('palette')"
+        >
+          🧩 Blok
+        </button>
+        <button
+          class="mpanel-btn active"
+          id="mpanel-program"
+          onclick="switchMobilePanel('program')"
+        >
+          💻 Program
+        </button>
+        <button
+          class="mpanel-btn"
+          id="mpanel-simulation"
+          onclick="switchMobilePanel('simulation')"
+        >
+          🎮 Simulasi
+        </button>
+      </div>
+
+      <!-- Main 3-panel layout -->
+      <div class="game-body">
+        <!-- Panel 1: Block Palette -->
+        <div class="panel panel-palette">
+          <div class="panel-title">🧩 Blok Tersedia</div>
+          <div class="palette-blocks" id="palette-blocks"></div>
+        </div>
+
+        <!-- Panel 2: Program Area -->
+        <div class="panel panel-program">
+          <div class="panel-title">💻 Program Kamu</div>
+
+          <div class="program-scroll" id="program-scroll">
+            <!-- START marker -->
+            <div class="prog-block-start"><span>▶</span><span>MULAI</span></div>
+
+            <!-- User's blocks -->
+            <div class="user-blocks" id="user-blocks"></div>
+
+            <!-- END marker -->
+            <div class="prog-block-end"><span>■</span><span>SELESAI</span></div>
+          </div>
+
+          <div class="program-controls">
+            <button class="btn btn-run" id="btn-run">▶ Jalankan</button>
+            <button class="btn btn-reset" id="btn-reset">↺ Ulang</button>
+            <button class="btn btn-hint" id="btn-hint">💡 Hint</button>
+            <button class="btn btn-clear" id="btn-clear">🗑 Hapus</button>
+          </div>
+        </div>
+
+        <!-- Panel 3: Simulation -->
+        <div class="panel panel-simulation">
+          <div class="panel-title">🎮 Simulasi</div>
+
+          <div class="simulation-wrap">
+            <div class="canvas-wrap">
+              <canvas id="game-canvas"></canvas>
+            </div>
+            <div class="dom-sim" id="dom-sim"></div>
+
+            <div class="sim-log">
+              <div class="log-title">📝 Log Eksekusi</div>
+              <div id="log-content"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- /game-body -->
+    </div>
+    <!-- /screen-game -->
+
+    <!-- ══════════════════════════════════
+     MODAL: RESULT
+══════════════════════════════════ -->
+    <div id="modal-result" class="modal-overlay">
+      <div class="modal-box">
+        <div class="modal-icon" id="result-icon"></div>
+        <h2 id="result-title"></h2>
+        <p id="result-message"></p>
+        <div class="modal-score" id="result-score"></div>
+        <div class="modal-actions">
+          <button class="btn btn-primary" id="btn-next">
+            Tantangan Berikutnya →
+          </button>
+          <button
+            class="btn btn-primary"
+            id="btn-reflection"
+            style="background: #7c3aed"
+          >
+            📝 Isi Jurnal Refleksi
+          </button>
+          <button class="btn btn-secondary" id="btn-retry">↺ Coba Lagi</button>
+          <button class="btn btn-secondary" id="btn-home">
+            ← Kembali ke Menu
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════
+     MODAL: HINT
+══════════════════════════════════ -->
+    <div id="modal-hint" class="modal-overlay">
+      <div class="modal-box">
+        <div class="modal-icon">💡</div>
+        <h2>
+          Petunjuk
+          <span id="hint-level" style="font-size: 14px; color: #9ca3af"></span>
+        </h2>
+        <div class="hint-box" id="hint-content"></div>
+        <div class="modal-actions">
+          <button class="btn btn-primary" id="btn-close-hint">Mengerti!</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════
+     MODAL: REFLECTION
+══════════════════════════════════ -->
+    <div id="modal-reflection" class="modal-overlay">
+      <div class="modal-box">
+        <div class="modal-icon">📓</div>
+        <h2>Jurnal Refleksi Belajar</h2>
+        <p>
+          Selamat! Kamu berhasil menyelesaikan semua tantangan di level ini.
+        </p>
+        <div class="reflection-q">
+          <label>1. Konsep apa yang baru kamu pahami hari ini?</label>
+          <textarea
+            id="reflection-1"
+            rows="3"
+            placeholder="Tulis jawabanmu..."
+          ></textarea>
+        </div>
+        <div class="reflection-q">
+          <label
+            >2. Di mana kamu pernah melihat logika ini dalam kehidupan
+            nyata?</label
+          >
+          <textarea
+            id="reflection-2"
+            rows="3"
+            placeholder="Contoh: lampu merah, antrian kasir..."
+          ></textarea>
+        </div>
+        <div class="modal-actions">
+          <button class="btn btn-primary" id="btn-save-reflection">
+            💾 Simpan & Selesai
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════
+     MODAL: TUJUAN PEMBELAJARAN
+══════════════════════════════════ -->
+    <div id="modal-goals" class="modal-overlay">
+      <div class="modal-box modal-box-wide">
+        <div class="modal-icon">🎓</div>
+        <h2>Tujuan Pembelajaran</h2>
+        <p>Setelah menyelesaikan Lab Coding Blok, kamu diharapkan mampu:</p>
+        <ol class="goal-list">
+          <li>
+            <strong>Memahami konsep algoritma</strong> — menjelaskan bahwa
+            komputer bekerja mengikuti urutan instruksi yang tepat dan
+            berurutan.
+          </li>
+          <li>
+            <strong>Menerapkan tiga struktur logika</strong> — menggunakan
+            urutan (sequence), pengulangan (loop), dan percabangan (if-else)
+            untuk menyelesaikan masalah sederhana.
+          </li>
+          <li>
+            <strong>Mengembangkan kemampuan debug</strong> — menemukan kesalahan
+            dalam program blok dan memperbaikinya secara mandiri.
+          </li>
+          <li>
+            <strong>Menghubungkan coding dengan kehidupan</strong> —
+            mencontohkan penerapan logika pemrograman pada teknologi yang kamu
+            gunakan sehari-hari.
+          </li>
+        </ol>
+        <div class="goal-note">
+          Kurikulum Merdeka — Keterampilan Koding &amp; Kecerdasan Artifisial,
+          Paket B (Fase D).
+        </div>
+        <div class="modal-actions">
+          <button class="btn btn-primary" id="btn-close-goals">
+            Mengerti!
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════
+     MODAL: AUTHOR & HAK CIPTA
+══════════════════════════════════ -->
+    <div id="modal-author" class="modal-overlay">
+      <div class="modal-box">
+        <div class="modal-icon">👤</div>
+        <h2>Author &amp; Hak Cipta</h2>
+        <p>Konten ini dikembangkan untuk Ruang Murid, Rumah Pendidikan.</p>
+        <div class="author-card">
+          <div class="author-name">Fanny Bagus Ramadhan</div>
+          <a
+            class="author-link"
+            href="https://fanny.dev"
+            target="_blank"
+            rel="noopener"
+          >
+            🌐 fanny.dev
+          </a>
+        </div>
+        <div class="author-copy">
+          © 2026 Fanny Bagus Ramadhan. Seluruh hak cipta dilindungi.<br />
+          Dikembangkan dengan bantuan AI untuk Pendidikan Kesetaraan Paket B —
+          SPNF Tahun 2026.
+        </div>
+        <div class="modal-actions">
+          <button class="btn btn-primary" id="btn-close-author">Tutup</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Mobile pickup bar (fixed at bottom when a block is "held") -->
+    <div class="mobile-pickup-bar" id="mobile-pickup-bar">
+      <span id="mobile-pickup-label">🧩 Blok dipilih</span>
+      <button class="mobile-pickup-cancel" onclick="clearMobilePickup()">
+        ✕ Batal
+      </button>
+    </div>
+
+    <!-- Scripts -->
+    <script src="engine.js"></script>
+    <script src="levels.js"></script>
+    <script src="app.js"></script>
+  </body>
+</html>

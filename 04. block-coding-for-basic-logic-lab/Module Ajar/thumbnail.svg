@@ -1,0 +1,237 @@
+<svg width="1200" height="630" viewBox="0 0 1200 630" xmlns="http://www.w3.org/2000/svg" font-family="'Segoe UI',system-ui,sans-serif">
+<defs>
+  <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+    <stop offset="0%" stop-color="#0f2444"/>
+    <stop offset="55%" stop-color="#1e3a5f"/>
+    <stop offset="100%" stop-color="#1d4ed8"/>
+  </linearGradient>
+  <linearGradient id="cardGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+    <stop offset="0%" stop-color="rgba(255,255,255,0.12)"/>
+    <stop offset="100%" stop-color="rgba(255,255,255,0.04)"/>
+  </linearGradient>
+  <filter id="glow">
+    <feGaussianBlur stdDeviation="3" result="blur"/>
+    <feComposite in="SourceGraphic" in2="blur" operator="over"/>
+  </filter>
+  <filter id="blockShadow">
+    <feDropShadow dx="0" dy="4" stdDeviation="6" flood-color="rgba(0,0,0,0.35)"/>
+  </filter>
+  <filter id="softShadow">
+    <feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="rgba(0,0,0,0.2)"/>
+  </filter>
+</defs>
+
+<!-- ─── BACKGROUND ─── -->
+<rect width="1200" height="630" fill="url(#bg)"/>
+
+<!-- Decorative circles -->
+<circle cx="90"  cy="90"  r="180" fill="rgba(255,255,255,0.03)"/>
+<circle cx="0"   cy="400" r="250" fill="rgba(59,130,246,0.08)"/>
+<circle cx="1160" cy="560" r="200" fill="rgba(29,78,216,0.1)"/>
+<circle cx="900" cy="50"  r="130" fill="rgba(255,255,255,0.04)"/>
+
+<!-- Dot grid decoration (top-right area) -->
+<g fill="rgba(255,255,255,0.07)">
+  <circle cx="620" cy="40"  r="3"/> <circle cx="650" cy="40"  r="3"/> <circle cx="680" cy="40"  r="3"/>
+  <circle cx="620" cy="70"  r="3"/> <circle cx="650" cy="70"  r="3"/> <circle cx="680" cy="70"  r="3"/>
+  <circle cx="620" cy="100" r="3"/> <circle cx="650" cy="100" r="3"/> <circle cx="680" cy="100" r="3"/>
+</g>
+<g fill="rgba(255,255,255,0.05)">
+  <circle cx="1100" cy="200" r="3"/> <circle cx="1130" cy="200" r="3"/>
+  <circle cx="1100" cy="230" r="3"/> <circle cx="1130" cy="230" r="3"/>
+  <circle cx="1100" cy="260" r="3"/> <circle cx="1130" cy="260" r="3"/>
+</g>
+
+<!-- ─── LEFT PANEL: TITLE ─── -->
+
+<!-- Logo background circle -->
+<circle cx="100" cy="105" r="62" fill="rgba(59,130,246,0.25)" filter="url(#glow)"/>
+<circle cx="100" cy="105" r="52" fill="rgba(255,255,255,0.12)"/>
+<text x="100" y="128" text-anchor="middle" font-size="54">🔢</text>
+
+<!-- Title -->
+<text x="185" y="82" font-size="54" font-weight="800" fill="white" letter-spacing="-1">Lab Coding Blok</text>
+
+<!-- Subtitle pill -->
+<rect x="185" y="96" width="256" height="36" rx="18" fill="rgba(59,130,246,0.4)" stroke="rgba(100,160,255,0.4)" stroke-width="1.5"/>
+<text x="313" y="119" text-anchor="middle" font-size="18" font-weight="700" fill="rgba(255,255,255,0.9)">✦ Logika Dasar ✦</text>
+
+<!-- Tagline -->
+<text x="185" y="162" font-size="17" fill="rgba(255,255,255,0.65)">Belajar pemrograman visual tanpa instalasi</text>
+
+<!-- Concept badges -->
+<g transform="translate(185,185)">
+  <!-- Sequence -->
+  <rect width="118" height="32" rx="16" fill="rgba(234,88,12,0.7)" stroke="rgba(234,88,12,0.9)" stroke-width="1.5"/>
+  <text x="59" y="21" text-anchor="middle" font-size="13" font-weight="700" fill="white">▶ Urutan</text>
+
+  <!-- Loop -->
+  <rect x="128" width="100" height="32" rx="16" fill="rgba(180,83,9,0.7)" stroke="rgba(180,83,9,0.9)" stroke-width="1.5"/>
+  <text x="178" y="21" text-anchor="middle" font-size="13" font-weight="700" fill="white">↻ Loop</text>
+
+  <!-- Kondisi -->
+  <rect x="238" width="118" height="32" rx="16" fill="rgba(124,58,237,0.7)" stroke="rgba(124,58,237,0.9)" stroke-width="1.5"/>
+  <text x="297" y="21" text-anchor="middle" font-size="13" font-weight="700" fill="white">◆ Kondisi</text>
+</g>
+
+<!-- Description text -->
+<text x="185" y="248" font-size="15" fill="rgba(255,255,255,0.55)">5 level · 15 tantangan · Skor &amp; lencana · Jurnal refleksi</text>
+
+<!-- Divider line from left panel -->
+<line x1="185" y1="270" x2="555" y2="270" stroke="rgba(255,255,255,0.1)" stroke-width="1.5"/>
+
+<!-- Screenshot-style mini preview area -->
+<rect x="185" y="285" width="370" height="175" rx="10" fill="rgba(0,0,0,0.25)" stroke="rgba(255,255,255,0.1)" stroke-width="1"/>
+<rect x="185" y="285" width="370" height="22" rx="10" fill="rgba(255,255,255,0.08)"/>
+<circle cx="202" cy="296" r="4" fill="#EF4444" opacity="0.8"/>
+<circle cx="216" cy="296" r="4" fill="#FBBF24" opacity="0.8"/>
+<circle cx="230" cy="296" r="4" fill="#22C55E" opacity="0.8"/>
+<text x="360" y="299" text-anchor="middle" font-size="10" fill="rgba(255,255,255,0.4)">💻 Program Kamu</text>
+
+<!-- Mini blocks inside the preview -->
+<g transform="translate(205, 315)">
+  <rect width="160" height="28" rx="6" fill="rgba(234,88,12,0.8)"/>
+  <text x="10" y="19" font-size="12" font-weight="700" fill="white">→ Maju</text>
+</g>
+<g transform="translate(205, 350)">
+  <rect width="300" height="28" rx="6" fill="rgba(180,83,9,0.85)" stroke="rgba(180,83,9,1)" stroke-width="1"/>
+  <text x="10" y="19" font-size="12" font-weight="700" fill="white">↻ Ulangi 3 kali</text>
+</g>
+<g transform="translate(225, 382)">
+  <rect width="260" height="28" rx="6" fill="rgba(234,88,12,0.8)"/>
+  <text x="10" y="19" font-size="12" font-weight="700" fill="white">→ Maju</text>
+</g>
+<g transform="translate(205, 418)">
+  <rect width="170" height="28" rx="6" fill="rgba(5,150,105,0.85)"/>
+  <text x="10" y="19" font-size="12" font-weight="700" fill="white">■ Berhenti</text>
+</g>
+
+<!-- ─── RIGHT PANEL: BLOCK ILLUSTRATION ─── -->
+
+<!-- Right panel background -->
+<rect x="620" y="30" width="540" height="450" rx="16" fill="rgba(255,255,255,0.04)" stroke="rgba(255,255,255,0.08)" stroke-width="1"/>
+
+<!-- Vertical divider -->
+<line x1="620" y1="30" x2="620" y2="480" stroke="rgba(255,255,255,0.1)" stroke-width="1"/>
+
+<!-- BLOCK ILLUSTRATION: Stacked blocks -->
+
+<!-- Block: Ulangi Selamanya (container) -->
+<g filter="url(#blockShadow)" transform="translate(650,60)">
+  <rect width="480" height="58" rx="12" fill="#B45309"/>
+  <rect x="2" y="2" width="476" height="27" rx="10" fill="rgba(255,255,255,0.1)"/>
+  <text x="22" y="35" font-size="26">∞</text>
+  <text x="58" y="38" font-size="20" font-weight="800" fill="white">Ulangi Selamanya</text>
+</g>
+
+<!-- Indent line for loop body -->
+<line x1="666" y1="130" x2="666" y2="285" stroke="rgba(180,83,9,0.6)" stroke-width="3" stroke-linecap="round"/>
+
+<!-- Block inside loop: Nyalakan Merah -->
+<g filter="url(#blockShadow)" transform="translate(680,135)">
+  <rect width="420" height="48" rx="10" fill="#DC2626"/>
+  <circle cx="24" cy="24" r="14" fill="rgba(0,0,0,0.2)"/>
+  <circle cx="24" cy="24" r="9" fill="#EF4444" filter="url(#glow)"/>
+  <text x="50" y="31" font-size="18" font-weight="700" fill="white">Nyalakan Merah</text>
+  <rect x="280" y="12" width="60" height="24" rx="8" fill="rgba(0,0,0,0.25)"/>
+  <text x="310" y="29" text-anchor="middle" font-size="14" font-weight="700" fill="white">30</text>
+  <text x="350" y="29" font-size="12" fill="rgba(255,255,255,0.7)">dtk</text>
+</g>
+
+<!-- Block inside loop: Nyalakan Kuning -->
+<g filter="url(#blockShadow)" transform="translate(680,195)">
+  <rect width="420" height="48" rx="10" fill="#B45309"/>
+  <circle cx="24" cy="24" r="14" fill="rgba(0,0,0,0.2)"/>
+  <circle cx="24" cy="24" r="9" fill="#FBBF24" filter="url(#glow)"/>
+  <text x="50" y="31" font-size="18" font-weight="700" fill="white">Nyalakan Kuning</text>
+  <rect x="280" y="12" width="60" height="24" rx="8" fill="rgba(0,0,0,0.25)"/>
+  <text x="310" y="29" text-anchor="middle" font-size="14" font-weight="700" fill="white">5</text>
+  <text x="350" y="29" font-size="12" fill="rgba(255,255,255,0.7)">dtk</text>
+</g>
+
+<!-- Block inside loop: Nyalakan Hijau -->
+<g filter="url(#blockShadow)" transform="translate(680,255)">
+  <rect width="420" height="48" rx="10" fill="#166534"/>
+  <circle cx="24" cy="24" r="14" fill="rgba(0,0,0,0.2)"/>
+  <circle cx="24" cy="24" r="9" fill="#22C55E" filter="url(#glow)"/>
+  <text x="50" y="31" font-size="18" font-weight="700" fill="white">Nyalakan Hijau</text>
+  <rect x="280" y="12" width="60" height="24" rx="8" fill="rgba(0,0,0,0.25)"/>
+  <text x="310" y="29" text-anchor="middle" font-size="14" font-weight="700" fill="white">25</text>
+  <text x="350" y="29" font-size="12" fill="rgba(255,255,255,0.7)">dtk</text>
+</g>
+
+<!-- End loop footer -->
+<rect x="650" y="313" width="480" height="28" rx="8" fill="rgba(180,83,9,0.4)" stroke="rgba(180,83,9,0.5)" stroke-width="1"/>
+<text x="862" y="331" text-anchor="middle" font-size="12" fill="rgba(255,255,255,0.6)" font-style="italic">Akhir Ulangi Selamanya</text>
+
+<!-- Block: Berhenti -->
+<g filter="url(#blockShadow)" transform="translate(650,354)">
+  <rect width="480" height="48" rx="12" fill="#065F46" stroke="#059669" stroke-width="2"/>
+  <text x="24" y="30" font-size="20">■</text>
+  <text x="56" y="32" font-size="18" font-weight="800" fill="white">Berhenti</text>
+  <circle cx="448" cy="24" r="10" fill="rgba(34,197,94,0.3)"/>
+  <text x="448" y="29" text-anchor="middle" font-size="14">✅</text>
+</g>
+
+<!-- Simulation preview mini: traffic light to the right -->
+<g transform="translate(660, 415)">
+  <rect width="200" height="55" rx="10" fill="rgba(0,0,0,0.3)" stroke="rgba(255,255,255,0.1)" stroke-width="1"/>
+  <text x="14" y="20" font-size="11" fill="rgba(255,255,255,0.5)">🎮 Simulasi</text>
+  <!-- Mini traffic light -->
+  <rect x="80" y="8" width="40" height="40" rx="8" fill="#1F2937"/>
+  <circle cx="100" cy="18" r="7" fill="#EF4444" opacity="0.4"/>
+  <circle cx="100" cy="28" r="7" fill="#FBBF24" opacity="0.4"/>
+  <circle cx="100" cy="38" r="7" fill="#22C55E" filter="url(#glow)"/>
+  <!-- Cars -->
+  <text x="130" y="36" font-size="14">🚗</text>
+  <text x="148" y="36" font-size="14">🚗</text>
+</g>
+
+<!-- ─── BOTTOM STRIP: LEVEL CARDS ─── -->
+<rect x="0" y="490" width="1200" height="140" fill="rgba(0,0,0,0.3)"/>
+<line x1="0" y1="490" x2="1200" y2="490" stroke="rgba(255,255,255,0.1)" stroke-width="1"/>
+
+<!-- Level cards: evenly spaced -->
+<!-- LV1 -->
+<g transform="translate(50,505)">
+  <rect width="190" height="108" rx="12" fill="url(#cardGrad)" stroke="rgba(255,255,255,0.15)" stroke-width="1.5"/>
+  <text x="95" y="52" text-anchor="middle" font-size="36">🗺️</text>
+  <text x="95" y="78" text-anchor="middle" font-size="14" font-weight="800" fill="white">Level 1</text>
+  <text x="95" y="97" text-anchor="middle" font-size="11" fill="rgba(255,255,255,0.6)">Peta Petualangan</text>
+</g>
+
+<!-- LV2 -->
+<g transform="translate(268,505)">
+  <rect width="190" height="108" rx="12" fill="url(#cardGrad)" stroke="rgba(255,255,255,0.15)" stroke-width="1.5"/>
+  <text x="95" y="52" text-anchor="middle" font-size="36">🌳</text>
+  <text x="95" y="78" text-anchor="middle" font-size="14" font-weight="800" fill="white">Level 2</text>
+  <text x="95" y="97" text-anchor="middle" font-size="11" fill="rgba(255,255,255,0.6)">Kebun Panen</text>
+</g>
+
+<!-- LV3 -->
+<g transform="translate(486,505)">
+  <rect width="190" height="108" rx="12" fill="url(#cardGrad)" stroke="rgba(255,255,255,0.15)" stroke-width="1.5"/>
+  <text x="95" y="52" text-anchor="middle" font-size="36">🏪</text>
+  <text x="95" y="78" text-anchor="middle" font-size="14" font-weight="800" fill="white">Level 3</text>
+  <text x="95" y="97" text-anchor="middle" font-size="11" fill="rgba(255,255,255,0.6)">Kasir Warung</text>
+</g>
+
+<!-- LV4 -->
+<g transform="translate(704,505)">
+  <rect width="190" height="108" rx="12" fill="url(#cardGrad)" stroke="rgba(255,255,255,0.15)" stroke-width="1.5"/>
+  <text x="95" y="52" text-anchor="middle" font-size="36">🚦</text>
+  <text x="95" y="78" text-anchor="middle" font-size="14" font-weight="800" fill="white">Level 4</text>
+  <text x="95" y="97" text-anchor="middle" font-size="11" fill="rgba(255,255,255,0.6)">Lampu Lalu Lintas</text>
+</g>
+
+<!-- LV5 -->
+<g transform="translate(922,505)">
+  <rect width="190" height="108" rx="12" fill="url(#cardGrad)" stroke="rgba(255,255,255,0.15)" stroke-width="1.5"/>
+  <text x="95" y="52" text-anchor="middle" font-size="36">🤖</text>
+  <text x="95" y="78" text-anchor="middle" font-size="14" font-weight="800" fill="white">Level 5</text>
+  <text x="95" y="97" text-anchor="middle" font-size="11" fill="rgba(255,255,255,0.6)">Asisten Chatbot</text>
+</g>
+
+<!-- Branding -->
+<text x="1185" y="482" text-anchor="end" font-size="13" fill="rgba(255,255,255,0.4)">Ruang Murid · SPNF 2026</text>
+</svg>

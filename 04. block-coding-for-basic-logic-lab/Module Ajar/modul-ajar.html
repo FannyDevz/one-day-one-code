@@ -1,0 +1,635 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8"/>
+<title>Modul Ajar — Lab Coding Blok: Logika Dasar</title>
+<style>
+/* ── Print setup ──────────────────── */
+@page { size: A4; margin: 2cm 2.2cm; }
+@page :first { margin: 0; }
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; font-size: 10pt; line-height: 1.55; color: #1e293b; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+
+/* ── Variables ────────────────────── */
+:root {
+  --blue:  #1e40af;
+  --blue2: #3b82f6;
+  --bluel: #dbeafe;
+  --bluesl:#eff6ff;
+  --org:   #ea580c;
+  --orgl:  #fff7ed;
+  --pur:   #7c3aed;
+  --purl:  #f5f3ff;
+  --grn:   #16a34a;
+  --grnl:  #dcfce7;
+  --slate: #64748b;
+  --border:#cbd5e1;
+}
+
+/* ── Cover ────────────────────────── */
+.cover {
+  min-height: 297mm; width: 210mm; margin: 0 auto;
+  background: linear-gradient(145deg,#0f172a 0%,#1e3a5f 50%,#1d4ed8 100%);
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  text-align: center; color: white; padding: 3cm 2.5cm; position: relative; overflow: hidden;
+}
+.cover::before {
+  content:''; position:absolute; width:400px; height:400px; border-radius:50%;
+  background:rgba(255,255,255,0.04); top:-120px; left:-120px;
+}
+.cover::after {
+  content:''; position:absolute; width:300px; height:300px; border-radius:50%;
+  background:rgba(59,130,246,0.12); bottom:-80px; right:-80px;
+}
+.cover-badge { background:rgba(255,255,255,0.15); border:1.5px solid rgba(255,255,255,0.3); border-radius:20px; padding:5px 16px; font-size:9pt; font-weight:600; letter-spacing:0.5px; margin-bottom:24px; }
+.cover-icon { font-size:64pt; margin-bottom:16px; filter:drop-shadow(0 4px 12px rgba(0,0,0,0.4)); }
+.cover-title { font-size:26pt; font-weight:800; letter-spacing:-0.5px; margin-bottom:6px; line-height:1.2; }
+.cover-sub { font-size:16pt; font-weight:500; color:rgba(255,255,255,0.75); margin-bottom:32px; }
+.cover-divider { width:60px; height:3px; background:rgba(255,255,255,0.4); border-radius:2px; margin:0 auto 28px; }
+.cover-meta { font-size:9.5pt; color:rgba(255,255,255,0.65); line-height:2; }
+.cover-meta strong { color:white; }
+.cover-footer { position:absolute; bottom:1.5cm; left:0; right:0; text-align:center; font-size:8.5pt; color:rgba(255,255,255,0.4); letter-spacing:0.3px; }
+
+/* ── Page break ───────────────────── */
+.page-break { page-break-before: always; padding-top: 0; }
+
+/* ── Section headers ──────────────── */
+.sec { margin-bottom: 14px; }
+.sec-head {
+  background: var(--blue); color: white; padding: 7px 14px;
+  border-radius: 6px 6px 0 0; font-size: 10.5pt; font-weight: 700; letter-spacing: 0.2px;
+  display: flex; align-items: center; gap: 8px;
+}
+.sec-body { border: 1.5px solid var(--border); border-top: none; border-radius: 0 0 6px 6px; padding: 12px 14px; }
+
+.sub-head { font-size:10pt; font-weight:700; color:var(--blue); border-left:3px solid var(--blue2); padding-left:8px; margin:12px 0 6px; }
+
+/* ── Info table ───────────────────── */
+.info-table { width:100%; border-collapse:collapse; font-size:9.5pt; }
+.info-table th, .info-table td { padding:5px 10px; border:1px solid var(--border); vertical-align:top; }
+.info-table th { background:var(--bluel); color:var(--blue); font-weight:700; width:36%; }
+.info-table tr:nth-child(even) td { background:#f8fafc; }
+
+/* ── Grid 2-col ───────────────────── */
+.grid2 { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+.grid3 { display:grid; grid-template-columns:1fr 1fr 1fr; gap:10px; }
+
+/* ── Pill cards ───────────────────── */
+.pill-card { background:var(--bluesl); border:1.5px solid var(--bluel); border-radius:8px; padding:10px 12px; }
+.pill-card .pill-icon { font-size:18pt; margin-bottom:4px; }
+.pill-card .pill-title { font-size:9pt; font-weight:700; color:var(--blue); margin-bottom:3px; }
+.pill-card .pill-desc { font-size:8.5pt; color:var(--slate); line-height:1.4; }
+
+.pill-card.org { background:var(--orgl); border-color:#fed7aa; }
+.pill-card.org .pill-title { color:var(--org); }
+.pill-card.pur { background:var(--purl); border-color:#ddd6fe; }
+.pill-card.pur .pill-title { color:var(--pur); }
+.pill-card.grn { background:var(--grnl); border-color:#bbf7d0; }
+.pill-card.grn .pill-title { color:var(--grn); }
+
+/* ── Activity timeline ────────────── */
+.activity-block { margin-bottom:10px; border-radius:8px; overflow:hidden; border:1.5px solid var(--border); }
+.act-header { padding:6px 12px; font-weight:700; font-size:9.5pt; display:flex; align-items:center; gap:8px; }
+.act-header .time-badge { background:rgba(0,0,0,0.15); border-radius:12px; padding:2px 8px; font-size:8.5pt; font-weight:600; margin-left:auto; }
+.act-body { padding:10px 12px; font-size:9.5pt; }
+.act-body ul { padding-left:18px; }
+.act-body li { margin-bottom:3px; }
+.act-body p { margin-bottom:5px; }
+
+.act-pendahuluan .act-header { background:#1e40af; color:white; }
+.act-pendahuluan { border-color:#93c5fd; }
+.act-inti .act-header { background:#ea580c; color:white; }
+.act-inti { border-color:#fdba74; }
+.act-penutup .act-header { background:#16a34a; color:white; }
+.act-penutup { border-color:#86efac; }
+
+/* ── Asesmen table ────────────────── */
+.as-table { width:100%; border-collapse:collapse; font-size:9pt; }
+.as-table th { background:var(--blue); color:white; padding:7px 10px; text-align:left; }
+.as-table td { padding:6px 10px; border:1px solid var(--border); vertical-align:top; }
+.as-table tr:nth-child(even) td { background:#f8fafc; }
+
+/* ── Callout boxes ────────────────── */
+.callout { border-radius:8px; padding:10px 14px; margin:8px 0; font-size:9.5pt; display:flex; gap:10px; align-items:flex-start; }
+.callout.info { background:var(--bluesl); border-left:4px solid var(--blue2); }
+.callout.warn { background:var(--orgl); border-left:4px solid var(--org); }
+.callout.tip { background:var(--grnl); border-left:4px solid var(--grn); }
+.callout-icon { font-size:14pt; flex-shrink:0; margin-top:1px; }
+
+/* ── LKPD ─────────────────────────── */
+.lkpd-box { border:2px dashed var(--border); border-radius:8px; padding:10px 14px; margin:8px 0; min-height:40px; background:#fafafa; font-size:9pt; }
+.lkpd-box.tall { min-height:70px; }
+.lkpd-box.xtall { min-height:100px; }
+.lkpd-label { font-size:8.5pt; font-weight:700; color:var(--slate); margin-bottom:4px; }
+.lkpd-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:8px; }
+.lkpd-block-vis { border:2px solid; border-radius:8px; padding:6px 10px; font-size:9pt; font-weight:700; text-align:center; min-height:32px; display:flex; align-items:center; justify-content:center; }
+
+/* ── Block color legend ───────────── */
+.block-maju { background:#FFF7ED; border-color:#EA580C; color:#EA580C; }
+.block-ulangi { background:#FEF3C7; border-color:#B45309; color:#B45309; }
+.block-jika { background:#F5F3FF; border-color:#7C3AED; color:#7C3AED; }
+.block-berhenti { background:#ECFDF5; border-color:#059669; color:#059669; }
+.block-variabel { background:#EFF6FF; border-color:#3B82F6; color:#3B82F6; }
+
+/* ── Page number ──────────────────── */
+@media print {
+  .cover { page-break-after: always; }
+  .no-break { page-break-inside: avoid; }
+}
+
+h1,h2,h3 { font-weight:700; }
+.mt8 { margin-top:8px; }
+.mt12 { margin-top:12px; }
+small { font-size:8.5pt; color:var(--slate); }
+.text-center { text-align:center; }
+.text-muted { color:var(--slate); font-size:8.5pt; }
+</style>
+</head>
+<body>
+
+<!-- ══════════ COVER ══════════ -->
+<div class="cover">
+  <div class="cover-badge">MODUL AJAR · SPNF PENDIDIKAN KESETARAAN 2026</div>
+  <div class="cover-icon">💻</div>
+  <div class="cover-title">Lab Coding Blok</div>
+  <div class="cover-sub">Logika Dasar Pemrograman</div>
+  <div class="cover-divider"></div>
+  <div class="cover-meta">
+    <strong>Mata Pelajaran:</strong> Keterampilan Koding &amp; Kecerdasan Artifisial<br>
+    <strong>Jenjang:</strong> Paket B (Setara SMP) · Fase D<br>
+    <strong>Alokasi Waktu:</strong> 3 Pertemuan × 2 JP (270 menit)<br>
+    <strong>Media:</strong> Lab Maya berbasis browser (tanpa instalasi)<br>
+    <strong>Dikembangkan:</strong> Tim Pengembang Konten SPNF 2026
+  </div>
+  <div class="cover-footer">Ruang Murid · Rumah Pendidikan · © 2026 · Dikembangkan dengan bantuan AI generatif</div>
+</div>
+
+<!-- ══════════ HAL 2: IDENTITAS & OVERVIEW ══════════ -->
+<div class="page-break">
+
+<div class="sec no-break">
+  <div class="sec-head">📋 A. Identitas Modul</div>
+  <div class="sec-body">
+    <table class="info-table">
+      <tr><th>Nama Modul</th><td>Lab Coding Blok: Logika Dasar</td></tr>
+      <tr><th>Penyusun</th><td>Tim Pengembang Konten SPNF 2026</td></tr>
+      <tr><th>Satuan Pendidikan</th><td>PKBM / SPNF / SKB</td></tr>
+      <tr><th>Jenjang &amp; Fase</th><td>Paket B · Fase D (setara Kelas VII–IX SMP)</td></tr>
+      <tr><th>Mata Pelajaran</th><td>Keterampilan Koding dan Kecerdasan Artifisial</td></tr>
+      <tr><th>Topik</th><td>Algoritma, Sequence, Loop, dan Percabangan (If-Else)</td></tr>
+      <tr><th>Alokasi Waktu</th><td>3 Pertemuan × 2 JP (total 270 menit)</td></tr>
+      <tr><th>Mode Pembelajaran</th><td>Tatap Muka / Daring / Mandiri (fleksibel)</td></tr>
+      <tr><th>Sarana</th><td>Smartphone/tablet/komputer + browser Chrome/Firefox/Safari</td></tr>
+      <tr><th>Akses Media</th><td>File <code>index.html</code> di perangkat lokal atau tautan Ruang Murid</td></tr>
+      <tr><th>Referensi Kurikulum</th><td>Kurikulum Merdeka Paket B, Fase D — Keterampilan Koding & KA</td></tr>
+    </table>
+  </div>
+</div>
+
+<div class="sec no-break">
+  <div class="sec-head">🎯 B. Kompetensi Awal yang Diharapkan</div>
+  <div class="sec-body">
+    <div class="callout info">
+      <div class="callout-icon">ℹ️</div>
+      <div>Warga belajar <strong>tidak perlu</strong> pengalaman coding sebelumnya. Cukup dapat mengoperasikan smartphone atau komputer dasar (mengetuk/mengklik, menggeser layar, dan membaca teks sederhana).</div>
+    </div>
+    <p style="margin-top:8px;font-size:9.5pt;">Apabila warga belajar sudah pernah menggunakan aplikasi berbasis sentuhan, maka modul ini sangat sesuai untuk mereka.</p>
+  </div>
+</div>
+
+<div class="sec no-break">
+  <div class="sec-head">🌟 C. Profil Pelajar Pancasila yang Dibidik</div>
+  <div class="sec-body">
+    <div class="grid3">
+      <div class="pill-card">
+        <div class="pill-icon">🧠</div>
+        <div class="pill-title">Bernalar Kritis</div>
+        <div class="pill-desc">Menganalisis masalah, menyusun instruksi berurutan, dan men-debug program yang salah secara mandiri.</div>
+      </div>
+      <div class="pill-card org">
+        <div class="pill-icon">🎨</div>
+        <div class="pill-title">Kreatif</div>
+        <div class="pill-desc">Merancang solusi program berbeda untuk masalah yang sama di Level 5 (proyek bebas chatbot).</div>
+      </div>
+      <div class="pill-card pur">
+        <div class="pill-icon">💪</div>
+        <div class="pill-title">Mandiri</div>
+        <div class="pill-desc">Mencoba lagi setelah gagal, mengelola waktu bermain, dan mengisi jurnal refleksi secara jujur.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="sec no-break">
+  <div class="sec-head">🎓 D. Tujuan Pembelajaran</div>
+  <div class="sec-body">
+    <p style="font-size:9.5pt;margin-bottom:8px;">Setelah menyelesaikan modul ini, warga belajar mampu:</p>
+    <table class="as-table">
+      <thead><tr><th style="width:8%">No.</th><th style="width:40%">Tujuan Pembelajaran</th><th>Indikator Ketercapaian</th></tr></thead>
+      <tbody>
+        <tr><td style="text-align:center">1</td><td>Memahami konsep algoritma sebagai urutan instruksi</td><td>Dapat menjelaskan mengapa urutan instruksi penting menggunakan analogi kehidupan sehari-hari</td></tr>
+        <tr><td style="text-align:center">2</td><td>Menggunakan struktur <em>sequence</em> untuk memandu karakter</td><td>Berhasil menyelesaikan minimal 2/3 tantangan Level 1 tanpa hint</td></tr>
+        <tr><td style="text-align:center">3</td><td>Menerapkan <em>loop</em> untuk mengulang instruksi secara efisien</td><td>Menggunakan blok "Ulangi N kali" di Level 2 (bukan menyalin blok manual)</td></tr>
+        <tr><td style="text-align:center">4</td><td>Menggunakan percabangan <em>if-else</em> untuk kondisi berbeda</td><td>Berhasil menyelesaikan minimal 1 tantangan Level 3 atau 4</td></tr>
+        <tr><td style="text-align:center">5</td><td>Menghubungkan logika pemrograman dengan teknologi sehari-hari</td><td>Menyebutkan 2 contoh teknologi yang menggunakan logika yang dipelajari di jurnal refleksi</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+</div><!-- end page 2 -->
+
+<!-- ══════════ HAL 3: PERTEMUAN 1 ══════════ -->
+<div class="page-break">
+
+<div class="sec-head" style="background:var(--blue);color:white;padding:8px 14px;border-radius:6px;margin-bottom:12px;font-size:11pt;">
+  📅 Pertemuan 1 — Sequence &amp; Loop (90 menit) · Level 1 &amp; 2
+</div>
+
+<div class="callout tip" style="margin-bottom:12px;">
+  <div class="callout-icon">💡</div>
+  <div><strong>Pertanyaan Pemantik:</strong> "Pernahkah kamu memberi petunjuk arah kepada seseorang yang tersesat? Bagaimana kamu memastikan petunjukmu benar dan berurutan?"</div>
+</div>
+
+<div class="activity-block act-pendahuluan no-break">
+  <div class="act-header">🟦 Pendahuluan <span class="time-badge">10 menit</span></div>
+  <div class="act-body">
+    <ul>
+      <li><strong>Apersepsi:</strong> Pendidik bertanya kepada 2–3 warga belajar: "Apa yang terjadi jika resep masakan ditulis tidak berurutan?" — hubungkan ke konsep algoritma.</li>
+      <li><strong>Motivasi:</strong> Tampilkan fakta singkat — "Programmer di Indonesia dibayar rata-rata Rp 8–15 juta/bulan, dan skill ini bisa dipelajari siapa saja."</li>
+      <li><strong>Tujuan:</strong> Sampaikan bahwa hari ini kita akan belajar dua hal: menyusun instruksi berurutan (<em>sequence</em>) dan mengulang instruksi (<em>loop</em>).</li>
+      <li><strong>Teknis:</strong> Pastikan semua perangkat dapat membuka file game. Jika menggunakan HP, buka tab "Blok" dahulu.</li>
+    </ul>
+  </div>
+</div>
+
+<div class="activity-block act-inti no-break">
+  <div class="act-header">🟠 Inti — Level 1: Peta Petualangan 🗺️ <span class="time-badge">25 menit</span></div>
+  <div class="act-body">
+    <p><strong>Tujuan spesifik:</strong> Warga belajar memahami bahwa komputer mengikuti instruksi satu per satu, berurutan.</p>
+    <ul>
+      <li>Pendidik membuka game di layar proyektor (atau HP sendiri) dan mendemonstrasikan cara menyeret blok selama 3 menit.</li>
+      <li>Warga belajar mengerjakan Tantangan 1A (peta lurus) secara mandiri. Pendidik berkeliling.</li>
+      <li>Setelah 1A berhasil, lanjut 1B (belokan) dan 1C (rintangan). Warga belajar boleh saling membantu.</li>
+      <li>Diskusi singkat: "Apa yang terjadi jika blok Belok Kanan kamu taruh di posisi berbeda?" — dorong eksperimen.</li>
+    </ul>
+    <div class="callout warn" style="margin-top:8px;">
+      <div class="callout-icon">⚠️</div>
+      <div><strong>Di HP:</strong> Ketuk blok di panel "Blok" → blok "dipegang" (muncul bar biru di bawah) → pindah ke tab "Program" → ketuk celah hijau untuk meletakkan.</div>
+    </div>
+  </div>
+</div>
+
+<div class="activity-block act-inti no-break">
+  <div class="act-header">🟠 Inti — Level 2: Kebun Panen 🌳 <span class="time-badge">25 menit</span></div>
+  <div class="act-body">
+    <p><strong>Tujuan spesifik:</strong> Warga belajar merasakan efisiensi loop dibanding menyalin blok berkali-kali.</p>
+    <ul>
+      <li><strong>Tantangan konseptual:</strong> Sebelum main, minta warga belajar menulis di kertas cara memanen 8 tomat tanpa loop (8 baris instruksi). Kemudian tunjukkan versi loop — bandingkan efisiensinya.</li>
+      <li>Warga belajar mengerjakan Tantangan 2A–2C menggunakan blok <em>Ulangi N kali</em>.</li>
+      <li><strong>Diskusi:</strong> "Di kehidupan sehari-hari, contoh apa yang mirip dengan loop?" — mesin cuci, ATM, mesin kasir otomatis.</li>
+    </ul>
+  </div>
+</div>
+
+<div class="activity-block act-penutup no-break">
+  <div class="act-header">🟢 Penutup &amp; Refleksi <span class="time-badge">10 menit</span></div>
+  <div class="act-body">
+    <ul>
+      <li>Warga belajar mengisi Jurnal Refleksi di dalam game (2 pertanyaan).</li>
+      <li>Pendidik meminta 2–3 warga belajar berbagi: "Apa satu hal yang paling mengejutkan hari ini?"</li>
+      <li>Preview pertemuan berikutnya: "Minggu depan kita akan mengajari robot untuk <em>membuat keputusan</em>!"</li>
+      <li>Cek skor di game — siapa yang sudah mendapat bintang terbanyak?</li>
+    </ul>
+  </div>
+</div>
+
+</div><!-- end page 3 -->
+
+<!-- ══════════ HAL 4: PERTEMUAN 2 ══════════ -->
+<div class="page-break">
+
+<div class="sec-head" style="background:var(--blue);color:white;padding:8px 14px;border-radius:6px;margin-bottom:12px;font-size:11pt;">
+  📅 Pertemuan 2 — Percabangan &amp; Kombinasi (90 menit) · Level 3 &amp; 4
+</div>
+
+<div class="callout tip" style="margin-bottom:12px;">
+  <div class="callout-icon">💡</div>
+  <div><strong>Pertanyaan Pemantik:</strong> "Bagaimana cara kerja mesin kasir di minimarket? Bagaimana ia tahu harus memberi kembalian berapa?"</div>
+</div>
+
+<div class="activity-block act-pendahuluan no-break">
+  <div class="act-header">🟦 Pendahuluan <span class="time-badge">10 menit</span></div>
+  <div class="act-body">
+    <ul>
+      <li><strong>Review:</strong> Minta 2 warga belajar menjelaskan kembali sequence dan loop dengan kata-kata mereka sendiri.</li>
+      <li><strong>Apersepsi:</strong> "Pernah lihat lampu lalu lintas? Bagaimana ia 'tahu' kapan harus ganti warna?" — perkenalkan konsep percabangan (kondisi).</li>
+      <li><strong>Motivasi:</strong> "Semua aplikasi HP — WhatsApp, Gojek, marketplace — menggunakan percabangan ini puluhan ribu kali per detik."</li>
+    </ul>
+  </div>
+</div>
+
+<div class="activity-block act-inti no-break">
+  <div class="act-header">🟠 Inti — Level 3: Kasir Warung 🏪 <span class="time-badge">25 menit</span></div>
+  <div class="act-body">
+    <p><strong>Tujuan spesifik:</strong> Warga belajar menggunakan blok <em>Jika-Maka</em> dan <em>Jika Tidak</em> untuk membuat keputusan.</p>
+    <ul>
+      <li>Demo pendidik: tampilkan blok percabangan dan hubungkan dengan analogi — "Jika hujan, bawa payung. Jika tidak, bawa topi."</li>
+      <li>Warga belajar mengerjakan 3A (1 kondisi) secara mandiri, kemudian 3B (2 kondisi).</li>
+      <li>Tantangan bonus: Tantangan 3C dengan 3 kondisi bertingkat bagi yang sudah selesai lebih cepat.</li>
+      <li><strong>Diskusi:</strong> "Bagaimana warung Bu Tuti bisa otomatis menghitung kembalian?" — hubungkan ke realita UMKM lokal.</li>
+    </ul>
+  </div>
+</div>
+
+<div class="activity-block act-inti no-break">
+  <div class="act-header">🟠 Inti — Level 4: Lampu Lalu Lintas 🚦 <span class="time-badge">25 menit</span></div>
+  <div class="act-body">
+    <p><strong>Tujuan spesifik:</strong> Warga belajar menggabungkan loop dan percabangan — "loop selamanya dengan kondisi di dalamnya."</p>
+    <ul>
+      <li>Demonstrasikan struktur: Loop Selamanya → di dalamnya ada kondisi → di dalam kondisi ada instruksi.</li>
+      <li>Warga belajar mengerjakan 4A (timer tetap) lalu 4B (timer berbeda untuk jalan utama vs kecil).</li>
+      <li>Tantangan 4C: kondisi darurat ambulans — sistem otomatis ganti hijau saat ambulans terdeteksi.</li>
+      <li><strong>Diskusi:</strong> "Siapa yang pernah lihat lampu yang tidak berfungsi? Apa kira-kira bug-nya?"</li>
+    </ul>
+    <div class="callout info" style="margin-top:8px;">
+      <div class="callout-icon">ℹ️</div>
+      <div><strong>Catatan untuk pendidik:</strong> Level 4 adalah yang paling kompleks. Wajar jika tidak semua warga belajar menyelesaikan semua tantangan di sesi ini. Yang terpenting adalah memahami konsep nested loop.</div>
+    </div>
+  </div>
+</div>
+
+<div class="activity-block act-penutup no-break">
+  <div class="act-header">🟢 Penutup &amp; Refleksi <span class="time-badge">10 menit</span></div>
+  <div class="act-body">
+    <ul>
+      <li>Warga belajar mengisi jurnal refleksi Pertemuan 2.</li>
+      <li>Pendidik memimpin diskusi: "Apa satu pekerjaan atau teknologi di sekitar kamu yang menggunakan percabangan?"</li>
+      <li>Preview: "Pertemuan terakhir — kamu akan membuat chatbot sendiri yang bisa membalas pesan otomatis!"</li>
+    </ul>
+  </div>
+</div>
+
+</div><!-- end page 4 -->
+
+<!-- ══════════ HAL 5: PERTEMUAN 3 ══════════ -->
+<div class="page-break">
+
+<div class="sec-head" style="background:var(--blue);color:white;padding:8px 14px;border-radius:6px;margin-bottom:12px;font-size:11pt;">
+  📅 Pertemuan 3 — Proyek Bebas &amp; Refleksi Akhir (90 menit) · Level 5
+</div>
+
+<div class="callout tip" style="margin-bottom:12px;">
+  <div class="callout-icon">💡</div>
+  <div><strong>Pertanyaan Pemantik:</strong> "Jika kamu punya toko online kecil-kecilan, pesan apa yang ingin kamu balas otomatis saat pelanggan menghubungi?"</div>
+</div>
+
+<div class="activity-block act-pendahuluan no-break">
+  <div class="act-header">🟦 Pendahuluan <span class="time-badge">10 menit</span></div>
+  <div class="act-body">
+    <ul>
+      <li><strong>Review:</strong> Minta warga belajar menyebutkan 3 jenis blok yang sudah dipelajari dan satu contoh penggunaannya.</li>
+      <li><strong>Motivasi:</strong> "Hari ini kamu bebas merancang chatbot sendiri — tidak ada jawaban benar/salah, hanya kreativitas!"</li>
+      <li><strong>Konteks Level 5:</strong> Kamu berperan sebagai programer chatbot untuk Bu Dewi yang punya toko online.</li>
+    </ul>
+  </div>
+</div>
+
+<div class="activity-block act-inti no-break">
+  <div class="act-header">🟠 Inti — Level 5: Asisten Chatbot 🤖 <span class="time-badge">55 menit</span></div>
+  <div class="act-body">
+    <p><strong>Fase 1 — Perencanaan (10 menit):</strong></p>
+    <ul>
+      <li>Warga belajar mengisi LKPD bagian "Rancangan Chatbot" (halaman terakhir modul ini) — tanpa coding dulu.</li>
+      <li>Rencanakan: apa pertanyaan yang akan chatbot terima? Apa jawaban yang tepat?</li>
+    </ul>
+    <p style="margin-top:8px;"><strong>Fase 2 — Implementasi &amp; Uji Coba (35 menit):</strong></p>
+    <ul>
+      <li>Warga belajar mengerjakan Tantangan 5A–5C secara mandiri menggunakan rencana yang sudah dibuat.</li>
+      <li>Pendidik berkeliling dan memberi scaffolding: "Kondisi apa yang belum kamu tambahkan?"</li>
+      <li>Warga belajar yang selesai lebih awal dapat menambahkan fitur tambahan.</li>
+    </ul>
+    <p style="margin-top:8px;"><strong>Fase 3 — Showcase (10 menit):</strong></p>
+    <ul>
+      <li>3–4 warga belajar mempresentasikan chatbot mereka: "Chatbot saya bisa membalas ___"</li>
+      <li>Kelompok memberikan 1 pujian dan 1 saran untuk setiap presentasi.</li>
+    </ul>
+  </div>
+</div>
+
+<div class="activity-block act-penutup no-break">
+  <div class="act-header">🟢 Penutup, Refleksi Akhir &amp; Sertifikat <span class="time-badge">15 menit</span></div>
+  <div class="act-body">
+    <ul>
+      <li>Warga belajar mengisi Jurnal Refleksi Akhir di game dan LKPD.</li>
+      <li>Pendidik merekapitulasi 3 konsep besar yang sudah dipelajari: Sequence → Loop → Percabangan.</li>
+      <li>Warga belajar yang menyelesaikan 5 level mendapat badge digital 🏆 di game.</li>
+      <li><strong>Pesan penutup:</strong> "Logika yang kalian pelajari hari ini sama persis dengan yang digunakan programmer profesional. Selamat — kalian sudah berpikir seperti programmer!"</li>
+      <li>Isi Daftar Hadir &amp; pastikan progress game tersimpan.</li>
+    </ul>
+  </div>
+</div>
+
+</div><!-- end page 5 -->
+
+<!-- ══════════ HAL 6: ASESMEN ══════════ -->
+<div class="page-break">
+
+<div class="sec no-break">
+  <div class="sec-head">📊 E. Asesmen Pembelajaran</div>
+  <div class="sec-body">
+
+    <div class="sub-head">1. Asesmen Diagnostik (sebelum belajar)</div>
+    <p style="font-size:9.5pt;margin-bottom:8px;">Tanyakan secara lisan di awal Pertemuan 1:</p>
+    <ul style="font-size:9.5pt;padding-left:18px;margin-bottom:10px;">
+      <li>Pernahkah kamu menggunakan HP untuk belanja online atau memesan ojek? Bagaimana cara aplikasi itu "tahu" apa yang kamu mau?</li>
+      <li>Apa yang kamu bayangkan ketika mendengar kata "coding" atau "pemrograman"?</li>
+    </ul>
+
+    <div class="sub-head">2. Asesmen Formatif (selama belajar)</div>
+    <table class="as-table" style="margin-bottom:10px;">
+      <thead><tr><th>Bentuk</th><th>Kapan</th><th>Yang Dinilai</th></tr></thead>
+      <tbody>
+        <tr><td>Observasi saat bermain game</td><td>Setiap pertemuan</td><td>Keterlibatan, kemandirian, respons saat gagal</td></tr>
+        <tr><td>Skor otomatis game</td><td>Real-time</td><td>Ketepatan program (70 poin per tantangan pertama)</td></tr>
+        <tr><td>Jurnal refleksi in-game</td><td>Akhir setiap level</td><td>Pemahaman konsep dan koneksi ke kehidupan nyata</td></tr>
+        <tr><td>Diskusi kelompok</td><td>Bagian penutup</td><td>Kemampuan menjelaskan konsep dengan bahasa sendiri</td></tr>
+      </tbody>
+    </table>
+
+    <div class="sub-head">3. Asesmen Sumatif</div>
+    <table class="as-table">
+      <thead><tr><th style="width:20%">Dimensi</th><th style="width:10%">Bobot</th><th style="width:35%">Mahir (85–100)</th><th>Berkembang (60–84)</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Ketepatan Logika</strong></td><td style="text-align:center">40%</td><td>Program berjalan sempurna, semua kondisi terpenuhi</td><td>Program berjalan sebagian besar benar</td></tr>
+        <tr><td><strong>Efisiensi Kode</strong></td><td style="text-align:center">25%</td><td>Menggunakan loop &amp; fungsi, tidak ada blok redundan</td><td>Ada beberapa blok yang bisa disederhanakan</td></tr>
+        <tr><td><strong>Proses Debug</strong></td><td style="text-align:center">20%</td><td>Temukan &amp; perbaiki kesalahan mandiri dalam ≤3 percobaan</td><td>Berhasil debug setelah menggunakan petunjuk</td></tr>
+        <tr><td><strong>Refleksi</strong></td><td style="text-align:center">15%</td><td>Jurnal spesifik: konsep + contoh nyata yang relevan</td><td>Jurnal ada dan menyebutkan konsep yang dipelajari</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<div class="sec no-break" style="margin-top:12px;">
+  <div class="sec-head">🔄 F. Pengayaan &amp; Remedial</div>
+  <div class="sec-body">
+    <div class="grid2">
+      <div>
+        <div class="sub-head">Pengayaan (untuk yang sudah mahir)</div>
+        <ul style="font-size:9.5pt;padding-left:16px;">
+          <li>Tantang mereka menyelesaikan setiap level tanpa menggunakan petunjuk (hint)</li>
+          <li>Minta mereka membuat solusi alternatif dengan jumlah blok yang lebih sedikit</li>
+          <li>Explore Level 5: tambahkan kondisi sebanyak mungkin ke chatbot</li>
+          <li>Jelaskan program mereka ke teman yang kesulitan (peer teaching)</li>
+        </ul>
+      </div>
+      <div>
+        <div class="sub-head">Remedial (untuk yang kesulitan)</div>
+        <ul style="font-size:9.5pt;padding-left:16px;">
+          <li>Mulai dari Level 1 ulang dengan pendampingan langsung dari pendidik</li>
+          <li>Gunakan kartu fisik blok (kertas) untuk mensimulasikan tanpa komputer</li>
+          <li>Fokus hanya pada 1 konsep per pertemuan (sequence dulu, baru loop)</li>
+          <li>Pasangkan dengan warga belajar yang sudah mahir</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="sec no-break" style="margin-top:12px;">
+  <div class="sec-head">🪞 G. Refleksi Pendidik</div>
+  <div class="sec-body">
+    <p style="font-size:9.5pt;margin-bottom:8px;">Setelah selesai modul ini, pendidik merefleksikan:</p>
+    <ul style="font-size:9.5pt;padding-left:16px;">
+      <li>Level mana yang paling banyak warga belajar kesulitan? Mengapa?</li>
+      <li>Apakah pertanyaan pemantik berhasil membangun rasa ingin tahu?</li>
+      <li>Apa yang akan diubah jika modul ini diulang di kelompok berikutnya?</li>
+      <li>Apakah waktu per aktivitas sudah proporsional dengan kebutuhan warga belajar?</li>
+    </ul>
+  </div>
+</div>
+
+</div><!-- end page 6 -->
+
+<!-- ══════════ HAL 7: LKPD ══════════ -->
+<div class="page-break">
+
+<div style="text-align:center;margin-bottom:16px;">
+  <div style="background:var(--blue);color:white;display:inline-block;padding:6px 24px;border-radius:20px;font-size:12pt;font-weight:800;letter-spacing:0.5px;">LKPD — Lembar Kerja Peserta Didik</div>
+  <div style="font-size:9pt;color:var(--slate);margin-top:4px;">Lab Coding Blok: Logika Dasar · Pertemuan 1–2</div>
+</div>
+
+<table class="info-table" style="margin-bottom:14px;font-size:9pt;">
+  <tr><th style="width:30%">Nama Warga Belajar</th><td></td><th style="width:20%">Tanggal</th><td></td></tr>
+  <tr><th>PKBM / SKB</th><td></td><th>Pertemuan ke-</th><td></td></tr>
+</table>
+
+<div class="sec no-break">
+  <div class="sec-head" style="font-size:10pt;">Bagian 1 — Visualisasi Blok Program (Level 1)</div>
+  <div class="sec-body">
+    <p style="font-size:9.5pt;margin-bottom:8px;">Gambarkan program yang kamu buat untuk menyelesaikan Tantangan 1B (peta dengan belokan). Gunakan kotak di bawah ini untuk menuliskan blok-blok yang kamu gunakan secara berurutan:</p>
+    <div class="lkpd-grid" style="margin-bottom:8px;">
+      <div>
+        <div class="lkpd-label">Blok yang tersedia:</div>
+        <div class="lkpd-block-vis block-maju" style="margin-bottom:6px;">→ Maju</div>
+        <div class="lkpd-block-vis block-maju" style="margin-bottom:6px;">↰ Belok Kiri</div>
+        <div class="lkpd-block-vis block-maju" style="margin-bottom:6px;">↱ Belok Kanan</div>
+        <div class="lkpd-block-vis block-berhenti">■ Berhenti</div>
+      </div>
+      <div style="grid-column:2/4;">
+        <div class="lkpd-label">Program saya untuk Tantangan 1B:</div>
+        <div class="lkpd-box xtall">▶ MULAI<br><br><br><br><br>■ BERHENTI</div>
+      </div>
+    </div>
+    <div class="lkpd-label">Berapa kali saya mencoba sebelum berhasil?</div>
+    <div class="lkpd-box" style="min-height:28px;"></div>
+  </div>
+</div>
+
+<div class="sec no-break" style="margin-top:10px;">
+  <div class="sec-head" style="font-size:10pt;">Bagian 2 — Perbandingan: Tanpa Loop vs Dengan Loop (Level 2)</div>
+  <div class="sec-body">
+    <div class="grid2">
+      <div>
+        <div class="lkpd-label">Cara TANPA loop (untuk memanen 8 tomat):</div>
+        <div class="lkpd-box xtall">▶ MULAI<br><br><br><br><br><br>■ BERHENTI</div>
+      </div>
+      <div>
+        <div class="lkpd-label">Cara DENGAN loop "Ulangi 8 kali":</div>
+        <div class="lkpd-box xtall">▶ MULAI<br>↻ ULANGI 8 kali:<br>  │ <br>  │ <br>↻ AKHIR ULANGI<br>■ BERHENTI</div>
+      </div>
+    </div>
+    <div class="lkpd-label" style="margin-top:8px;">Mengapa loop lebih baik? Tuliskan pendapatmu:</div>
+    <div class="lkpd-box tall"></div>
+  </div>
+</div>
+
+<div class="sec no-break" style="margin-top:10px;">
+  <div class="sec-head" style="font-size:10pt;">Bagian 3 — Jurnal Refleksi Pertemuan 1</div>
+  <div class="sec-body">
+    <div class="lkpd-label">1. Konsep apa yang paling menarik bagimu hari ini? Jelaskan dengan kata-katamu sendiri.</div>
+    <div class="lkpd-box tall"></div>
+    <div class="lkpd-label" style="margin-top:8px;">2. Berikan 2 contoh nyata di kehidupanmu yang menggunakan konsep sequence atau loop:</div>
+    <div class="lkpd-box tall">a) <br><br>b) </div>
+  </div>
+</div>
+
+</div><!-- end page 7 -->
+
+<!-- ══════════ HAL 8: LKPD PERTEMUAN 3 ══════════ -->
+<div class="page-break">
+
+<div style="text-align:center;margin-bottom:16px;">
+  <div style="background:var(--org);color:white;display:inline-block;padding:6px 24px;border-radius:20px;font-size:12pt;font-weight:800;letter-spacing:0.5px;">LKPD — Rancangan Chatbot</div>
+  <div style="font-size:9pt;color:var(--slate);margin-top:4px;">Lab Coding Blok: Logika Dasar · Pertemuan 3 — Level 5: Asisten Chatbot</div>
+</div>
+
+<table class="info-table" style="margin-bottom:14px;font-size:9pt;">
+  <tr><th style="width:30%">Nama</th><td></td><th style="width:20%">Tanggal</th><td></td></tr>
+</table>
+
+<div class="sec no-break">
+  <div class="sec-head" style="font-size:10pt;">Perencanaan Chatbot (isi sebelum mulai coding!)</div>
+  <div class="sec-body">
+    <div class="lkpd-label">1. Chatbot ini untuk bisnis/keperluan apa?</div>
+    <div class="lkpd-box" style="min-height:30px;"></div>
+    <div class="lkpd-label" style="margin-top:8px;">2. Tuliskan 4 pertanyaan yang sering ditanyakan pelanggan/pengguna:</div>
+    <div class="lkpd-box tall">1) <br><br>2) <br><br>3) <br><br>4) </div>
+    <div class="lkpd-label" style="margin-top:8px;">3. Rancangan alur chatbot (bisa gambar panah atau tulisan):</div>
+    <div class="lkpd-box xtall">Pertanyaan → Kondisi → Jawaban<br><br><br><br><br><br></div>
+  </div>
+</div>
+
+<div class="sec no-break" style="margin-top:10px;">
+  <div class="sec-head" style="font-size:10pt;">Hasil Program Chatbot</div>
+  <div class="sec-body">
+    <div class="lkpd-label">Tulis blok-blok utama yang kamu gunakan di program Level 5 kamu:</div>
+    <div class="lkpd-box xtall">▶ MULAI<br>  → Tampilkan: "<br><br>↻ ULANGI sampai pilihan = "Keluar":<br>  │  ◆ JIKA pilihan = ____:<br>  │  │  → <br>  │  ◆ JIKA pilihan = ____:<br>  │  │  → <br>↻ AKHIR ULANGI<br>■ BERHENTI</div>
+    <div class="lkpd-label" style="margin-top:8px;">Fitur unik yang kamu tambahkan di chatbot kamu:</div>
+    <div class="lkpd-box tall"></div>
+  </div>
+</div>
+
+<div class="sec no-break" style="margin-top:10px;">
+  <div class="sec-head" style="font-size:10pt;">Refleksi Akhir Modul</div>
+  <div class="sec-body">
+    <div class="lkpd-label">1. Dari 3 konsep yang dipelajari (sequence, loop, percabangan), mana yang paling berguna dalam kehidupan sehari-hari? Mengapa?</div>
+    <div class="lkpd-box tall"></div>
+    <div class="lkpd-label" style="margin-top:8px;">2. Apa satu pekerjaan atau teknologi yang ingin kamu program sendiri jika kamu bisa coding?</div>
+    <div class="lkpd-box" style="min-height:50px;"></div>
+    <div class="lkpd-label" style="margin-top:8px;">3. Skor total kamu di game: _______ · Level yang paling sulit: _______ · Alasan: __________________</div>
+  </div>
+</div>
+
+<div style="margin-top:16px;border-top:1.5px dashed var(--border);padding-top:12px;">
+  <p style="font-size:8.5pt;color:var(--slate);text-align:center;">
+    <strong>Ruang Murid · SPNF 2026</strong> · Modul Ajar Lab Coding Blok: Logika Dasar ·
+    Dikembangkan dengan bantuan AI generatif · Data dan konten diverifikasi oleh pendidik kesetaraan ·
+    Mengacu Kurikulum Merdeka Paket B Fase D
+  </p>
+</div>
+
+</div><!-- end page 8 -->
+
+</body>
+</html>
