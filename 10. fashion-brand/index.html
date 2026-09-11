@@ -1,0 +1,794 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>VELOURA — Automne · Hiver 2025</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,700;0,900;1,400;1,500;1,700&family=Poppins:ital,wght@0,300;0,400;0,500;0,600;1,400&family=Jost:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --ink:#080706;--charcoal:#1C1916;--stone:#5C5650;
+  --warm-gray:#8A847E;--silver:#C0BAB4;--linen:#E8DED0;
+  --sand:#D4C9B8;--cream:#F5F0E8;--off-white:#FAF8F5;--white:#FFFFFF;
+  --gold:#B8A07A;--gold-l:#D4BFA0;
+}
+html{scroll-behavior:smooth}
+body{font-family:'Jost',sans-serif;background:var(--off-white);color:var(--ink);overflow-x:hidden}
+
+/* UTILS */
+.eyebrow{font-family:'Jost',sans-serif;font-size:9px;font-weight:600;letter-spacing:.32em;text-transform:uppercase;color:var(--stone);display:flex;align-items:center;gap:12px}
+.eyebrow::before{content:'';display:inline-block;width:24px;height:1px;background:var(--stone);flex-shrink:0}
+.reveal{opacity:0;transform:translateY(20px);transition:opacity .75s ease,transform .75s ease}
+.reveal.on{opacity:1;transform:none}
+.d1{transition-delay:.1s}.d2{transition-delay:.2s}.d3{transition-delay:.3s}.d4{transition-delay:.4s}.d5{transition-delay:.5s}
+
+/* ANNOUNCEMENT BAR */
+.announce{background:var(--ink);color:var(--cream);font-family:'Jost',sans-serif;font-size:10px;font-weight:400;letter-spacing:.22em;text-transform:uppercase;text-align:center;padding:10px 24px}
+.announce a{color:var(--sand);text-decoration:none;border-bottom:1px solid rgba(212,201,184,.3)}
+
+/* NAV — 3 column magazine style */
+nav{background:var(--off-white);border-bottom:1px solid rgba(0,0,0,.06);position:sticky;top:0;z-index:100;transition:box-shadow .3s}
+nav.scrolled{box-shadow:0 1px 24px rgba(0,0,0,.06)}
+.nav-inner{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;padding:0 48px;height:68px}
+.nav-left,.nav-right{display:flex;align-items:center;gap:28px;list-style:none}
+.nav-right{justify-content:flex-end}
+.nav-left a,.nav-right a{font-family:'Jost',sans-serif;font-size:10px;font-weight:500;letter-spacing:.2em;text-transform:uppercase;color:var(--stone);text-decoration:none;transition:color .25s}
+.nav-left a:hover,.nav-right a:hover{color:var(--ink)}
+.nav-logo-wrap{text-align:center}
+.nav-logo{font-family:'Playfair Display',serif;font-size:24px;font-weight:700;letter-spacing:.22em;color:var(--ink);text-decoration:none;display:block;line-height:1}
+.nav-logo-sub{font-family:'Jost',sans-serif;font-size:7px;font-weight:400;letter-spacing:.5em;text-transform:uppercase;color:var(--warm-gray);display:block;margin-top:4px}
+.nav-icon{width:18px;height:18px;cursor:pointer;color:var(--stone);transition:color .25s}
+.nav-icon:hover{color:var(--ink)}
+.nav-icon svg{width:24px;height:auto}
+
+/* HERO */
+.hero{min-height:100vh;background:var(--ink);display:grid;grid-template-columns:1fr 1fr;overflow:hidden;position:relative}
+.hero-left{display:flex;flex-direction:column;justify-content:space-between;padding:72px 56px 56px;position:relative;z-index:2}
+.hero-season{font-family:'Jost',sans-serif;font-size:9px;font-weight:500;letter-spacing:.42em;text-transform:uppercase;color:rgba(212,201,184,.5);margin-bottom:auto}
+.hero-title-wrap{flex:1;display:flex;flex-direction:column;justify-content:center;padding:60px 0}
+.hero-issue{font-family:'Poppins',serif;font-size:13px;font-weight:300;letter-spacing:.22em;font-style:italic;color:rgba(232,222,208,.5);margin-bottom:20px}
+.hero-h1{font-family:'Playfair Display',serif;font-size:clamp(64px,7.5vw,112px);line-height:.9;font-weight:900;color:var(--off-white);letter-spacing:-.01em;margin-bottom:0}
+.hero-h1 em{font-style:italic;color:var(--sand)}
+.hero-h1 .outline{-webkit-text-stroke:1.5px rgba(248,245,240,.6);color:transparent}
+.hero-sub{font-family:'Poppins',serif;font-size:16px;font-weight:300;font-style:italic;color:rgba(232,222,208,.62);letter-spacing:.06em;line-height:1.7;max-width:320px;margin-top:28px}
+.hero-bottom{display:flex;align-items:center;justify-content:space-between}
+.hero-cta-group{display:flex;align-items:center;gap:24px}
+.btn-hero{font-family:'Jost',sans-serif;font-size:10px;font-weight:600;letter-spacing:.28em;text-transform:uppercase;padding:14px 36px;background:var(--off-white);color:var(--ink);text-decoration:none;border:none;cursor:pointer;transition:background .25s,color .25s,transform .2s;display:inline-block}
+.btn-hero:hover{background:var(--sand);transform:translateY(-1px)}
+.btn-hero-ghost{font-family:'Jost',sans-serif;font-size:10px;font-weight:500;letter-spacing:.28em;text-transform:uppercase;color:rgba(232,222,208,.55);text-decoration:none;border-bottom:1px solid rgba(232,222,208,.2);padding-bottom:2px;transition:color .25s,border-color .25s}
+.btn-hero-ghost:hover{color:var(--sand);border-color:var(--sand)}
+.hero-scroll{font-family:'Jost',sans-serif;font-size:8px;font-weight:500;letter-spacing:.3em;text-transform:uppercase;color:rgba(212,201,184,.38);display:flex;align-items:center;gap:10px;writing-mode:vertical-rl}
+.hero-scroll::before{content:'';width:1px;height:40px;background:rgba(212,201,184,.2)}
+
+/* HERO RIGHT — Illustration panel */
+.hero-right{position:relative;background:var(--charcoal);overflow:hidden}
+.hero-right-bg{position:absolute;inset:0;background:radial-gradient(ellipse 70% 80% at 40% 40%,rgba(180,162,130,.08) 0%,transparent 60%)}
+.hero-fig-wrap{position:absolute;inset:0;display:flex;align-items:flex-end;justify-content:center;padding-bottom:0}
+.hero-issue-num{position:absolute;top:48px;right:48px;font-family:'Playfair Display',serif;font-size:80px;font-weight:900;color:rgba(255,255,255,.03);line-height:1;letter-spacing:-.02em}
+.hero-look-tag{position:absolute;bottom:48px;left:40px;font-family:'Jost',sans-serif;font-size:8px;font-weight:500;letter-spacing:.28em;text-transform:uppercase;color:rgba(212,201,184,.45)}
+.hero-fig-caption{position:absolute;bottom:48px;right:40px;text-align:right}
+.hero-fig-caption-t{font-family:'Poppins',serif;font-size:13px;font-style:italic;color:rgba(232,222,208,.45);letter-spacing:.06em}
+.hero-fig-caption-s{font-family:'Jost',sans-serif;font-size:8px;font-weight:500;letter-spacing:.22em;text-transform:uppercase;color:rgba(212,201,184,.28);margin-top:4px}
+
+/* MARQUEE */
+.marquee{background:var(--linen);border-top:1px solid rgba(0,0,0,.06);border-bottom:1px solid rgba(0,0,0,.06);padding:14px 0;overflow:hidden}
+.marquee-track{display:flex;animation:marqueeScroll 35s linear infinite;width:max-content}
+.marquee-item{font-family:'Poppins',serif;font-size:16px;font-weight:300;font-style:italic;letter-spacing:.12em;color:var(--stone);padding:0 48px;white-space:nowrap;display:flex;align-items:center;gap:48px}
+.marquee-item::after{content:'·';color:var(--silver)}
+@keyframes marqueeScroll{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+
+/* EDITORIAL GRID */
+.editorial{padding:100px 48px;background:var(--off-white)}
+.ed-wrap{max-width:1360px;margin:0 auto}
+.ed-header{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:64px}
+.ed-title{font-family:'Playfair Display',serif;font-size:clamp(40px,5vw,68px);font-weight:700;line-height:.94;letter-spacing:-.01em;color:var(--ink)}
+.ed-title em{font-style:italic;color:var(--stone)}
+.ed-intro{max-width:320px}
+.ed-intro-text{font-family:'Poppins',serif;font-size:16px;font-weight:300;font-style:italic;color:var(--stone);line-height:1.75;margin-bottom:16px}
+.ed-link{font-family:'Jost',sans-serif;font-size:9px;font-weight:600;letter-spacing:.28em;text-transform:uppercase;color:var(--ink);text-decoration:none;border-bottom:1px solid var(--ink);padding-bottom:2px;transition:color .25s,border-color .25s}
+.ed-link:hover{color:var(--stone);border-color:var(--stone)}
+
+/* Editorial mosaic grid */
+.ed-grid{display:grid;grid-template-columns:repeat(12,1fr);grid-template-rows:auto;gap:16px}
+.ed-cell-a{grid-column:1/6;grid-row:1/3}
+.ed-cell-b{grid-column:6/9;grid-row:1/2}
+.ed-cell-c{grid-column:9/13;grid-row:1/2}
+.ed-cell-d{grid-column:6/10;grid-row:2/3}
+.ed-cell-e{grid-column:10/13;grid-row:2/3}
+.ed-card{position:relative;overflow:hidden;background:var(--cream)}
+.ed-card-img{width:100%;display:block;overflow:hidden;position:relative}
+.ed-card-img.tall{height:580px}
+.ed-card-img.med{height:280px}
+.ed-card-img.short{height:280px}
+.ed-card-body{padding:20px 0 0}
+.ed-card-look{font-family:'Jost',sans-serif;font-size:8px;font-weight:600;letter-spacing:.28em;text-transform:uppercase;color:var(--warm-gray);margin-bottom:8px}
+.ed-card-name{font-family:'Playfair Display',serif;font-size:20px;font-weight:500;color:var(--ink);margin-bottom:4px}
+.ed-card-price{font-family:'Poppins',serif;font-size:15px;font-weight:300;font-style:italic;color:var(--stone)}
+.ed-quote-cell{grid-column:6/13;grid-row:2/3;display:none}
+
+/* CAMPAIGN SECTION */
+.campaign{background:var(--ink);padding:0;position:relative;overflow:hidden;display:grid;grid-template-columns:1fr 1fr;min-height:620px}
+.campaign-left{padding:96px 64px;display:flex;flex-direction:column;justify-content:center;position:relative;z-index:2}
+.campaign-issue{font-family:'Jost',sans-serif;font-size:8px;font-weight:500;letter-spacing:.42em;text-transform:uppercase;color:rgba(212,201,184,.4);margin-bottom:32px}
+.campaign-title{font-family:'Playfair Display',serif;font-size:clamp(44px,4.5vw,72px);font-weight:700;line-height:.92;color:var(--off-white);letter-spacing:-.01em;margin-bottom:28px}
+.campaign-title em{font-style:italic;color:var(--sand)}
+.campaign-body{font-family:'Poppins',serif;font-size:17px;font-weight:300;font-style:italic;color:rgba(232,222,208,.62);line-height:1.8;max-width:380px;margin-bottom:40px}
+.btn-campaign{font-family:'Jost',sans-serif;font-size:9px;font-weight:600;letter-spacing:.28em;text-transform:uppercase;padding:14px 32px;border:1px solid rgba(232,222,208,.25);color:var(--cream);background:transparent;cursor:pointer;text-decoration:none;display:inline-block;transition:all .25s}
+.btn-campaign:hover{background:var(--cream);color:var(--ink);border-color:var(--cream)}
+.campaign-right{position:relative;background:var(--charcoal);overflow:hidden;display:flex;align-items:flex-end;justify-content:center}
+.campaign-bg{position:absolute;inset:0;background:radial-gradient(ellipse 60% 70% at 50% 60%,rgba(180,160,120,.07) 0%,transparent 65%)}
+.campaign-numbers{position:absolute;top:32px;left:32px;font-family:'Playfair Display',serif;font-size:100px;font-weight:900;color:rgba(255,255,255,.03);line-height:1;letter-spacing:-.02em}
+
+/* PRODUCTS */
+.products{padding:100px 48px;background:var(--white)}
+.prod-wrap{max-width:1360px;margin:0 auto}
+.prod-header{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:56px}
+.prod-title{font-family:'Playfair Display',serif;font-size:clamp(36px,4vw,58px);font-weight:700;line-height:.94;letter-spacing:-.01em;color:var(--ink)}
+.prod-title em{font-style:italic}
+.prod-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:24px}
+.prod-card{position:relative;cursor:pointer}
+.prod-card:hover .prod-overlay{opacity:1}
+.prod-card:hover .prod-img-wrap{transform:scale(1.02)}
+.prod-img-outer{overflow:hidden;background:var(--cream);position:relative}
+.prod-img-wrap{transition:transform .5s ease;display:flex;align-items:flex-end;justify-content:center}
+.prod-img-wrap.tall{height:460px}
+.prod-img-wrap.med{height:380px}
+.prod-overlay{position:absolute;inset:0;background:rgba(8,7,6,.22);opacity:0;transition:opacity .35s;display:flex;align-items:center;justify-content:center}
+.prod-overlay-btn{font-family:'Jost',sans-serif;font-size:9px;font-weight:600;letter-spacing:.28em;text-transform:uppercase;padding:12px 28px;background:var(--off-white);color:var(--ink);border:none;cursor:pointer}
+.prod-info{padding:16px 0 0}
+.prod-cat{font-family:'Jost',sans-serif;font-size:8px;font-weight:500;letter-spacing:.24em;text-transform:uppercase;color:var(--warm-gray);margin-bottom:6px}
+.prod-name{font-family:'Playfair Display',serif;font-size:18px;font-weight:500;color:var(--ink);margin-bottom:4px}
+.prod-color{font-family:'Poppins',serif;font-size:13px;font-style:italic;color:var(--warm-gray);margin-bottom:6px}
+.prod-price{font-family:'Jost',sans-serif;font-size:12px;font-weight:500;color:var(--ink)}
+.prod-tag{position:absolute;top:16px;left:16px;font-family:'Jost',sans-serif;font-size:8px;font-weight:600;letter-spacing:.2em;text-transform:uppercase;padding:5px 12px;background:var(--ink);color:var(--off-white)}
+
+/* MANIFESTO */
+.manifesto{padding:120px 48px;background:var(--cream)}
+.mani-wrap{max-width:1360px;margin:0 auto;display:grid;grid-template-columns:1fr 2px 1fr;gap:80px;align-items:start}
+.mani-divider{background:rgba(0,0,0,.08)}
+.mani-left{}
+.mani-label{font-family:'Jost',sans-serif;font-size:8px;font-weight:600;letter-spacing:.36em;text-transform:uppercase;color:var(--warm-gray);margin-bottom:32px;display:flex;align-items:center;gap:10px}
+.mani-label::before{content:'';width:20px;height:1px;background:var(--warm-gray)}
+.mani-pullquote{font-family:'Playfair Display',serif;font-size:clamp(28px,3.5vw,48px);font-weight:400;font-style:italic;line-height:1.2;color:var(--ink);margin-bottom:24px}
+.mani-pullquote span{color:var(--gold)}
+.mani-attr{font-family:'Jost',sans-serif;font-size:9px;font-weight:500;letter-spacing:.28em;text-transform:uppercase;color:var(--warm-gray)}
+.mani-right{}
+.mani-heading{font-family:'Playfair Display',serif;font-size:26px;font-weight:500;color:var(--ink);margin-bottom:20px}
+.mani-body{font-family:'Poppins',serif;font-size:17px;font-weight:300;color:var(--stone);line-height:1.9;margin-bottom:20px}
+.mani-body + .mani-body{border-top:1px solid rgba(0,0,0,.06);padding-top:20px}
+.mani-details{margin-top:36px;display:grid;grid-template-columns:1fr 1fr;gap:24px}
+.mani-detail-label{font-family:'Jost',sans-serif;font-size:8px;font-weight:600;letter-spacing:.28em;text-transform:uppercase;color:var(--warm-gray);margin-bottom:8px}
+.mani-detail-val{font-family:'Poppins',serif;font-size:16px;font-style:italic;color:var(--ink)}
+
+/* LOOKBOOK STRIP */
+.lookbook-strip{background:var(--linen);padding:0;overflow:hidden}
+.lookbook-inner{display:flex;gap:0}
+.lb-cell{flex:1;min-width:0;position:relative;overflow:hidden}
+.lb-cell:hover .lb-overlay{opacity:1}
+.lb-cell:hover .lb-fig{transform:scale(1.04)}
+.lb-fig{height:480px;display:flex;align-items:flex-end;justify-content:center;transition:transform .5s ease;background:var(--sand)}
+.lb-fig.v2{background:#E4DDD4}
+.lb-fig.v3{background:#DDD5C8}
+.lb-fig.v4{background:#D8D0C4}
+.lb-overlay{position:absolute;inset:0;background:rgba(8,7,6,.18);opacity:0;transition:opacity .35s;display:flex;align-items:flex-end;padding:28px}
+.lb-look{font-family:'Jost',sans-serif;font-size:8px;font-weight:600;letter-spacing:.28em;text-transform:uppercase;color:var(--off-white)}
+.lb-border{border-right:1px solid rgba(0,0,0,.06)}
+
+/* PRESS */
+.press{padding:80px 48px;background:var(--off-white);border-top:1px solid rgba(0,0,0,.06)}
+.press-wrap{max-width:1360px;margin:0 auto}
+.press-label{font-family:'Jost',sans-serif;font-size:9px;font-weight:500;letter-spacing:.3em;text-transform:uppercase;color:var(--silver);text-align:center;margin-bottom:44px}
+.press-logos{display:flex;align-items:center;justify-content:center;gap:64px;flex-wrap:wrap}
+.press-logo{font-family:'Playfair Display',serif;font-style:italic;font-size:22px;font-weight:400;color:var(--silver);letter-spacing:.06em;transition:color .3s;cursor:default}
+.press-logo:hover{color:var(--stone)}
+.press-logo.sc{font-family:'Jost',sans-serif;font-style:normal;font-size:13px;font-weight:300;letter-spacing:.34em;text-transform:uppercase}
+
+/* TESTIMONIALS */
+.testi{padding:100px 48px;background:var(--ink)}
+.testi-wrap{max-width:900px;margin:0 auto;text-align:center}
+.testi-eye{font-family:'Jost',sans-serif;font-size:8px;font-weight:500;letter-spacing:.34em;text-transform:uppercase;color:rgba(212,201,184,.38);margin-bottom:40px;display:flex;align-items:center;justify-content:center;gap:12px}
+.testi-eye::before,.testi-eye::after{content:'';width:20px;height:1px;background:rgba(212,201,184,.2)}
+.testi-track{position:relative;overflow:hidden}
+.testi-slide{display:none}
+.testi-slide.on{display:block;animation:fadeSlide .5s ease}
+@keyframes fadeSlide{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+.testi-q{font-family:'Playfair Display',serif;font-size:clamp(22px,2.8vw,36px);font-weight:400;font-style:italic;color:var(--cream);line-height:1.5;margin-bottom:36px}
+.testi-q span{color:var(--sand)}
+.testi-rule{width:40px;height:1px;background:rgba(212,201,184,.2);margin:0 auto 20px}
+.testi-attr{font-family:'Jost',sans-serif;font-size:9px;font-weight:500;letter-spacing:.28em;text-transform:uppercase;color:rgba(212,201,184,.45)}
+.testi-controls{display:flex;justify-content:center;gap:14px;margin-top:40px}
+.testi-dot{width:20px;height:1px;background:rgba(212,201,184,.2);cursor:pointer;transition:background .3s}
+.testi-dot.on{background:var(--sand);width:36px}
+
+/* NEWSLETTER */
+.newsletter{padding:100px 48px;background:var(--cream)}
+.nl-wrap{max-width:640px;margin:0 auto;text-align:center}
+.nl-heading{font-family:'Playfair Display',serif;font-size:clamp(36px,4vw,56px);font-weight:700;font-style:italic;line-height:.94;color:var(--ink);margin-bottom:16px}
+.nl-sub{font-family:'Poppins',serif;font-size:17px;font-weight:300;font-style:italic;color:var(--stone);line-height:1.7;margin-bottom:40px}
+.nl-form{display:flex;gap:0;border-bottom:1px solid var(--ink);max-width:460px;margin:0 auto 16px}
+.nl-input{flex:1;padding:14px 0;background:transparent;border:none;font-family:'Jost',sans-serif;font-size:11px;font-weight:300;letter-spacing:.12em;color:var(--ink);outline:none}
+.nl-input::placeholder{color:var(--warm-gray)}
+.nl-btn{font-family:'Jost',sans-serif;font-size:9px;font-weight:600;letter-spacing:.28em;text-transform:uppercase;padding:14px 0 14px 24px;background:transparent;border:none;color:var(--ink);cursor:pointer;transition:color .25s}
+.nl-btn:hover{color:var(--gold)}
+.nl-note{font-family:'Jost',sans-serif;font-size:9px;font-weight:400;letter-spacing:.1em;color:var(--warm-gray)}
+
+/* FOOTER */
+footer{background:var(--ink);padding:80px 48px 40px}
+.ft-wrap{max-width:1360px;margin:0 auto}
+.ft-top{display:grid;grid-template-columns:1.6fr 1fr 1fr 1fr;gap:56px;padding-bottom:64px;border-bottom:1px solid rgba(255,255,255,.06);margin-bottom:40px}
+.ft-brand{font-family:'Playfair Display',serif;font-size:28px;font-weight:700;letter-spacing:.2em;color:var(--off-white);margin-bottom:6px}
+.ft-brand-sub{font-family:'Jost',sans-serif;font-size:7px;font-weight:400;letter-spacing:.5em;text-transform:uppercase;color:rgba(212,201,184,.3);margin-bottom:20px}
+.ft-brand-desc{font-family:'Poppins',serif;font-size:15px;font-weight:300;font-style:italic;color:rgba(232,222,208,.4);line-height:1.8;max-width:240px}
+.ft-socials{display:flex;gap:12px;margin-top:28px}
+.ft-soc{font-family:'Jost',sans-serif;font-size:8px;font-weight:500;letter-spacing:.2em;text-transform:uppercase;color:rgba(212,201,184,.38);text-decoration:none;padding-bottom:1px;border-bottom:1px solid rgba(212,201,184,.12);transition:color .25s,border-color .25s}
+.ft-soc:hover{color:var(--sand);border-color:var(--sand)}
+.ft-col h5{font-family:'Jost',sans-serif;font-size:8px;font-weight:600;letter-spacing:.3em;text-transform:uppercase;color:rgba(232,222,208,.55);margin-bottom:20px}
+.ft-col ul{list-style:none;display:flex;flex-direction:column;gap:11px}
+.ft-col ul a{font-family:'Jost',sans-serif;font-size:12px;font-weight:300;color:rgba(232,222,208,.38);text-decoration:none;letter-spacing:.04em;transition:color .25s}
+.ft-col ul a:hover{color:var(--sand)}
+.ft-bottom{display:flex;justify-content:space-between;align-items:center}
+.ft-copy{font-family:'Jost',sans-serif;font-size:9px;font-weight:400;letter-spacing:.16em;text-transform:uppercase;color:rgba(232,222,208,.2)}
+.ft-legal{display:flex;gap:20px}
+.ft-legal a{font-family:'Jost',sans-serif;font-size:9px;font-weight:400;letter-spacing:.14em;text-transform:uppercase;color:rgba(232,222,208,.2);text-decoration:none;transition:color .25s}
+.ft-legal a:hover{color:rgba(232,222,208,.55)}
+
+/* CART DRAWER INDICATOR */
+.cart-count{display:inline-flex;align-items:center;justify-content:center;width:14px;height:14px;border-radius:50%;background:var(--ink);color:var(--off-white);font-family:'Jost',sans-serif;font-size:7px;font-weight:600;margin-left:-6px;margin-top:-10px;vertical-align:top}
+.campaign-right img.campaign-photo{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:1}.campaign-numbers{z-index:2}</style>
+<link rel="icon" type="image/svg+xml" href="favicon.svg" />
+<style id="photo-css">.hero-fig-wrap img.fb-photo,.prod-img-wrap img.fb-photo,.ed-card-img img.fb-photo,.lb-fig img.fb-photo{width:100%;height:100%;object-fit:cover;display:block}</style>
+<style id="fix-fashion">
+/* hamburger */
+.hamburger{display:none;background:none;border:none;cursor:pointer;flex-direction:column;gap:5px;padding:4px;justify-self:end}
+.hamburger span{display:block;width:24px;height:2px;background:var(--ink);border-radius:2px;transition:all .3s}
+.hamburger.open span:nth-child(1){transform:translateY(7px) rotate(45deg)}
+.hamburger.open span:nth-child(2){opacity:0}
+.hamburger.open span:nth-child(3){transform:translateY(-7px) rotate(-45deg)}
+/* mobile dropdown */
+.mobile-menu{display:none;position:fixed;top:106px;left:0;right:0;z-index:99;background:var(--off-white);border-bottom:1px solid rgba(0,0,0,.08);box-shadow:0 22px 40px -18px rgba(0,0,0,.25);flex-direction:column;padding:8px 28px 22px}
+.mobile-menu.open{display:flex}
+.mobile-menu a{font-family:'Jost',sans-serif;font-size:13px;font-weight:500;letter-spacing:.18em;text-transform:uppercase;color:var(--charcoal);text-decoration:none;padding:15px 2px;border-bottom:1px solid rgba(0,0,0,.06)}
+.mobile-menu a:last-child{border-bottom:0}
+/* footer: higher contrast + larger text */
+.ft-brand-sub{color:rgba(212,201,184,.62)!important;font-size:9px!important}
+.ft-brand-desc{color:rgba(240,232,220,.72)!important;font-size:15.5px!important}
+.ft-soc{color:rgba(212,201,184,.72)!important;font-size:10px!important}
+.ft-col h5{color:rgba(240,232,220,.85)!important;font-size:10px!important}
+.ft-col ul a{color:rgba(240,232,220,.72)!important;font-size:13px!important}
+.ft-copy{color:rgba(240,232,220,.55)!important;font-size:10px!important}
+.ft-legal a{color:rgba(240,232,220,.6)!important;font-size:10px!important}
+footer .ft-col > div > div{color:rgba(240,232,220,.6)!important}
+/* mobile layout (page had no responsive CSS) */
+@media (max-width:860px){
+  .nav-inner{display:flex!important;justify-content:space-between;align-items:center;padding:0 22px}
+  .nav-left,.nav-right{display:none!important}
+  .nav-logo{font-size:20px}
+  .hamburger{display:flex}
+  .hero{grid-template-columns:1fr!important;min-height:auto!important}
+  .hero-left{padding:48px 24px 40px}
+  .hero-right{min-height:440px;order:2}
+  .ed-grid{grid-template-columns:1fr!important}
+  .ed-grid > *{grid-column:1 / -1!important}
+  .prod-grid{grid-template-columns:1fr 1fr!important;gap:16px}
+  .lookbook-inner{flex-wrap:wrap}
+  .lb-cell{flex:1 1 50%!important}
+  .campaign{grid-template-columns:1fr!important;min-height:auto!important}
+  .campaign-left{padding:56px 28px}
+  .campaign-right{min-height:420px}
+  .ft-top{grid-template-columns:1fr 1fr!important;gap:36px 28px}
+  .ft-bottom{flex-direction:column;gap:16px;align-items:flex-start}
+  footer{padding:56px 24px 32px}
+}
+@media (max-width:480px){
+  .prod-grid{grid-template-columns:1fr!important}
+  .ft-top{grid-template-columns:1fr!important}
+}
+/* legibility pass: brighten faint text (all on dark backgrounds) */
+.hero-season,.hero-issue{color:rgba(240,232,220,.72)!important}
+.hero-look-tag,.hero-fig-caption-t{color:rgba(245,240,232,.82)!important}
+.hero-fig-caption-s{color:rgba(245,240,232,.62)!important}
+.campaign-issue{color:rgba(212,201,184,.62)!important}
+.testi-eye{color:rgba(212,201,184,.72)!important}
+.testi-attr{color:rgba(240,232,220,.7)!important}
+/* manifesto (cream bg): darker labels + accent, bolder body */
+.mani-label,.mani-attr,.mani-detail-label{color:var(--stone)!important}
+.mani-pullquote span{color:#9a7b34!important}
+.mani-body{color:var(--charcoal)!important;font-weight:400!important}
+</style></head>
+<body>
+
+<!-- ANNOUNCEMENT BAR -->
+<div class="announce">
+  Complimentary shipping on all orders above Rp 1.500.000 — <a href="#">Shop Now</a>
+</div>
+
+<!-- NAV -->
+<nav id="nav">
+  <div class="nav-inner">
+    <ul class="nav-left">
+      <li><a href="#editorial">Collections</a></li>
+      <li><a href="#products">New Arrivals</a></li>
+      <li><a href="#lookbook">Lookbook</a></li>
+    </ul>
+    <div class="nav-logo-wrap">
+      <a href="#" class="nav-logo">VELOURA</a>
+      <span class="nav-logo-sub">Paris · Jakarta · Tokyo</span>
+    </div>
+    <ul class="nav-right">
+      <li><a href="#manifesto">Our Story</a></li>
+      <li><a href="#" class="nav-icon" aria-label="Search">
+        <svg viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.4"><circle cx="7.5" cy="7.5" r="5.5"/><line x1="12" y1="12" x2="16" y2="16" stroke-linecap="round"/></svg>
+      </a></li>
+      <li><a href="#" style="position:relative">
+        <span class="nav-icon">
+          <svg viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M3 3h2l2.4 8.6a1 1 0 00.98.8h7.2a1 1 0 00.97-.76L17 7H5"/><circle cx="8" cy="15.5" r="1"/><circle cx="13" cy="15.5" r="1"/></svg>
+        </span>
+        <span class="cart-count">2</span>
+      </a></li>
+    </ul>
+    <button class="hamburger" id="hamburger" aria-label="Menu" aria-expanded="false">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</nav>
+<div class="mobile-menu" id="mobileMenu">
+  <a href="#editorial">Collections</a>
+  <a href="#products">New Arrivals</a>
+  <a href="#lookbook">Lookbook</a>
+  <a href="#manifesto">Our Story</a>
+</div>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-left">
+    <div class="hero-season">Automne · Hiver 2025</div>
+    <div class="hero-title-wrap">
+      <div class="hero-issue">The Season's Edit — No. 12</div>
+      <h1 class="hero-h1">
+        THE<br/>
+        <em>NEW</em><br/>
+        <span class="outline">EDIT</span>
+      </h1>
+      <p class="hero-sub">Sebuah meditasi tentang bentuk, kain, dan kemewahan yang sunyi — koleksi yang berbicara tanpa berteriak.</p>
+    </div>
+    <div class="hero-bottom">
+      <div class="hero-cta-group">
+        <a href="#products" class="btn-hero">Discover Collection</a>
+        <a href="#lookbook" class="btn-hero-ghost">View Lookbook</a>
+      </div>
+      <div class="hero-scroll">Scroll</div>
+    </div>
+  </div>
+  <div class="hero-right">
+    <div class="hero-right-bg"></div>
+    <div class="hero-issue-num">25</div>
+    <!-- Hero editorial fashion figure -->
+    <div class="hero-fig-wrap">
+        <img class="fb-photo" src="assets/hero.jpg" alt="VELOURA look 01 — the oversized coat" />
+      </div>
+    <div class="hero-look-tag">Look 01 · AH 2025</div>
+    <div class="hero-fig-caption">
+      <div class="hero-fig-caption-t">The Oversized Coat</div>
+      <div class="hero-fig-caption-s">Rp 4.850.000</div>
+    </div>
+  </div>
+</section>
+
+<!-- MARQUEE -->
+<div class="marquee">
+  <div class="marquee-track">
+    <span class="marquee-item">Automne · Hiver 2025</span>
+    <span class="marquee-item">The New Edit</span>
+    <span class="marquee-item">VELOURA</span>
+    <span class="marquee-item">Wear The Edit</span>
+    <span class="marquee-item">Paris · Jakarta · Tokyo</span>
+    <span class="marquee-item">New Collection</span>
+    <span class="marquee-item">Slow Fashion · Quiet Luxury</span>
+    <span class="marquee-item">Automne · Hiver 2025</span>
+    <span class="marquee-item">The New Edit</span>
+    <span class="marquee-item">VELOURA</span>
+    <span class="marquee-item">Wear The Edit</span>
+    <span class="marquee-item">Paris · Jakarta · Tokyo</span>
+    <span class="marquee-item">New Collection</span>
+    <span class="marquee-item">Slow Fashion · Quiet Luxury</span>
+  </div>
+</div>
+
+<!-- EDITORIAL GRID -->
+<section class="editorial" id="editorial">
+  <div class="ed-wrap">
+    <div class="ed-header reveal">
+      <div>
+        <div class="eyebrow" style="margin-bottom:18px">The Season's Story</div>
+        <h2 class="ed-title">EDITORIAL<br/><em>SELECTION</em></h2>
+      </div>
+      <div class="ed-intro">
+        <p class="ed-intro-text">Koleksi AH '25 diinspirasi oleh ketenangan arsitektur Brutalist dan kelembutan kain-kain Eropa Timur — sebuah kontradiksi yang harmonis.</p>
+        <a href="#products" class="ed-link">View Full Collection</a>
+      </div>
+    </div>
+    <div class="ed-grid">
+      <!-- Cell A — Large, spanning 2 rows -->
+      <div class="ed-cell-a reveal">
+        <div class="ed-card-img tall" style="background:#1C1916;display:flex;align-items:flex-end;justify-content:center;overflow:hidden">
+        <img class="fb-photo" src="assets/ed-1.jpg" alt="VELOURA editorial" />
+      </div>
+        <div class="ed-card-body">
+          <div class="ed-card-look">Look 02 · Maison Edit</div>
+          <div class="ed-card-name">The Structured Set</div>
+          <div class="ed-card-price">Blazer & Trousers — Rp 6.200.000</div>
+        </div>
+      </div>
+      <!-- Cell B — medium top right -->
+      <div class="ed-cell-b reveal d1">
+        <div class="ed-card-img med" style="background:#F0EBE2;display:flex;align-items:flex-end;justify-content:center;overflow:hidden">
+        <img class="fb-photo" src="assets/ed-2.jpg" alt="VELOURA editorial" />
+      </div>
+        <div class="ed-card-body">
+          <div class="ed-card-look">Accessory · New Arrival</div>
+          <div class="ed-card-name">The Maison Tote</div>
+          <div class="ed-card-price">Rp 3.450.000</div>
+        </div>
+      </div>
+      <!-- Cell C — editorial quote -->
+      <div class="ed-cell-c reveal d2" style="background:var(--ink);padding:40px 36px;display:flex;flex-direction:column;justify-content:center;height:280px">
+        <div style="font-family:'Jost',sans-serif;font-size:8px;font-weight:500;letter-spacing:.32em;text-transform:uppercase;color:rgba(212,201,184,.38);margin-bottom:20px">Manifesto</div>
+        <blockquote style="font-family:'Playfair Display',serif;font-size:22px;font-weight:400;font-style:italic;color:var(--cream);line-height:1.45;margin-bottom:20px">"Pakaian terbaik adalah yang membuatmu lupa sedang memakainya."</blockquote>
+        <div style="font-family:'Jost',sans-serif;font-size:8px;font-weight:500;letter-spacing:.24em;text-transform:uppercase;color:rgba(212,201,184,.3)">— Creative Director, VELOURA</div>
+      </div>
+      <!-- Cell D — scarf/accessory -->
+      <div class="ed-cell-d reveal d3">
+        <div class="ed-card-img short" style="background:#E8E0D4;display:flex;align-items:center;justify-content:center;overflow:hidden">
+        <img class="fb-photo" src="assets/ed-3.jpg" alt="VELOURA editorial" />
+      </div>
+        <div class="ed-card-body">
+          <div class="ed-card-look">Look 03 · Essential</div>
+          <div class="ed-card-name">Cashmere Scarf</div>
+          <div class="ed-card-price">Mongolian Cashmere — Rp 1.850.000</div>
+        </div>
+      </div>
+      <!-- Cell E — small text/number block -->
+      <div class="ed-cell-e reveal d4" style="background:var(--linen);padding:32px;display:flex;flex-direction:column;justify-content:space-between;height:280px">
+        <div style="font-family:'Playfair Display',serif;font-size:80px;font-weight:900;color:rgba(0,0,0,.06);line-height:1">12</div>
+        <div>
+          <div style="font-family:'Jost',sans-serif;font-size:8px;font-weight:600;letter-spacing:.3em;text-transform:uppercase;color:var(--warm-gray);margin-bottom:10px">The Collection</div>
+          <div style="font-family:'Poppins',serif;font-size:18px;font-style:italic;font-weight:300;color:var(--stone);line-height:1.5">12 looks.<br/>1 narrative.<br/>Infinite ways<br/>to wear.</div>
+        </div>
+        <a href="#products" class="ed-link">Explore All →</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CAMPAIGN -->
+<section class="campaign">
+  <div class="campaign-left reveal">
+    <div class="campaign-issue">AH 2025 Campaign — Volume I</div>
+    <h2 class="campaign-title">BETWEEN<br/><em>SILENCE</em><br/>AND FORM</h2>
+    <p class="campaign-body">Kampanye ini lahir dari sebuah pertanyaan sederhana: bagaimana pakaian berbicara ketika kita diam? VELOURA menjawabnya dengan potongan yang tegas, kain yang jujur, dan warna yang tidak memohon perhatian — ia memerintahkan.</p>
+    <a href="#lookbook" class="btn-campaign">View Campaign Film</a>
+  </div>
+  <div class="campaign-right">
+    <div class="campaign-bg"></div>
+    <div class="campaign-numbers">I</div>
+    <img class="fb-photo campaign-photo" src="assets/campaign.jpg" alt="VELOURA AH 2025 campaign" />
+  </div>
+</section>
+
+<!-- PRODUCTS -->
+<section class="products" id="products">
+  <div class="prod-wrap">
+    <div class="prod-header reveal">
+      <div>
+        <div class="eyebrow" style="margin-bottom:16px">New Arrivals</div>
+        <h2 class="prod-title">THE WEEK'S<br/><em>FINEST</em></h2>
+      </div>
+      <a href="#" class="ed-link">View All Arrivals</a>
+    </div>
+    <div class="prod-grid">
+      <!-- Product 1: Draped Midi Dress -->
+      <div class="prod-card reveal">
+        <div class="prod-tag">New</div>
+        <div class="prod-img-outer">
+          <div class="prod-overlay"><button class="prod-overlay-btn">Quick Add</button></div>
+          <div class="prod-img-wrap tall" style="background:#EDE5D8">
+        <img class="fb-photo" src="assets/prod-1.jpg" alt="VELOURA product" />
+      </div>
+        </div>
+        <div class="prod-info">
+          <div class="prod-cat">Dress · AH 2025</div>
+          <div class="prod-name">Asymmetric Draped Midi</div>
+          <div class="prod-color">Noir · Onyx</div>
+          <div class="prod-price">Rp 2.850.000</div>
+        </div>
+      </div>
+      <!-- Product 2: Slouchy Camel Coat -->
+      <div class="prod-card reveal d1">
+        <div class="prod-img-outer">
+          <div class="prod-overlay"><button class="prod-overlay-btn">Quick Add</button></div>
+          <div class="prod-img-wrap tall" style="background:#F5F0E8">
+        <img class="fb-photo" src="assets/prod-2.jpg" alt="VELOURA product" />
+      </div>
+        </div>
+        <div class="prod-info">
+          <div class="prod-cat">Outerwear · AH 2025</div>
+          <div class="prod-name">Slouchy Camel Coat</div>
+          <div class="prod-color">Camel · Toffee</div>
+          <div class="prod-price">Rp 4.200.000</div>
+        </div>
+      </div>
+      <!-- Product 3: Knit Set -->
+      <div class="prod-card reveal d2">
+        <div class="prod-tag" style="background:var(--sand);color:var(--ink)">Limited</div>
+        <div class="prod-img-outer">
+          <div class="prod-overlay"><button class="prod-overlay-btn">Quick Add</button></div>
+          <div class="prod-img-wrap tall" style="background:#E8E2D8">
+        <img class="fb-photo" src="assets/prod-3.jpg" alt="VELOURA product" />
+      </div>
+        </div>
+        <div class="prod-info">
+          <div class="prod-cat">Knitwear · Coordinates</div>
+          <div class="prod-name">Ribbed Knit Set</div>
+          <div class="prod-color">Écru · Sand</div>
+          <div class="prod-price">Rp 3.100.000</div>
+        </div>
+      </div>
+      <!-- Product 4: Structured Mini Bag -->
+      <div class="prod-card reveal d3">
+        <div class="prod-img-outer">
+          <div class="prod-overlay"><button class="prod-overlay-btn">Quick Add</button></div>
+          <div class="prod-img-wrap med" style="background:#1C1916;display:flex;align-items:center;justify-content:center">
+        <img class="fb-photo" src="assets/prod-4.jpg" alt="VELOURA product" />
+      </div>
+        </div>
+        <div class="prod-info">
+          <div class="prod-cat">Accessory · Mini Bag</div>
+          <div class="prod-name">The Quilted Minaudière</div>
+          <div class="prod-color">Écru · Gold Hardware</div>
+          <div class="prod-price">Rp 2.650.000</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- LOOKBOOK STRIP -->
+<div class="lookbook-strip" id="lookbook">
+  <div style="padding:56px 48px 32px;background:var(--linen)">
+    <div style="display:flex;justify-content:space-between;align-items:flex-end;max-width:1360px;margin:0 auto;margin-bottom:36px" class="reveal">
+      <div>
+        <div class="eyebrow" style="margin-bottom:14px">AH 2025 Lookbook</div>
+        <h2 style="font-family:'Playfair Display',serif;font-size:clamp(36px,4vw,56px);font-weight:700;font-style:italic;line-height:.94;color:var(--ink)">Wear The Edit</h2>
+      </div>
+      <a href="#" class="ed-link">Full Lookbook →</a>
+    </div>
+  </div>
+  <div class="lookbook-inner" style="max-width:none">
+    <div class="lb-cell lb-border reveal">
+      <div class="lb-fig" style="background:#D8D0C4">
+        <img class="fb-photo" src="assets/lb-1.jpg" alt="VELOURA lookbook" />
+      </div>
+      <div class="lb-overlay"><div class="lb-look">Look 04 — All Black Edit</div></div>
+    </div>
+    <div class="lb-cell lb-border reveal d1">
+      <div class="lb-fig v2" style="background:#E2DACE">
+        <img class="fb-photo" src="assets/lb-2.jpg" alt="VELOURA lookbook" />
+      </div>
+      <div class="lb-overlay"><div class="lb-look">Look 05 — Linen Set</div></div>
+    </div>
+    <div class="lb-cell lb-border reveal d2">
+      <div class="lb-fig v3" style="background:#DDD5C6">
+        <img class="fb-photo" src="assets/lb-3.jpg" alt="VELOURA lookbook" />
+      </div>
+      <div class="lb-overlay"><div class="lb-look">Look 07 — Soft Volume</div></div>
+    </div>
+    <div class="lb-cell reveal d3">
+      <div class="lb-fig v4" style="background:#D4CCC0">
+        <img class="fb-photo" src="assets/lb-4.jpg" alt="VELOURA lookbook" />
+      </div>
+      <div class="lb-overlay"><div class="lb-look">Look 09 — Power Dressing</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- MANIFESTO -->
+<section class="manifesto" id="manifesto">
+  <div class="mani-wrap">
+    <div class="mani-left reveal">
+      <div class="mani-label">Our Philosophy</div>
+      <blockquote class="mani-pullquote">
+        "Mode sejati tidak mengikuti musim — ia menciptakan <span>momennya sendiri.</span>"
+      </blockquote>
+      <div class="mani-attr">— Isabelle Dumont, Creative Director</div>
+      <div class="mani-details" style="margin-top:48px">
+        <div>
+          <div class="mani-detail-label">Founded</div>
+          <div class="mani-detail-val">Paris, 2014</div>
+        </div>
+        <div>
+          <div class="mani-detail-label">Flagship</div>
+          <div class="mani-detail-val">Jakarta, 2018</div>
+        </div>
+        <div>
+          <div class="mani-detail-label">Craftspeople</div>
+          <div class="mani-detail-val">140 artisans</div>
+        </div>
+        <div>
+          <div class="mani-detail-label">Materials</div>
+          <div class="mani-detail-val">Ethically sourced</div>
+        </div>
+      </div>
+    </div>
+    <div class="mani-divider reveal d1"></div>
+    <div class="mani-right reveal d2">
+      <h3 class="mani-heading">Tentang VELOURA</h3>
+      <p class="mani-body">VELOURA lahir dari keyakinan bahwa kemewahan sejati terletak pada kesederhanaan yang disengaja. Bukan kemewahan yang berteriak dengan logo dan ornamen, melainkan kemewahan yang bisik — yang terasa di tangan ketika menyentuh kain, yang terlihat dalam sempurnanya sebuah jahitan, yang tersimpan dalam waktu yang dibutuhkan untuk menciptakannya.</p>
+      <p class="mani-body">Setiap potongan dirancang di atelier Paris kami dan dikerjakan oleh tangan-tangan terampil para pengrajin yang telah mewariskan teknik mereka selama tiga generasi. Kami menggunakan bahan-bahan yang dipilih secara ketat — kashmir Mongolian, linen Belgia, sutra Italia — karena kami percaya bahwa pakaian terbaik dimulai dari bahan terbaik.</p>
+      <a href="#" class="ed-link" style="display:inline-block;margin-top:8px">Read Our Story →</a>
+    </div>
+  </div>
+</section>
+
+<!-- PRESS -->
+<section class="press">
+  <div class="press-wrap">
+    <div class="press-label reveal">As Featured In</div>
+    <div class="press-logos reveal">
+      <div class="press-logo">Vogue</div>
+      <div class="press-logo sc">Harper's Bazaar</div>
+      <div class="press-logo">Elle</div>
+      <div class="press-logo sc">L'Officiel</div>
+      <div class="press-logo">WWD</div>
+      <div class="press-logo sc">Tatler</div>
+    </div>
+  </div>
+</section>
+
+<!-- TESTIMONIALS -->
+<section class="testi">
+  <div class="testi-wrap">
+    <div class="testi-eye reveal">Client Stories</div>
+    <div class="testi-track reveal d1">
+      <div class="testi-slide on">
+        <p class="testi-q">"Setiap kali saya mengenakan VELOURA, saya merasa seperti <span>editor mode</span> dalam novel Français yang belum selesai ditulis."</p>
+        <div class="testi-rule"></div>
+        <div class="testi-attr">Larasati W. — Jakarta · Elite Member</div>
+      </div>
+      <div class="testi-slide">
+        <p class="testi-q">"Coat mereka adalah investasi terbaik yang pernah saya buat. Lima musim kemudian, <span>ia masih sempurna.</span>"</p>
+        <div class="testi-rule"></div>
+        <div class="testi-attr">Siti Nurhayati — Singapore · Member since 2020</div>
+      </div>
+      <div class="testi-slide">
+        <p class="testi-q">"VELOURA memahami bahwa kemewahan sejati adalah ketika <span>tidak ada yang berlebihan</span> — dan tidak ada yang kurang."</p>
+        <div class="testi-rule"></div>
+        <div class="testi-attr">Dr. Amira Hassan — Dubai · Collector</div>
+      </div>
+    </div>
+    <div class="testi-controls">
+      <div class="testi-dot on" data-i="0"></div>
+      <div class="testi-dot" data-i="1"></div>
+      <div class="testi-dot" data-i="2"></div>
+    </div>
+  </div>
+</section>
+
+<!-- NEWSLETTER -->
+<section class="newsletter">
+  <div class="nl-wrap reveal">
+    <div class="eyebrow" style="justify-content:center;margin-bottom:20px">The Edit, Delivered</div>
+    <h2 class="nl-heading">Join the<br/><em>Inner Circle</em></h2>
+    <p class="nl-sub">Dapatkan akses eksklusif ke pre-launch koleksi terbaru, editorial pilihan, dan undangan event privat VELOURA.</p>
+    <form class="nl-form" onsubmit="return false">
+      <input class="nl-input" type="email" placeholder="Your email address"/>
+      <button class="nl-btn" type="submit">Subscribe →</button>
+    </form>
+    <p class="nl-note">No spam, ever. Unsubscribe anytime.</p>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="ft-wrap">
+    <div class="ft-top">
+      <div>
+        <div class="ft-brand">VELOURA</div>
+        <div class="ft-brand-sub">Paris · Jakarta · Tokyo</div>
+        <p class="ft-brand-desc">Maison de mode dédié à l'élégance silencieuse et au savoir-faire intemporel.</p>
+        <div class="ft-socials">
+          <a href="#" class="ft-soc">Instagram</a>
+          <a href="#" class="ft-soc">Pinterest</a>
+          <a href="#" class="ft-soc">WeChat</a>
+          <a href="#" class="ft-soc">Youtube</a>
+        </div>
+      </div>
+      <div class="ft-col">
+        <h5>Collections</h5>
+        <ul>
+          <li><a href="#">New Arrivals</a></li>
+          <li><a href="#">AH 2025 Collection</a></li>
+          <li><a href="#">SS 2025 Archive</a></li>
+          <li><a href="#">Accessories</a></li>
+          <li><a href="#">Lookbook</a></li>
+        </ul>
+      </div>
+      <div class="ft-col">
+        <h5>Maison</h5>
+        <ul>
+          <li><a href="#">Our Story</a></li>
+          <li><a href="#">Atelier</a></li>
+          <li><a href="#">Sustainability</a></li>
+          <li><a href="#">Press</a></li>
+          <li><a href="#">Careers</a></li>
+        </ul>
+      </div>
+      <div class="ft-col">
+        <h5>Client Services</h5>
+        <ul>
+          <li><a href="#">Flagship — Jakarta Selatan</a></li>
+          <li><a href="#">Book an Appointment</a></li>
+          <li><a href="#">Size Guide</a></li>
+          <li><a href="#">Shipping & Returns</a></li>
+          <li><a href="#">hello@veloura.id</a></li>
+        </ul>
+        <div style="margin-top:24px">
+          <div style="font-family:'Jost',sans-serif;font-size:8px;font-weight:600;letter-spacing:.28em;text-transform:uppercase;color:rgba(212,201,184,.28);margin-bottom:10px">Store Hours</div>
+          <div style="font-family:'Poppins',serif;font-size:14px;font-style:italic;color:rgba(232,222,208,.35);line-height:1.8">Mon–Sat: 10:00–20:00<br/>Sunday: 11:00–18:00</div>
+        </div>
+      </div>
+    </div>
+    <div class="ft-bottom">
+      <div class="ft-copy">© 2025 VELOURA. All rights reserved.</div>
+      <div class="ft-legal">
+        <a href="#">Privacy</a>
+        <a href="#">Terms</a>
+        <a href="#">Cookie Policy</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script>
+  (function(){
+    const hb=document.getElementById('hamburger'), mm=document.getElementById('mobileMenu');
+    if(hb&&mm){
+      const toggle=(open)=>{const w=open??!mm.classList.contains('open');mm.classList.toggle('open',w);hb.classList.toggle('open',w);hb.setAttribute('aria-expanded',w);};
+      hb.addEventListener('click',()=>toggle());
+      mm.querySelectorAll('a').forEach(a=>a.addEventListener('click',()=>toggle(false)));
+    }
+  })();
+// Nav scroll
+const nav = document.getElementById('nav');
+window.addEventListener('scroll', () => {
+  nav.classList.toggle('scrolled', window.scrollY > 40);
+});
+
+// Reveal on scroll
+const obs = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (e.isIntersecting) { e.target.classList.add('on'); obs.unobserve(e.target); }
+  });
+}, { threshold: 0.1 });
+document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
+
+// Testimonials
+let idx = 0;
+const slides = document.querySelectorAll('.testi-slide');
+const dots = document.querySelectorAll('.testi-dot');
+
+function showSlide(i) {
+  slides[idx].classList.remove('on');
+  dots[idx].classList.remove('on');
+  idx = (i + slides.length) % slides.length;
+  slides[idx].classList.add('on');
+  dots[idx].classList.add('on');
+}
+
+dots.forEach(d => d.addEventListener('click', () => showSlide(+d.dataset.i)));
+setInterval(() => showSlide(idx + 1), 5500);
+</script>
+</body>
+</html>
