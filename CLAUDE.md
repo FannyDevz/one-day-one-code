@@ -4,7 +4,7 @@ Guidance for Claude Code (and contributors) when working in this repository.
 
 ## Overview
 
-`one-day-one-code` is a collection of daily web experiments. **Each numbered folder is a standalone project** — no cross-project dependencies, no workspace/monorepo tooling, and **no build step**. Everything is static HTML/CSS/JS opened directly in the browser.
+`one-day-one-code` is a collection of daily web experiments. **Each numbered folder is a standalone project** — no cross-project dependencies, no workspace/monorepo tooling, and **no build step** (with one intentional exception: `04. pitek`, an Electron app). Everything else is static HTML/CSS/JS opened directly in the browser.
 
 The repo root contains:
 - `index.html` — the visual catalog that indexes every project. Project data lives in the `PROJECTS` array inside its `<script>`.
@@ -18,6 +18,7 @@ The repo root contains:
 | `01. haystack-hunt ` (note the trailing space) | Game 3D | Three.js + OrbitControls via CDN, single-file | `index.html` |
 | `02. itachi-landing-page` | Cinematic landing page | Vanilla JS (`main.js`), CSS (`style.css`), frame sequence in `frames/` | `index.html` |
 | `03. jangan-lupa-titik-koma` | Coding puzzle | Vanilla JS, single-file | `index.html` |
+| `04. pitek` | Tool / App (Eagle-style asset manager) | **Electron + electron-vite + Svelte + TypeScript** (build step), sharp | `npm run dev` |
 
 ## Run / preview
 
@@ -30,6 +31,7 @@ cd "<project folder>" && python3 -m http.server 8000   # open http://localhost:8
 - `01. haystack-hunt ` **needs an internet connection** (Three.js from a CDN, ES module imports).
 - `02. itachi-landing-page` loads many images from `frames/` — run it through a server, not `file://`.
 - `03` is fully static and safe to open directly.
+- `04. pitek` is the **one project with a build step** — Electron + Vite + TypeScript, needs Node.js: `npm install`, then `npm run dev` (Electron window) or `npm run build` (→ `out/`). It is **not** a static-server project and is registered with `openable:false` in the catalog. `node_modules/`, `out/`, and `dist/` are git-ignored (via `04. pitek/.gitignore`).
 
 ## The catalog (`index.html`)
 
@@ -59,5 +61,5 @@ Screenshots are taken headless with Puppeteer (Chromium), 1280×800 @2x, each pr
 
 ## Notes
 
-- Don't add build/bundler tooling unless asked — "open directly in the browser" is part of the repo's design.
+- Don't add build/bundler tooling unless asked — "open directly in the browser" is part of the repo's design. **Exception:** `04. pitek` was intentionally built as an Electron app (electron-vite + Svelte + TypeScript) at the user's request; it's the one project with a build step. Keep new projects build-free unless the user explicitly asks otherwise.
 - The folder name `01. haystack-hunt ` has a **trailing space** — quote the path in the shell.

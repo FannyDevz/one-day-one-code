@@ -426,11 +426,324 @@ python3 -m http.server 8000
 Single-file `index.html` — HTML + CSS + Vanilla JS, no dependencies and no build step.
 </script>
 
+<script type="text/markdown" data-readme="blockcoding">
+# 🧱 Block-Coding for Basic Logic Lab
+
+A **visual block-coding** lab. Snap picture-based instruction blocks together like a puzzle — *Move, Turn, Repeat N, Repeat Forever, If-Then, If-Else, Variable, Print, Stop* — then run the animation to watch your program play out. Guide a robot past obstacles, auto-harvest a garden, or program a traffic light. Made to build **computational thinking** for junior-high-level equivalence education (Paket B, Fase D).
+
+![Preview](preview.png)
+
+> Part of the **one-day-one-code** repo — see the full catalog in [`../index.html`](../index.html).
+
+## Play
+
+Open `index.html` directly in a browser — fully static, no server or install needed.
+
+```bash
+# optional, via local server
+python3 -m http.server 8000   # then open http://localhost:8000
+```
+
+## Features
+
+- **5 levels · 17 challenges** of increasing difficulty.
+- **Drag & drop blocks** into the program area, including **nested blocks** (blocks inside loops/conditionals).
+- **Real-time simulation** — the animation runs the program you assembled; errors just mean "try again", no penalty.
+- **Auto scoring** with achievement badges, plus a **reflection journal** saved to `localStorage`.
+- **Mobile-friendly** — tabbed panels (Blocks / Program / Simulation) and **tap-to-pick + tap-to-place** in place of drag-and-drop on touch screens.
+
+## Tech
+
+HTML5 + CSS3 + Vanilla JavaScript (`app.js`, `engine.js`, `levels.js`) — no framework, no build step. HTML5 Drag & Drop API on desktop, tap-to-place on mobile; progress persisted via `localStorage`.
+
+> By **Fanny Bagus Ramadhan** — [fanny.dev](https://fanny.dev) · Ruang Murid, Rumah Pendidikan
+</script>
+
+<script type="text/markdown" data-readme="khodam">
+# 👻 Check Khodam
+
+A tiny, tongue-in-cheek take on the Indonesian **"cek khodam"** meme. Type a name, hit **Cek Khodam**, and get a randomly assigned *khodam* (guardian spirit) — from serious-sounding spirits to fried chicken, Whiskas, and Free Fire. Every result is logged into a table so you can compare with friends.
+
+![Preview](preview.png)
+
+> Part of the **one-day-one-code** repo — see the full catalog in [`../index.html`](../index.html).
+
+## Play
+
+Open `index.html` directly in a browser — fully static, no server needed.
+
+```bash
+# optional, via local server
+python3 -m http.server 8000
+```
+
+## Features
+
+- **Name → random khodam** — picks a random entry from the built-in khodam pool.
+- **History table** of everyone you've checked, with a **Clear** button.
+- **Persistent** — results are saved to `localStorage` and reloaded on the next visit.
+- **Editable list** — add your own entries by editing `khodam/list.txt`, one per line.
+
+## Tech
+
+Single-page HTML + CSS (`css/styles.css`) + Vanilla JS (`js/script.js`) — no framework, no build step, no backend. The khodam pool is just a plain text file.
+</script>
+
+<script type="text/markdown" data-readme="investment">
+# 📈 Pasar Saham Virtual — Virtual Stock Market
+
+A **virtual investing simulator** built as a self-contained web app (SCORM 1.2) for senior-high-level equivalence education (Paket C). Learners get a virtual **Rp 10,000,000** and manage it across stocks, a money-market fund, gold, and cash through **5 rounds** of Indonesian economic-news scenarios — learning diversification, risk profiles, and inflation along the way.
+
+![Preview](preview.png)
+
+> Part of the **one-day-one-code** repo — see the full catalog in [`../index.html`](../index.html).
+
+> **Disclaimer:** an educational simulation only. All instruments, prices, and scenarios are fictional, do not reflect real markets, and are not investment advice.
+
+## Run
+
+Pure HTML/CSS/JS with no build step, but it **can't be opened via `file://`** — the Service Worker and `manifest.json` need an HTTP origin. Serve it statically:
+
+```bash
+python3 -m http.server 8000   # then open http://localhost:8000
+```
+
+Outside an LMS, `window.API` is absent so SCORM tracking is skipped without errors — progress still persists to `localStorage`.
+
+## Features
+
+- **5 sessions** — savings vs. investing (with an inflation calculator), instrument cards, the core 5-round simulation, portfolio analysis, and real-investing guidance, plus a wrap-up screen.
+- **Investor-profile quiz** → suggested allocation, then allocation sliders + SVG charts across 5 news-driven rounds.
+- **8 behavior-based badges** — e.g. *Tameng Emas* only unlocks if you hold gold ≥ 15% exactly in Round 4 as the rupiah weakens.
+- **Auto scoring & SCORM** — per-session scores roll up into `cmi.core.score.raw`; `passed` at ≥ 70.
+- **Offline-ready PWA** — cache-first Service Worker; mobile-first and WCAG 2.1 AA-minded, honoring `prefers-reduced-motion`.
+
+## Tech
+
+Vanilla ES6+ JavaScript, zero external libraries. One global state object (`S`) persisted to `localStorage` (`psv_state_v1`), manual screen routing, a shared quiz engine, and inline SVG charts.
+
+> By **Fanny Bagus Ramadhan** — [fanny.dev](https://fanny.dev) · Paket C, Ruang Murid, Rumah Pendidikan
+</script>
+
+<script type="text/markdown" data-readme="nutrition">
+# 🥗 Gizi Seimbang — Nutrition Health Literacy Game
+
+A **drag-and-drop nutrition game** about building balanced meals. Drag foods from the shelf onto the right plate zones, watch calories, protein, carbs, fat, and fiber update in real time, and chase a nutrition score of 0–100. Built for junior-high-level equivalence education (Paket B), with food data grounded in **TKPI Kemenkes RI** and the **AKG (Permenkes No. 28/2019)**.
+
+![Preview](preview.png)
+
+> Part of the **one-day-one-code** repo — see the full catalog in [`../index.html`](../index.html).
+
+## Play
+
+Open `index.html` directly in a browser — fully static, no server or install needed.
+
+```bash
+# optional, via local server
+python3 -m http.server 8000   # then open http://localhost:8000
+```
+
+## Features
+
+- **5 levels · 14 challenges**, with a step-by-step stepper — the next challenge unlocks only when the current one is done.
+- **40+ real foods** (from TKPI Kemenkes RI) with **strict category validation** — a food only drops into its matching zone; wrong drops shake red with an educational hint.
+- **Real-time nutrition panel** (bar chart) and a **shopping budget** (levels 2 & 5B) that update as you add or remove foods.
+- **3 badges** (Family Nutritionist, Smart Shopper, Score 300+) plus a 2-question **reflection journal** per level, saved to `localStorage` (`gim-gizi-v1`).
+- **Accessible & mobile-first** — 3-step onboarding, tabbed panels (Foods / Plate / Nutrition), tap-to-pick + tap-to-place, ≥44×44px touch targets, and `prefers-reduced-motion` support.
+
+## Tech
+
+HTML5 + CSS3 + Vanilla JavaScript (`app.js`, `data.js`, `levels.js`) — no framework, no build step. HTML5 Drag & Drop API on desktop, tap-to-place on mobile; scores, badges, and journal persisted via `localStorage`.
+
+> By **Tryas Sukmaning Sakti** · Ruang Murid, Rumah Pendidikan
+</script>
+
+<script type="text/markdown" data-readme="coffee">
+# ☕ Foliage — Slow Coffee Bar
+
+A warm, editorial landing page for a fictional specialty coffee bar. A floating cup hero with a live "today's featured bean" card and rating, then story, menu, experience, a bean-sourcing journey, testimonials, and a visit/order call-to-action.
+
+![Preview](preview.png)
+
+> Part of the **one-day-one-code** repo — see the full catalog in [`../index.html`](../index.html).
+
+## Run
+
+Open `index.html` directly in a browser — it's a self-contained single file. Google Fonts load from a CDN, so an internet connection gives the intended typography; it still works offline with system-font fallbacks.
+
+```bash
+# optional, via local server
+python3 -m http.server 8000
+```
+
+## Sections
+
+- **Hero** — "Where every sip tells a story" with a floating cup, featured-bean card, and rating.
+- **Our Story · Menu · Experience** — the brand narrative and offerings.
+- **Our Beans** — a single-origin sourcing journey.
+- **Testimonials · Visit** — community quotes and location / order CTA.
+
+## Tech
+
+A single `index.html` — inline CSS + Vanilla JS, no framework and no build step. Scroll-based reveals and hover interactions in plain JS; typography via Playfair Display + Lato (Google Fonts).
+</script>
+
+<script type="text/markdown" data-readme="agency">
+# ✨ Luminary Studio — Digital Agency
+
+A bold, dark landing page for a fictional creative digital agency. A gradient "We build brands that dare to stand out" hero with animated stat counters (years active, projects, awards, satisfaction), then services, work, process, about, testimonials, and contact.
+
+![Preview](preview.png)
+
+> Part of the **one-day-one-code** repo — see the full catalog in [`../index.html`](../index.html).
+
+## Run
+
+Open `index.html` directly in a browser — it's a self-contained single file. Google Fonts load from a CDN, so an internet connection gives the intended typography; it still works offline with system-font fallbacks.
+
+```bash
+# optional, via local server
+python3 -m http.server 8000
+```
+
+## Sections
+
+- **Hero** — gradient headline with animated stats (8+ years · 240+ projects · 18 awards · 98% satisfaction).
+- **Services · Work · Process** — what they do and how they do it.
+- **About · Testimonials · Contact** — the studio, client quotes, and a "Let's build something" CTA.
+
+## Tech
+
+A single `index.html` — inline CSS + Vanilla JS, no framework and no build step. Gradient/glow visuals in CSS, scroll reveals and count-up stats in plain JS; typography via Poppins (Google Fonts).
+</script>
+
+<script type="text/markdown" data-readme="fashion">
+# 🖤 VELOURA — Fashion Brand
+
+An editorial landing page for a fictional luxury fashion house (Automne · Hiver 2025). A split black/beige hero with "The New Edit", a running announcement bar and cart counter, a product grid of new arrivals, and a quiet manifesto section.
+
+![Preview](preview.png)
+
+> Part of the **one-day-one-code** repo — see the full catalog in [`../index.html`](../index.html).
+
+## Run
+
+Open `index.html` directly in a browser — it's a self-contained single file. Google Fonts load from a CDN, so an internet connection gives the intended typography; it still works offline with system-font fallbacks.
+
+```bash
+# optional, via local server
+python3 -m http.server 8000
+```
+
+## Sections
+
+- **Announcement bar + nav** — Collections · New Arrivals · Lookbook · Our Story, with search and a cart badge.
+- **Editorial hero** — split-screen "The New Edit" with a lookbook-style mannequin illustration.
+- **Products** — a new-arrivals grid.
+- **Manifesto** — the brand's quiet-luxury statement (Indonesian copy).
+
+## Tech
+
+A single `index.html` — inline CSS + Vanilla JS, no framework and no build step. All imagery is CSS/SVG-based (no external assets); typography via Playfair Display + Montserrat + Cormorant Garamond (Google Fonts).
+</script>
+
+<script type="text/markdown" data-readme="finedining">
+# 🍽️ Aurum — Fine Dining Restaurant
+
+A luxury landing page for a fictional fine-dining restaurant in Jakarta. A cinematic dark-and-gold hero ("The art of dining reimagined"), signature dishes, a 7-course tasting menu, the chef's story, private dining, and a reservation form.
+
+![Preview](preview.png)
+
+> Part of the **one-day-one-code** repo — see the full catalog in [`../index.html`](../index.html).
+
+## Run
+
+Open `index.html` directly in a browser — it's a self-contained single file. Google Fonts load from a CDN, so an internet connection gives the intended typography; it still works offline with system-font fallbacks.
+
+```bash
+# optional, via local server
+python3 -m http.server 8000
+```
+
+## Sections
+
+- **Hero** — gold-on-black headline with an info strip (open days · 7-course tasting · 2 Michelin stars · dress code).
+- **Dishes · Tasting** — signature plates and the full tasting menu.
+- **Chef · Private Dining** — the kitchen's story and event spaces.
+- **Reservation · Visit** — booking form and location.
+
+## Tech
+
+A single `index.html` — inline CSS + Vanilla JS, no framework and no build step. Refined type scale and scroll reveals in plain JS; typography via Cormorant Garamond + Lato (Google Fonts).
+</script>
+
+<script type="text/markdown" data-readme="gym">
+# 🏋️ IRONFORGE — Gym Landing Page
+
+A high-energy landing page for a fictional Jakarta gym. Oversized "Forge Your Legend" type over a dark red-lit hero with animated stats (members, trainers, classes, years), then programs, features, trainers, pricing tiers, a weekly schedule, and testimonials. Copy is in Indonesian.
+
+![Preview](preview.png)
+
+> Part of the **one-day-one-code** repo — see the full catalog in [`../index.html`](../index.html).
+
+## Run
+
+Open `index.html` directly in a browser — it's a self-contained single file. Google Fonts load from a CDN, so an internet connection gives the intended typography; it still works offline with system-font fallbacks.
+
+```bash
+# optional, via local server
+python3 -m http.server 8000
+```
+
+## Sections
+
+- **Hero** — "Forge Your Legend" with a barbell illustration and stat row (1061+ members · 7+ trainers · 15+ classes · 3+ years).
+- **Programs · Features · Trainers** — training tracks, facilities, and the coaching team.
+- **Pricing** — three membership tiers (Starter · Elite · Legend).
+- **Schedule · Testimonials · CTA** — weekly classes, member stories, and a 7-day free-trial call-to-action.
+
+## Tech
+
+A single `index.html` — inline CSS + Vanilla JS, no framework and no build step. Angular/clip-path styling and count-up stats in plain JS; typography via Bebas Neue + Barlow Condensed + Inter (Google Fonts).
+</script>
+
+<script type="text/markdown" data-readme="saas">
+# 🤖 Axion AI — SaaS Landing Page
+
+A clean, modern landing page for a fictional AI work-assistant SaaS. A light hero with a floating product-dashboard mockup ("Your team's AI assistant, always one step ahead"), then a feature grid, how-it-works steps, testimonials, pricing, and an FAQ.
+
+![Preview](preview.png)
+
+> Part of the **one-day-one-code** repo — see the full catalog in [`../index.html`](../index.html).
+
+## Run
+
+Open `index.html` directly in a browser — it's a self-contained single file. Google Fonts load from a CDN, so an internet connection gives the intended typography; it still works offline with system-font fallbacks.
+
+```bash
+# optional, via local server
+python3 -m http.server 8000
+```
+
+## Sections
+
+- **Hero** — headline + CTAs over a dashboard-mockup card (tasks done, time saved, accuracy, live chat).
+- **Features · How It Works** — the product's capabilities and onboarding steps.
+- **Testimonials · Pricing · FAQ** — social proof, plan tiers, and common questions.
+
+## Tech
+
+A single `index.html` — inline CSS + Vanilla JS, no framework and no build step. The dashboard mockup is pure HTML/CSS (SVG charts, no images); interactive FAQ accordion and scroll reveals in plain JS; typography via Inter (Google Fonts).
+</script>
+
 <script>
 const CATS = {
   game3d:  { label:"Game 3D",      color:"#22c55e" },
   landing: { label:"Landing Page", color:"#a78bfa" },
   puzzle:  { label:"Game Puzzle",  color:"#f97316" },
+  tool:    { label:"Tool / App",   color:"#38bdf8" },
+  edu:     { label:"Education",    color:"#ec4899" },
+  fun:     { label:"Fun / Toy",    color:"#eab308" },
 };
 
 const PROJECTS = [
@@ -456,6 +769,86 @@ const PROJECTS = [
     shot:"03. jangan-lupa-titik-koma/preview.png", folder:"03. jangan-lupa-titik-koma",
     desc:"A coding puzzle: among thousands of lines, exactly one statement is missing its ';'. Find the line, click it, done. Choose language & difficulty.",
     tags:["Vanilla JS","Puzzle","Multi-language","Timer"],
+    entry:"index.html", openable:true
+  },
+  {
+    n:"04", id:"blockcoding", title:"Lab Coding Blok",
+    jp:"Block-Coding for Basic Logic", cat:"edu",
+    shot:"04. block-coding-for-basic-logic-lab/preview.png", folder:"04. block-coding-for-basic-logic-lab",
+    desc:"A visual block-coding lab: snap picture blocks (move, loop, if-then) into a program and run the animation. 5 levels, 17 challenges, auto scoring & badges.",
+    tags:["Vanilla JS","Block coding","Drag & drop","localStorage"],
+    entry:"index.html", openable:true
+  },
+  {
+    n:"05", id:"khodam", title:"Check Khodam",
+    jp:"Random Guardian-Spirit Generator", cat:"fun",
+    shot:"05. check-khodam/preview.png", folder:"05. check-khodam",
+    desc:"A tongue-in-cheek 'cek khodam' generator: type a name, get a random guardian spirit — from serious spirits to fried chicken. Results are logged to a table.",
+    tags:["Vanilla JS","fetch","localStorage","Meme"],
+    entry:"index.html", openable:true
+  },
+  {
+    n:"06", id:"investment", title:"Pasar Saham Virtual",
+    jp:"Virtual Stock Market Simulator", cat:"edu",
+    shot:"06. investment-simulator/preview.png", folder:"06. investment-simulator",
+    desc:"A virtual investing simulator (SCORM). Manage Rp 10M across stocks, funds, gold & cash through 5 rounds of Indonesian economic-news scenarios. PWA, offline-ready.",
+    tags:["Vanilla JS","PWA","SCORM","localStorage"],
+    entry:"index.html", openable:true
+  },
+  {
+    n:"07", id:"nutrition", title:"Gizi Seimbang",
+    jp:"Balanced Nutrition Literacy Game", cat:"edu",
+    shot:"07. nutrition-health-literacy-game/preview.png", folder:"07. nutrition-health-literacy-game",
+    desc:"A drag-and-drop nutrition game: build balanced meals, watch calories & macros update live, chase a 0–100 score. 5 levels, 14 challenges, real food data (TKPI).",
+    tags:["Vanilla JS","Drag & drop","localStorage","Education"],
+    entry:"index.html", openable:true
+  },
+  {
+    n:"08", id:"coffee", title:"Foliage Coffee",
+    jp:"Foliage · Slow Coffee Bar", cat:"landing",
+    shot:"08. coffee-shop/preview.png", folder:"08. coffee-shop",
+    desc:"A warm, editorial landing page for a slow coffee bar — floating cup hero with a live 'featured bean' card, story, menu, bean journey, and visit sections.",
+    tags:["Single-file","CSS animation","Responsive","Coffee"],
+    entry:"index.html", openable:true
+  },
+  {
+    n:"09", id:"agency", title:"Luminary Studio",
+    jp:"Luminary · Creative Digital Studio", cat:"landing",
+    shot:"09. digital-agency/preview.png", folder:"09. digital-agency",
+    desc:"A bold, dark landing page for a creative digital agency — gradient hero with animated stats, services, work, process, about, and contact.",
+    tags:["Single-file","Dark UI","Gradient","Agency"],
+    entry:"index.html", openable:true
+  },
+  {
+    n:"10", id:"fashion", title:"VELOURA",
+    jp:"VELOURA · Automne–Hiver 2025", cat:"landing",
+    shot:"10. fashion-brand/preview.png", folder:"10. fashion-brand",
+    desc:"An editorial fashion landing page (AW 2025) — split hero, announcement bar, cart badge, a new-arrivals product grid, and a quiet-luxury manifesto.",
+    tags:["Single-file","Editorial","E-commerce","Fashion"],
+    entry:"index.html", openable:true
+  },
+  {
+    n:"11", id:"finedining", title:"Aurum",
+    jp:"Aurum · Fine Dining, Jakarta", cat:"landing",
+    shot:"11. fine-dining/preview.png", folder:"11. fine-dining",
+    desc:"A luxury fine-dining landing page — cinematic dark-and-gold hero, signature dishes, a 7-course tasting menu, chef story, private dining, and reservations.",
+    tags:["Single-file","Luxury","Reservation","Restaurant"],
+    entry:"index.html", openable:true
+  },
+  {
+    n:"12", id:"gym", title:"IRONFORGE Gym",
+    jp:"IRONFORGE · Forge Your Legend", cat:"landing",
+    shot:"12. fitness-gym/preview.png", folder:"12. fitness-gym",
+    desc:"A high-energy gym landing page — oversized type, animated hero, programs, trainers, three pricing tiers, a weekly class schedule, and testimonials.",
+    tags:["Single-file","Bold type","Pricing","Fitness"],
+    entry:"index.html", openable:true
+  },
+  {
+    n:"13", id:"saas", title:"Axion AI",
+    jp:"Axion AI · Intelligent Work Assistant", cat:"landing",
+    shot:"13. saas-ai-assistant/preview.png", folder:"13. saas-ai-assistant",
+    desc:"A clean SaaS landing page for an AI assistant — dashboard-mockup hero, feature grid, how-it-works, testimonials, pricing, and FAQ.",
+    tags:["Single-file","SaaS","Dashboard UI","Pricing"],
     entry:"index.html", openable:true
   },
 ];
