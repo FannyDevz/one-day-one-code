@@ -1,0 +1,1669 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Foliage Coffee — Where Every Sip Tells a Story</title>
+  <meta name="description" content="A slow coffee bar in the heart of the city. Single-origin beans, mindfully brewed, served in a space that feels like home." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;0,800;0,900;1,400;1,600&family=Lato:wght@300;400;700&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --espresso:    #1E0E05;
+      --dark-roast:  #3C1F0F;
+      --medium:      #6B3A2A;
+      --caramel:     #A0633A;
+      --latte:       #C49A6C;
+      --cream:       #E8D5B7;
+      --milk:        #F5ECD8;
+      --parchment:   #FDF7EE;
+      --warm-white:  #FFFDF9;
+      --forest:      #1E3A2F;
+      --sage:        #3D6B52;
+      --moss:        #5A8A6A;
+      --fern:        #8AB89A;
+      --leaf:        #C4DDD0;
+      --text:        #1E0E05;
+      --text-mid:    #5C3D28;
+      --text-light:  #9C7556;
+      --radius:      12px;
+      --radius-lg:   20px;
+      --radius-xl:   32px;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Lato', sans-serif;
+      background: var(--warm-white);
+      color: var(--text);
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+    }
+
+    /* ─── TYPOGRAPHY ─────────────────────────────────────── */
+    .serif { font-family: 'Playfair Display', Georgia, serif; }
+
+    h1,h2,h3 { font-family: 'Playfair Display', Georgia, serif; }
+
+    /* ─── UTILS ──────────────────────────────────────────── */
+    .container { max-width: 1140px; margin: 0 auto; padding: 0 28px; }
+
+    .eyebrow {
+      display: inline-flex; align-items: center; gap: 10px;
+      font-family: 'Lato', sans-serif; font-size: 11px; font-weight: 700;
+      letter-spacing: .18em; text-transform: uppercase; color: var(--sage);
+    }
+    .eyebrow::before, .eyebrow::after {
+      content: ''; display: block;
+      width: 28px; height: 1px; background: var(--moss);
+    }
+
+    .btn {
+      display: inline-flex; align-items: center; gap: 9px;
+      padding: 14px 30px; border-radius: 99px;
+      font-family: 'Lato', sans-serif; font-size: 13px;
+      font-weight: 700; letter-spacing: .08em; text-transform: uppercase;
+      cursor: pointer; text-decoration: none; border: none;
+      transition: all .28s ease; white-space: nowrap;
+    }
+    .btn svg { width: 16px; height: 16px; transition: transform .25s; }
+    .btn:hover svg { transform: translateX(3px); }
+
+    .btn-dark {
+      background: var(--dark-roast); color: var(--cream);
+      box-shadow: 0 6px 24px rgba(60,31,15,.28);
+    }
+    .btn-dark:hover { background: var(--espresso); transform: translateY(-2px); box-shadow: 0 10px 30px rgba(60,31,15,.35); }
+
+    .btn-outline {
+      background: transparent; color: var(--dark-roast);
+      border: 1.5px solid var(--caramel);
+    }
+    .btn-outline:hover { background: var(--dark-roast); color: var(--cream); border-color: var(--dark-roast); }
+
+    .btn-green {
+      background: var(--forest); color: var(--leaf);
+      box-shadow: 0 6px 24px rgba(30,58,47,.28);
+    }
+    .btn-green:hover { background: var(--sage); transform: translateY(-2px); }
+
+    /* ─── DECORATIVE ELEMENTS ────────────────────────────── */
+    .divider {
+      display: flex; align-items: center; gap: 16px;
+      color: var(--latte); margin: 12px 0;
+    }
+    .divider::before, .divider::after { content: ''; flex: 1; height: 1px; background: var(--cream); }
+
+    /* grain texture overlay */
+    .texture::after {
+      content: ''; position: absolute; inset: 0; pointer-events: none; z-index: 1;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+      opacity: .4;
+    }
+
+    /* ─── NAV ────────────────────────────────────────────── */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 200;
+      transition: all .35s;
+      background: var(--parchment);
+      border-bottom: 1px solid rgba(60,31,15,.08);
+    }
+    nav.scrolled {
+      background: rgba(253,247,238,.94);
+      backdrop-filter: blur(16px) saturate(150%);
+      border-bottom: 1px solid var(--cream);
+      box-shadow: 0 2px 20px rgba(60,31,15,.06);
+    }
+    .nav-inner {
+      max-width: 1140px; margin: 0 auto; padding: 0 28px;
+      display: flex; align-items: center; justify-content: space-between;
+      height: 76px;
+    }
+    .nav-logo {
+      display: flex; align-items: center; gap: 11px;
+      text-decoration: none;
+    }
+    .logo-mark {
+      width: 40px; height: 40px; border-radius: 50%;
+      background: var(--dark-roast); display: flex; align-items: center; justify-content: center;
+    }
+    .logo-mark svg { width: 22px; height: 22px; color: var(--cream); }
+    .logo-name {
+      font-family: 'Playfair Display', serif; font-size: 19px; font-weight: 700;
+      color: var(--dark-roast); line-height: 1; letter-spacing: -.01em;
+    }
+    .logo-sub { font-size: 9px; font-weight: 700; letter-spacing: .15em; text-transform: uppercase; color: var(--text-light); }
+
+    .nav-links { display: flex; align-items: center; gap: 34px; list-style: none; }
+    .nav-links a {
+      font-size: 13px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase;
+      color: var(--text-mid); text-decoration: none; transition: color .2s;
+    }
+    .nav-links a:hover { color: var(--dark-roast); }
+    .nav-cta { padding: 10px 22px; font-size: 12px; }
+    .hamburger { display: none; background: none; border: none; cursor: pointer; flex-direction: column; gap: 5px; }
+    .hamburger span { display: block; width: 22px; height: 2px; background: var(--dark-roast); border-radius: 2px; transition: all .3s; }
+
+    /* ─── HERO ───────────────────────────────────────────── */
+    .hero {
+      min-height: 100vh; position: relative; overflow: hidden;
+      display: flex; align-items: center;
+      background: var(--dark-roast);
+    }
+
+    /* warm background illustration */
+    .hero-bg {
+      position: absolute; inset: 0;
+      background: radial-gradient(ellipse 80% 100% at 70% 50%, #5C2D1A 0%, var(--dark-roast) 55%, var(--espresso) 100%);
+    }
+    .hero-bg-glow {
+      position: absolute; top: 20%; right: 15%;
+      width: 500px; height: 500px;
+      background: radial-gradient(circle, rgba(192,146,100,.18) 0%, transparent 65%);
+      pointer-events: none; animation: warmPulse 6s ease-in-out infinite;
+    }
+    @keyframes warmPulse {
+      0%,100% { opacity: .6; transform: scale(1); }
+      50% { opacity: 1; transform: scale(1.08); }
+    }
+
+    /* floating coffee beans */
+    .bean {
+      position: absolute; pointer-events: none;
+      opacity: .08; animation: beanFloat linear infinite;
+    }
+    .bean svg { color: var(--latte); }
+    .bean-1 { top: 15%; left: 8%;  width: 40px; animation-duration: 14s; animation-delay: 0s; }
+    .bean-2 { top: 60%; left: 5%;  width: 28px; animation-duration: 18s; animation-delay: -5s; }
+    .bean-3 { top: 80%; left: 22%; width: 20px; animation-duration: 12s; animation-delay: -8s; }
+    .bean-4 { top: 10%; right: 8%; width: 34px; animation-duration: 16s; animation-delay: -3s; }
+    .bean-5 { top: 45%; right: 4%; width: 24px; animation-duration: 20s; animation-delay: -10s; }
+    @keyframes beanFloat { 0% { transform: translateY(0) rotate(0); } 50% { transform: translateY(-28px) rotate(180deg); } 100% { transform: translateY(0) rotate(360deg); } }
+
+    .hero-inner {
+      position: relative; z-index: 2;
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 64px; align-items: center;
+    }
+
+    .hero-content { padding-top: 80px; }
+    .hero-eyebrow { color: var(--fern); margin-bottom: 24px; }
+    .hero-eyebrow::before, .hero-eyebrow::after { background: var(--sage); }
+    .hero h1 {
+      font-size: clamp(44px, 5.5vw, 76px); font-weight: 800;
+      line-height: 1.05; letter-spacing: -.02em;
+      color: var(--cream); margin-bottom: 24px;
+    }
+    .hero h1 em { color: var(--latte); font-style: italic; }
+    .hero-desc {
+      font-size: 17px; font-weight: 300; color: rgba(232,213,183,.65);
+      line-height: 1.85; margin-bottom: 40px; max-width: 440px;
+    }
+    .hero-actions { display: flex; gap: 14px; flex-wrap: wrap; margin-bottom: 52px; }
+    .hero-tags { display: flex; gap: 20px; }
+    .hero-tag-item {
+      display: flex; align-items: center; gap: 7px;
+      font-size: 12px; font-weight: 700; letter-spacing: .06em;
+      text-transform: uppercase; color: rgba(196,154,108,.7);
+    }
+    .hero-tag-item svg { width: 14px; height: 14px; color: var(--moss); }
+
+    /* Hero visual — large coffee cup illustration */
+    .hero-visual {
+      display: flex; align-items: center; justify-content: center;
+      padding-top: 80px; position: relative;
+    }
+    .cup-scene { position: relative; width: 320px; }
+
+    /* Saucer */
+    .saucer {
+      width: 280px; height: 28px; background: linear-gradient(180deg, #D4A97A, #B8895A);
+      border-radius: 50%; margin: 0 auto;
+      box-shadow: 0 12px 40px rgba(0,0,0,.4);
+      position: relative; z-index: 1;
+    }
+    .saucer::after {
+      content: ''; position: absolute; top: 6px; left: 50%; transform: translateX(-50%);
+      width: 100px; height: 14px; border-radius: 50%;
+      background: rgba(0,0,0,.15);
+    }
+
+    /* Cup body */
+    .cup-body {
+      width: 200px; margin: -6px auto 0;
+      position: relative; z-index: 2;
+    }
+    .cup-outer {
+      width: 200px; height: 180px;
+      background: linear-gradient(160deg, #E8C99A 0%, #C9956A 35%, #A0633A 70%, #7A4520 100%);
+      border-radius: 12px 12px 60px 60px;
+      position: relative; overflow: hidden;
+      box-shadow: inset -8px 0 20px rgba(0,0,0,.2), 0 4px 20px rgba(0,0,0,.3);
+    }
+    .cup-shine {
+      position: absolute; top: 10px; left: 18px;
+      width: 22px; height: 60px; border-radius: 99px;
+      background: rgba(255,255,255,.18);
+      transform: rotate(-10deg);
+    }
+    .cup-logo-area {
+      position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%);
+      text-align: center;
+    }
+    .cup-logo-leaf {
+      display: block; font-family: 'Playfair Display', serif;
+      font-size: 11px; font-style: italic; color: rgba(232,213,183,.6);
+      letter-spacing: .1em;
+    }
+    .cup-logo-big {
+      font-family: 'Playfair Display', serif; font-size: 28px; font-weight: 800;
+      color: rgba(253,247,238,.25); letter-spacing: -.02em; line-height: 1;
+    }
+
+    /* Handle */
+    .cup-handle {
+      position: absolute; right: -28px; top: 40px;
+      width: 40px; height: 70px;
+      border: 8px solid transparent;
+      border-right-color: #B8895A;
+      border-top-color: #B8895A;
+      border-radius: 0 30px 30px 0;
+    }
+
+    /* Coffee surface */
+    .coffee-surface {
+      width: 170px; height: 18px; margin: 0 auto;
+      background: radial-gradient(ellipse, #3C1F0F 0%, #1E0E05 70%);
+      border-radius: 50%;
+      position: relative; z-index: 3;
+      box-shadow: 0 0 12px rgba(0,0,0,.5);
+    }
+    /* Latte art */
+    .latte-art {
+      position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%);
+      width: 120px; height: 100%;
+    }
+
+    /* Steam */
+    .steam-wrap {
+      position: absolute; top: -70px; left: 50%; transform: translateX(-50%);
+      display: flex; gap: 16px; z-index: 4;
+    }
+    .steam {
+      width: 3px; background: rgba(232,213,183,.35);
+      border-radius: 99px; animation: steamRise 2.5s ease-in-out infinite;
+      transform-origin: bottom;
+    }
+    .s1 { height: 40px; animation-delay: 0s; }
+    .s2 { height: 55px; animation-delay: .4s; }
+    .s3 { height: 36px; animation-delay: .8s; }
+    .s4 { height: 48px; animation-delay: 1.2s; }
+    .s5 { height: 30px; animation-delay: .2s; }
+    @keyframes steamRise {
+      0% { transform: scaleY(0) translateY(0); opacity: 0; }
+      30% { opacity: 1; }
+      100% { transform: scaleY(1) translateY(-10px); opacity: 0; }
+    }
+
+    /* Plate text */
+    .plate-text {
+      text-align: center; margin-top: 16px;
+      font-family: 'Playfair Display', serif; font-size: 12px;
+      font-style: italic; color: rgba(196,154,108,.5); letter-spacing: .06em;
+    }
+
+    /* floating tags */
+    .float-chip {
+      position: absolute; background: rgba(253,247,238,.08);
+      backdrop-filter: blur(12px); border: 1px solid rgba(232,213,183,.12);
+      border-radius: var(--radius); padding: 10px 16px;
+      animation: chipFloat 5s ease-in-out infinite;
+    }
+    .fc-label { font-size: 9px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; color: rgba(196,154,108,.6); margin-bottom: 2px; }
+    .fc-val { font-size: 18px; font-weight: 800; color: var(--cream); font-family: 'Playfair Display', serif; }
+    .fc-sub { font-size: 10px; color: rgba(196,154,108,.5); }
+    .chip-1 { top: 10%; left: -60px; animation-delay: 0s; }
+    .chip-2 { bottom: 15%; right: -40px; animation-delay: -2.5s; }
+    @keyframes chipFloat {
+      0%,100% { transform: translateY(0); }
+      50% { transform: translateY(-10px); }
+    }
+
+    /* ─── MARQUEE ────────────────────────────────────────── */
+    .marquee-band {
+      background: var(--forest); padding: 16px 0; overflow: hidden;
+    }
+    .marquee-track {
+      display: flex; gap: 0; animation: mqScroll 28s linear infinite;
+      width: max-content;
+    }
+    .marquee-track:hover { animation-play-state: paused; }
+    @keyframes mqScroll { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+    .mq-item {
+      display: flex; align-items: center; gap: 14px;
+      padding: 0 24px; font-size: 12px; font-weight: 700;
+      letter-spacing: .1em; text-transform: uppercase;
+      color: rgba(196,221,208,.45); white-space: nowrap;
+    }
+    .mq-dot { width: 4px; height: 4px; border-radius: 50%; background: var(--sage); }
+
+    /* ─── STORY ──────────────────────────────────────────── */
+    .story { padding: 112px 0; background: var(--parchment); position: relative; }
+    .story-inner { display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: center; }
+
+    /* Illustration: overhead coffee setup */
+    .story-visual { position: relative; }
+    .overhead-scene {
+      width: 100%; aspect-ratio: 1;
+      border-radius: var(--radius-xl);
+      background: linear-gradient(145deg, #2C1505, #1A0C04);
+      position: relative; overflow: hidden;
+      box-shadow: 0 24px 64px rgba(60,31,15,.25);
+    }
+    /* table texture */
+    .table-grain {
+      position: absolute; inset: 0;
+      background:
+        repeating-linear-gradient(82deg, transparent, transparent 40px, rgba(92,61,40,.04) 40px, rgba(92,61,40,.04) 41px),
+        repeating-linear-gradient(8deg,  transparent, transparent 50px, rgba(92,61,40,.03) 50px, rgba(92,61,40,.03) 51px);
+    }
+
+    /* overhead cup */
+    .oh-cup-wrap {
+      position: absolute; top: 12%; left: 50%; transform: translateX(-50%);
+      display: flex; flex-direction: column; align-items: center;
+    }
+    .oh-cup-rim {
+      width: 110px; height: 110px; border-radius: 50%;
+      background: radial-gradient(circle at 38% 38%, #C9956A 0%, #7A4520 50%, #3C1F0F 100%);
+      box-shadow: 0 0 0 6px #A0633A, 0 8px 32px rgba(0,0,0,.5);
+      position: relative; overflow: hidden;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .oh-latte-art {
+      position: absolute; inset: 8px;
+      border-radius: 50%;
+      background: radial-gradient(circle at 45% 45%, #6B3A2A 0%, #1E0E05 60%);
+    }
+    /* latte rosetta */
+    .oh-latte-art::after {
+      content: '';
+      position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%);
+      width: 60px; height: 60px;
+      background: radial-gradient(ellipse at 50% 40%, rgba(212,169,122,.3) 0%, transparent 60%);
+      border-radius: 50%;
+    }
+    .oh-saucer-ring {
+      width: 140px; height: 20px;
+      background: linear-gradient(180deg, #C9956A, #A0633A);
+      border-radius: 50%; margin-top: -6px;
+      box-shadow: 0 6px 16px rgba(0,0,0,.4);
+    }
+
+    /* notebook */
+    .oh-notebook {
+      position: absolute; top: 10%; left: 4%;
+      width: 110px; height: 150px;
+      background: linear-gradient(160deg, #E8D5B7, #D4BC96);
+      border-radius: 4px 10px 10px 4px;
+      box-shadow: 4px 6px 20px rgba(0,0,0,.35);
+      transform: rotate(-8deg);
+    }
+    .oh-notebook::before {
+      content: ''; position: absolute; left: 0; top: 0; bottom: 0;
+      width: 14px; background: var(--sage); border-radius: 3px 0 0 3px;
+    }
+    .oh-notebook-lines {
+      padding: 16px 8px 8px 22px; display: flex; flex-direction: column; gap: 8px;
+    }
+    .oh-nl { height: 2px; background: rgba(60,31,15,.15); border-radius: 1px; }
+    .oh-nl.short { width: 55%; }
+
+    /* beans scattered */
+    .oh-bean {
+      position: absolute; border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+      background: var(--dark-roast);
+    }
+    .oh-bean::after {
+      content: ''; position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%);
+      width: 60%; height: 8%; background: rgba(0,0,0,.3); border-radius: 1px;
+    }
+
+    .oh-spoon {
+      position: absolute; bottom: 22%; right: 8%;
+      width: 10px; height: 90px; background: linear-gradient(180deg, #D4A97A, #A0633A);
+      border-radius: 5px 5px 2px 2px; transform: rotate(25deg);
+      box-shadow: 2px 4px 12px rgba(0,0,0,.3);
+    }
+    .oh-spoon::before {
+      content: ''; position: absolute; top: -16px; left: -5px;
+      width: 20px; height: 22px; border-radius: 50%;
+      background: linear-gradient(135deg, #E8C99A, #C49A6C);
+    }
+
+    /* sugar */
+    .oh-sugar {
+      position: absolute; bottom: 10%; left: 10%;
+      width: 60px; height: 40px;
+      background: rgba(232,213,183,.12); border: 1px solid rgba(232,213,183,.08);
+      border-radius: 6px;
+    }
+
+    .story-content {}
+    .story-content .eyebrow { margin-bottom: 20px; }
+    .story-content h2 { font-size: clamp(32px, 4vw, 50px); font-weight: 800; line-height: 1.1; letter-spacing: -.02em; color: var(--dark-roast); margin-bottom: 24px; }
+    .story-content h2 em { color: var(--sage); }
+    .story-content p { font-size: 16px; color: var(--text-mid); line-height: 1.85; margin-bottom: 18px; font-weight: 300; }
+    .story-content p strong { font-weight: 700; color: var(--dark-roast); }
+
+    .story-pillars { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-top: 36px; }
+    .pillar {
+      text-align: center; padding: 20px 14px;
+      background: var(--milk); border-radius: var(--radius);
+      border: 1px solid var(--cream);
+    }
+    .pillar-icon { font-size: 26px; margin-bottom: 8px; }
+    .pillar-name { font-family: 'Playfair Display', serif; font-size: 14px; font-weight: 700; color: var(--dark-roast); margin-bottom: 4px; }
+    .pillar-desc { font-size: 11px; color: var(--text-light); line-height: 1.6; }
+
+    /* ─── MENU ───────────────────────────────────────────── */
+    .menu { padding: 112px 0; background: var(--espresso); position: relative; overflow: hidden; }
+    .menu::before {
+      content: ''; position: absolute; top: 0; left: 0; right: 0;
+      height: 2px; background: linear-gradient(90deg, transparent, var(--latte), transparent);
+    }
+    .menu::after {
+      content: ''; position: absolute; bottom: 0; left: 0; right: 0;
+      height: 2px; background: linear-gradient(90deg, transparent, var(--latte), transparent);
+    }
+    .menu-bg-pattern {
+      position: absolute; inset: 0;
+      background-image: radial-gradient(rgba(196,154,108,.04) 1px, transparent 1px);
+      background-size: 32px 32px;
+    }
+
+    .menu-header { text-align: center; margin-bottom: 64px; }
+    .menu-header .eyebrow { color: var(--fern); margin-bottom: 20px; }
+    .menu-header .eyebrow::before, .menu-header .eyebrow::after { background: var(--sage); }
+    .menu-header h2 { font-size: clamp(32px, 4vw, 54px); color: var(--cream); letter-spacing: -.02em; margin-bottom: 14px; }
+    .menu-header p { font-size: 16px; color: rgba(232,213,183,.5); font-weight: 300; max-width: 480px; margin: 0 auto; line-height: 1.8; }
+
+    .menu-tabs { display: flex; gap: 8px; justify-content: center; margin-bottom: 48px; flex-wrap: wrap; }
+    .m-tab {
+      padding: 9px 22px; border-radius: 99px; font-family: 'Lato', sans-serif;
+      font-size: 12px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase;
+      cursor: pointer; border: 1.5px solid rgba(196,154,108,.2);
+      background: transparent; color: rgba(196,154,108,.5); transition: all .25s;
+    }
+    .m-tab.active { background: var(--caramel); color: var(--espresso); border-color: var(--caramel); }
+    .m-tab:hover:not(.active) { border-color: rgba(196,154,108,.5); color: var(--latte); }
+
+    .menu-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+
+    .menu-card {
+      background: rgba(255,255,255,.03); border: 1px solid rgba(196,154,108,.1);
+      border-radius: var(--radius-lg); overflow: hidden;
+      transition: all .3s; cursor: pointer;
+    }
+    .menu-card:hover { border-color: rgba(196,154,108,.3); transform: translateY(-4px); box-shadow: 0 16px 48px rgba(0,0,0,.3); }
+
+    .menu-card-visual {
+      height: 220px; position: relative; overflow: hidden;
+      display: flex; align-items: center; justify-content: center;
+    }
+    /* Each drink gets a unique warm background + SVG cup */
+    .drink-bg { position: absolute; inset: 0; }
+    .drink-scene { position: relative; z-index: 1; }
+
+    /* Drink illustrations */
+    .drink-cup {
+      position: relative; display: flex; flex-direction: column; align-items: center;
+    }
+    .d-cup-steam { display: flex; gap: 10px; height: 40px; margin-bottom: 2px; align-items: flex-end; }
+    .d-steam {
+      width: 2px; border-radius: 99px;
+      background: rgba(232,213,183,.3);
+      animation: steamRise 2s ease-in-out infinite;
+    }
+    .d-cup-body {
+      border-radius: 8px 8px 40px 40px;
+      position: relative; overflow: hidden;
+      box-shadow: inset -4px 0 12px rgba(0,0,0,.2), 0 4px 20px rgba(0,0,0,.3);
+    }
+    .d-cup-surface {
+      height: 12px; border-radius: 50%;
+      margin: 0 auto;
+    }
+    .d-saucer {
+      margin-top: -4px; border-radius: 50%;
+      background: linear-gradient(180deg, #C9956A, #A0633A);
+    }
+
+    .menu-card-info { padding: 22px 22px 24px; }
+    .menu-card-name { font-family: 'Playfair Display', serif; font-size: 20px; font-weight: 700; color: var(--cream); margin-bottom: 6px; }
+    .menu-card-desc { font-size: 13px; color: rgba(196,154,108,.6); line-height: 1.7; font-weight: 300; margin-bottom: 14px; }
+    .menu-card-footer { display: flex; align-items: center; justify-content: space-between; }
+    .menu-card-tags { display: flex; gap: 6px; flex-wrap: wrap; }
+    .m-tag {
+      font-size: 9px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase;
+      padding: 3px 8px; border-radius: 99px;
+      background: rgba(196,154,108,.08); color: rgba(196,154,108,.5);
+      border: 1px solid rgba(196,154,108,.12);
+    }
+    .menu-card-price { font-family: 'Playfair Display', serif; font-size: 20px; font-weight: 700; color: var(--latte); }
+
+    /* hidden via tab filter */
+    .menu-card[data-type].hidden { display: none; }
+
+    /* ─── EXPERIENCE ─────────────────────────────────────── */
+    .experience { padding: 112px 0; background: var(--parchment); }
+    .exp-inner { display: grid; grid-template-columns: 1fr 1fr; gap: 64px; align-items: center; }
+
+    .exp-mosaic { display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: 220px 180px; gap: 14px; }
+    .exp-tile {
+      border-radius: var(--radius-lg); overflow: hidden; position: relative;
+    }
+    .exp-tile:first-child { grid-row: span 2; }
+
+    /* tile illustration scenes */
+    .tile-interior {
+      background: linear-gradient(145deg, #3C1F0F, #1E0E05);
+      height: 100%; display: flex; align-items: center; justify-content: center; position: relative;
+    }
+    .ti-window {
+      width: 60%; height: 70%; background: rgba(255,220,140,.06);
+      border: 1px solid rgba(255,220,140,.1); border-radius: 8px 8px 0 0;
+      position: absolute; bottom: 0; left: 20%;
+    }
+    .ti-window::before {
+      content: ''; position: absolute; top: 30%; left: 0; right: 0;
+      height: 1px; background: rgba(255,220,140,.1);
+    }
+    .ti-window::after {
+      content: ''; position: absolute; top: 0; bottom: 0; left: 50%;
+      width: 1px; background: rgba(255,220,140,.1);
+    }
+    .ti-light {
+      position: absolute; top: -20px; left: 50%; transform: translateX(-50%);
+      width: 2px; height: 40px; background: rgba(255,220,140,.3);
+    }
+    .ti-light::after {
+      content: ''; position: absolute; bottom: 0; left: 50%; transform: translateX(-50%);
+      width: 60px; height: 60px;
+      background: radial-gradient(ellipse, rgba(255,220,140,.12) 0%, transparent 70%);
+    }
+    .ti-table {
+      position: absolute; bottom: 0; left: 50%; transform: translateX(-50%);
+      width: 70%; height: 30%;
+      background: linear-gradient(180deg, #6B3A2A, #3C1F0F);
+      border-radius: 6px 6px 0 0;
+    }
+    .ti-plants {
+      position: absolute; bottom: 0; right: 5%;
+      display: flex; gap: 4px; align-items: flex-end;
+    }
+    .ti-leaf { background: var(--sage); border-radius: 50% 0; }
+
+    .tile-beans {
+      background: linear-gradient(145deg, #5C2D1A, #3C1F0F);
+      height: 100%; display: flex; align-items: center; justify-content: center; position: relative;
+    }
+    .beans-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 4px; padding: 12px; }
+    .t-bean {
+      width: 18px; height: 26px; border-radius: 50%;
+      background: linear-gradient(145deg, #6B3A2A, #1E0E05);
+      position: relative;
+    }
+    .t-bean::after {
+      content: ''; position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%);
+      width: 70%; height: 10%; background: rgba(0,0,0,.3); border-radius: 1px;
+    }
+
+    .tile-hands {
+      background: linear-gradient(145deg, #A0633A, #6B3A2A);
+      height: 100%; display: flex; align-items: center; justify-content: center; position: relative; overflow: hidden;
+    }
+    .pour-stream {
+      position: absolute; top: 0; left: 50%; transform: translateX(-50%);
+      width: 4px; height: 50%; background: linear-gradient(180deg, rgba(196,154,108,.8), rgba(60,31,15,.4));
+      border-radius: 2px; animation: pourFlow 1.5s ease-in-out infinite;
+    }
+    @keyframes pourFlow { 0%,100% { opacity: .7; height: 40%; } 50% { opacity: 1; height: 55%; } }
+    .pour-cup {
+      width: 60px; height: 40px;
+      background: linear-gradient(160deg, #E8C99A, #C9956A, #7A4520);
+      border-radius: 4px 4px 20px 20px;
+      position: absolute; bottom: 20%;
+    }
+
+    .exp-content {}
+    .exp-content .eyebrow { margin-bottom: 20px; }
+    .exp-content h2 { font-size: clamp(30px, 3.5vw, 46px); font-weight: 800; line-height: 1.1; letter-spacing: -.02em; color: var(--dark-roast); margin-bottom: 20px; }
+    .exp-content p { font-size: 15px; color: var(--text-mid); line-height: 1.85; font-weight: 300; margin-bottom: 14px; }
+    .exp-items { display: flex; flex-direction: column; gap: 18px; margin: 32px 0 36px; }
+    .exp-item { display: flex; gap: 16px; }
+    .exp-item-icon {
+      width: 44px; height: 44px; border-radius: 12px; flex-shrink: 0;
+      background: var(--milk); border: 1px solid var(--cream);
+      display: flex; align-items: center; justify-content: center; font-size: 20px;
+    }
+    .exp-item-title { font-family: 'Playfair Display', serif; font-size: 16px; font-weight: 700; color: var(--dark-roast); margin-bottom: 3px; }
+    .exp-item-desc { font-size: 13px; color: var(--text-light); line-height: 1.6; font-weight: 300; }
+
+    /* ─── JOURNEY ────────────────────────────────────────── */
+    .journey { padding: 112px 0; background: var(--forest); position: relative; overflow: hidden; }
+    .journey::before {
+      content: ''; position: absolute; top: -100px; right: -100px;
+      width: 400px; height: 400px;
+      background: radial-gradient(circle, rgba(90,138,106,.15) 0%, transparent 70%);
+    }
+    .journey-header { text-align: center; margin-bottom: 72px; }
+    .journey-header .eyebrow { color: var(--fern); margin-bottom: 20px; }
+    .journey-header .eyebrow::before, .journey-header .eyebrow::after { background: var(--sage); }
+    .journey-header h2 { font-size: clamp(30px, 4vw, 50px); color: var(--leaf); letter-spacing: -.02em; margin-bottom: 12px; }
+    .journey-header p { font-size: 15px; color: rgba(196,221,208,.5); font-weight: 300; max-width: 460px; margin: 0 auto; }
+
+    .journey-steps { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0; position: relative; }
+    .journey-steps::before {
+      content: ''; position: absolute; top: 44px; left: 12.5%; right: 12.5%;
+      height: 1px; background: linear-gradient(90deg, var(--sage), var(--moss), var(--sage));
+    }
+    .j-step { text-align: center; padding: 0 16px; }
+    .j-num {
+      width: 88px; height: 88px; border-radius: 50%;
+      background: rgba(255,255,255,.04); border: 1px solid rgba(196,221,208,.15);
+      display: flex; align-items: center; justify-content: center;
+      margin: 0 auto 24px; position: relative; z-index: 1;
+      transition: all .3s;
+    }
+    .j-num:hover { background: rgba(90,138,106,.2); border-color: var(--moss); }
+    .j-num svg { width: 36px; height: 36px; color: var(--fern); }
+    .j-step h3 { font-family: 'Playfair Display', serif; font-size: 17px; font-weight: 700; color: var(--leaf); margin-bottom: 8px; }
+    .j-step p { font-size: 12px; color: rgba(196,221,208,.45); line-height: 1.75; font-weight: 300; }
+
+    /* ─── TESTIMONIALS ───────────────────────────────────── */
+    .testimonials { padding: 112px 0; background: var(--milk); }
+    .testi-header { text-align: center; margin-bottom: 60px; }
+    .testi-header .eyebrow { margin-bottom: 20px; }
+    .testi-header h2 { font-size: clamp(30px, 4vw, 48px); color: var(--dark-roast); letter-spacing: -.02em; margin-bottom: 12px; }
+    .testi-header p { font-size: 15px; color: var(--text-light); font-weight: 300; max-width: 420px; margin: 0 auto; }
+
+    .testi-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 22px; }
+    .testi-card {
+      background: var(--warm-white); border: 1px solid var(--cream);
+      border-radius: var(--radius-lg); padding: 30px;
+      transition: all .3s; position: relative;
+    }
+    .testi-card:hover { box-shadow: 0 12px 40px rgba(60,31,15,.1); transform: translateY(-2px); }
+    .testi-mark {
+      font-family: 'Playfair Display', serif; font-size: 72px; line-height: .7;
+      color: var(--cream); position: absolute; top: 18px; right: 22px;
+      font-weight: 900; pointer-events: none;
+    }
+    .testi-stars { display: flex; gap: 3px; margin-bottom: 16px; }
+    .testi-stars span { color: var(--caramel); font-size: 14px; }
+    .testi-text { font-size: 14px; color: var(--text-mid); line-height: 1.85; font-style: italic; margin-bottom: 22px; font-weight: 300; }
+    .testi-author { display: flex; align-items: center; gap: 12px; }
+    .testi-av {
+      width: 42px; height: 42px; border-radius: 50%;
+      background: linear-gradient(135deg, var(--latte), var(--caramel));
+      display: flex; align-items: center; justify-content: center;
+      font-family: 'Playfair Display', serif; font-size: 15px; font-weight: 700; color: var(--espresso);
+      flex-shrink: 0;
+    }
+    .testi-name { font-family: 'Playfair Display', serif; font-size: 15px; font-weight: 700; color: var(--dark-roast); }
+    .testi-role { font-size: 11px; color: var(--text-light); font-weight: 400; letter-spacing: .03em; }
+
+    /* ─── VISIT ──────────────────────────────────────────── */
+    .visit { padding: 112px 0; background: var(--parchment); }
+    .visit-inner { display: grid; grid-template-columns: 1fr 1fr; gap: 72px; align-items: start; }
+
+    .visit-content h2 { font-size: clamp(30px, 4vw, 46px); color: var(--dark-roast); letter-spacing: -.02em; margin-bottom: 12px; }
+    .visit-content .eyebrow { margin-bottom: 20px; }
+    .visit-content > p { font-size: 15px; color: var(--text-mid); font-weight: 300; line-height: 1.85; margin-bottom: 36px; }
+
+    .visit-info { display: flex; flex-direction: column; gap: 24px; }
+    .vi-row { display: flex; gap: 16px; align-items: flex-start; }
+    .vi-icon {
+      width: 44px; height: 44px; border-radius: 12px; flex-shrink: 0;
+      background: var(--milk); border: 1px solid var(--cream);
+      display: flex; align-items: center; justify-content: center;
+    }
+    .vi-icon svg { width: 20px; height: 20px; color: var(--sage); }
+    .vi-label { font-size: 10px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--text-light); margin-bottom: 3px; }
+    .vi-val { font-family: 'Playfair Display', serif; font-size: 16px; color: var(--dark-roast); font-weight: 600; line-height: 1.5; }
+
+    /* Map illustration */
+    .map-card {
+      background: var(--espresso); border-radius: var(--radius-xl); overflow: hidden;
+      height: 100%; min-height: 380px; position: relative;
+      box-shadow: 0 16px 48px rgba(60,31,15,.2);
+    }
+    .map-scene {
+      width: 100%; height: 100%; position: relative;
+      background: linear-gradient(145deg, #1E0E05, #2C1505);
+    }
+    /* stylized map grid */
+    .map-grid {
+      position: absolute; inset: 0;
+      background-image:
+        linear-gradient(rgba(196,154,108,.06) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(196,154,108,.06) 1px, transparent 1px);
+      background-size: 40px 40px;
+    }
+    /* roads */
+    .map-road {
+      position: absolute; background: rgba(196,154,108,.1);
+    }
+    .road-h { left: 0; right: 0; height: 12px; }
+    .road-v { top: 0; bottom: 0; width: 12px; }
+    .road-h1 { top: 35%; }
+    .road-h2 { top: 62%; }
+    .road-v1 { left: 25%; }
+    .road-v2 { left: 58%; }
+    .road-v3 { left: 78%; }
+    /* pin */
+    .map-pin {
+      position: absolute; top: 34%; left: 54%;
+      display: flex; flex-direction: column; align-items: center;
+      transform: translate(-50%, -100%);
+    }
+    .pin-head {
+      width: 36px; height: 36px; border-radius: 50% 50% 50% 0;
+      background: var(--caramel); transform: rotate(-45deg);
+      display: flex; align-items: center; justify-content: center;
+      box-shadow: 0 4px 16px rgba(160,99,58,.4);
+    }
+    .pin-head::before {
+      content: ''; width: 12px; height: 12px; border-radius: 50%;
+      background: var(--espresso);
+    }
+    .pin-tail {
+      width: 2px; height: 16px;
+      background: var(--caramel); border-radius: 0 0 1px 1px;
+    }
+    .pin-label {
+      background: var(--warm-white); border-radius: 8px;
+      padding: 6px 12px; margin-top: 6px;
+      font-family: 'Playfair Display', serif; font-size: 12px; font-weight: 700;
+      color: var(--dark-roast); white-space: nowrap;
+      box-shadow: 0 4px 12px rgba(0,0,0,.2);
+    }
+    /* blocks (buildings) */
+    .map-block {
+      position: absolute; border-radius: 3px;
+      background: rgba(196,154,108,.06); border: 1px solid rgba(196,154,108,.08);
+    }
+    .map-park {
+      position: absolute; border-radius: 6px;
+      background: rgba(61,107,82,.12); border: 1px solid rgba(61,107,82,.1);
+    }
+    .map-label-small {
+      position: absolute; font-family: 'Lato', sans-serif; font-size: 8px;
+      font-weight: 700; letter-spacing: .06em; text-transform: uppercase;
+      color: rgba(196,154,108,.25);
+    }
+    .map-opening {
+      position: absolute; bottom: 0; left: 0; right: 0;
+      background: rgba(253,247,238,.04); backdrop-filter: blur(8px);
+      border-top: 1px solid rgba(196,154,108,.1); padding: 16px 20px;
+      display: flex; justify-content: space-between; align-items: center;
+    }
+    .open-badge {
+      display: flex; align-items: center; gap: 7px;
+      font-size: 12px; font-weight: 700; letter-spacing: .06em;
+      text-transform: uppercase; color: var(--fern);
+    }
+    .open-dot { width: 7px; height: 7px; border-radius: 50%; background: #4ADE80; box-shadow: 0 0 6px #4ADE80; animation: pulse 2s ease infinite; }
+    @keyframes pulse { 0%,100% { box-shadow: 0 0 0 0 rgba(74,222,128,.4); } 50% { box-shadow: 0 0 0 5px rgba(74,222,128,0); } }
+    .open-hours { font-size: 12px; color: rgba(196,154,108,.5); font-weight: 300; }
+
+    /* ─── NEWSLETTER ─────────────────────────────────────── */
+    .newsletter { padding: 80px 0; background: var(--dark-roast); }
+    .newsletter-inner {
+      background: linear-gradient(145deg, #2C1505, #1E0E05);
+      border: 1px solid rgba(196,154,108,.12); border-radius: var(--radius-xl);
+      padding: 64px 56px; text-align: center; position: relative; overflow: hidden;
+    }
+    .newsletter-inner::before {
+      content: ''; position: absolute; top: -60px; left: 50%; transform: translateX(-50%);
+      width: 400px; height: 200px;
+      background: radial-gradient(ellipse, rgba(196,154,108,.1) 0%, transparent 70%);
+    }
+    .newsletter-inner > * { position: relative; z-index: 1; }
+    .newsletter-inner .eyebrow { color: var(--fern); margin-bottom: 20px; justify-content: center; }
+    .newsletter-inner .eyebrow::before, .newsletter-inner .eyebrow::after { background: var(--sage); }
+    .newsletter-inner h2 { font-size: clamp(28px, 4vw, 44px); color: var(--cream); letter-spacing: -.02em; margin-bottom: 12px; }
+    .newsletter-inner p { font-size: 15px; color: rgba(232,213,183,.5); font-weight: 300; margin-bottom: 36px; max-width: 440px; margin-left: auto; margin-right: auto; }
+    .subscribe-form { display: flex; gap: 12px; max-width: 460px; margin: 0 auto 14px; }
+    .subscribe-input {
+      flex: 1; padding: 14px 20px; border-radius: 99px;
+      background: rgba(255,255,255,.05); border: 1px solid rgba(196,154,108,.2);
+      color: var(--cream); font-family: 'Lato', sans-serif; font-size: 14px;
+      outline: none; transition: border-color .2s;
+    }
+    .subscribe-input::placeholder { color: rgba(196,154,108,.35); }
+    .subscribe-input:focus { border-color: rgba(196,154,108,.5); }
+    .subscribe-note { font-size: 11px; color: rgba(196,154,108,.35); font-weight: 300; }
+
+    /* ─── FOOTER ─────────────────────────────────────────── */
+    footer { background: var(--espresso); padding: 64px 0 28px; }
+    .footer-top { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 48px; margin-bottom: 48px; }
+    .footer-brand {}
+    .footer-logo-row { display: flex; align-items: center; gap: 10px; margin-bottom: 14px; }
+    .footer-logo-row span { font-family: 'Playfair Display', serif; font-size: 18px; font-weight: 700; color: var(--cream); }
+    .footer-bio { font-size: 13px; color: rgba(196,154,108,.45); line-height: 1.8; max-width: 240px; font-weight: 300; }
+    .footer-social { display: flex; gap: 10px; margin-top: 22px; }
+    .f-soc {
+      width: 36px; height: 36px; border-radius: 10px;
+      background: rgba(255,255,255,.04); border: 1px solid rgba(196,154,108,.1);
+      display: flex; align-items: center; justify-content: center;
+      transition: all .25s; text-decoration: none;
+    }
+    .f-soc:hover { background: var(--caramel); border-color: var(--caramel); }
+    .f-soc svg { width: 16px; height: 16px; color: rgba(196,154,108,.5); transition: color .25s; }
+    .f-soc:hover svg { color: var(--espresso); }
+
+    .footer-col h4 { font-size: 10px; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; color: rgba(196,154,108,.4); margin-bottom: 18px; }
+    .footer-col ul { list-style: none; display: flex; flex-direction: column; gap: 10px; }
+    .footer-col ul a { font-size: 13px; color: rgba(196,154,108,.4); text-decoration: none; transition: color .2s; font-weight: 300; }
+    .footer-col ul a:hover { color: var(--latte); }
+    .footer-bottom {
+      border-top: 1px solid rgba(196,154,108,.08); padding-top: 24px;
+      display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;
+    }
+    .footer-copy { font-size: 12px; color: rgba(196,154,108,.3); font-weight: 300; }
+    .footer-tagline { font-family: 'Playfair Display', serif; font-size: 12px; font-style: italic; color: rgba(196,154,108,.3); }
+
+    /* ─── SCROLL REVEAL ──────────────────────────────────── */
+    .reveal { opacity: 0; transform: translateY(22px); transition: opacity .65s ease, transform .65s ease; }
+    .reveal.in { opacity: 1; transform: none; }
+
+    /* ─── RESPONSIVE ─────────────────────────────────────── */
+    @media (max-width: 1024px) {
+      .hero-inner { grid-template-columns: 1fr; }
+      .hero-visual { display: none; }
+      .story-inner { grid-template-columns: 1fr; }
+      .exp-inner { grid-template-columns: 1fr; }
+      .visit-inner { grid-template-columns: 1fr; }
+      .footer-top { grid-template-columns: 1fr 1fr; }
+      .testi-grid { grid-template-columns: repeat(2, 1fr); }
+      .menu-grid { grid-template-columns: repeat(2, 1fr); }
+      .journey-steps { grid-template-columns: repeat(2, 1fr); gap: 32px; }
+      .journey-steps::before { display: none; }
+    }
+    @media (max-width: 768px) {
+      .nav-links { display: none; }
+      .hamburger { display: flex; }
+      .menu-grid { grid-template-columns: 1fr; }
+      .testi-grid { grid-template-columns: 1fr; }
+      .journey-steps { grid-template-columns: 1fr; }
+      .story-pillars { grid-template-columns: 1fr; }
+      .exp-mosaic { grid-template-columns: 1fr; }
+      .exp-mosaic .exp-tile:first-child { grid-row: span 1; }
+      .footer-top { grid-template-columns: 1fr 1fr; gap: 28px; }
+      .subscribe-form { flex-direction: column; }
+      .newsletter-inner { padding: 40px 24px; }
+    }
+  </style>
+<link rel="icon" type="image/svg+xml" href="favicon.svg" />
+<style id="photo-css">
+.cup-scene .hero-photo{width:100%;aspect-ratio:3/4;object-fit:cover;border-radius:24px;box-shadow:0 40px 90px rgba(0,0,0,.55);display:block}
+.menu-card-visual img.menu-photo{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.overhead-scene img.story-photo{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.tile-beans img.tile-photo{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+</style>
+<style id="photo-css2">.exp-tile img.tile-photo{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}.map-scene img.map-photo{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:0}.map-scene .map-grid,.map-scene .map-road,.map-scene .map-block,.map-scene .map-park,.map-scene .map-label-small{display:none!important}.map-scene .map-pin{top:46%;left:50%;z-index:2}.map-scene .map-opening{z-index:2}</style>
+<style id="mobilefix-coffee">
+/* mobile hamburger dropdown */
+.mobile-menu{display:none;position:fixed;top:76px;left:0;right:0;z-index:199;background:var(--parchment);border-bottom:1px solid rgba(60,31,15,.1);box-shadow:0 16px 34px -18px rgba(60,31,15,.35);flex-direction:column;padding:8px 28px 20px}
+.mobile-menu.open{display:flex}
+.mobile-menu a{font-size:16px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--text-mid);text-decoration:none;padding:15px 2px;border-bottom:1px solid rgba(60,31,15,.07)}
+.mobile-menu a:last-child{border-bottom:0}
+.mobile-menu a.mm-cta{margin-top:12px;text-align:center;background:var(--dark-roast);color:var(--parchment);border-radius:999px;padding:14px}
+.hamburger.open span:nth-child(1){transform:translateY(7px) rotate(45deg)}
+.hamburger.open span:nth-child(2){opacity:0}
+.hamburger.open span:nth-child(3){transform:translateY(-7px) rotate(-45deg)}
+/* legibility: larger, higher-contrast small text */
+.eyebrow{font-size:12px}
+.logo-sub{font-size:10px;color:var(--text-mid)}
+.pillar-desc{font-size:13.5px;color:var(--text-mid)}
+.m-tag{font-size:11px;color:var(--medium)}
+.testi-role{font-size:12px;color:var(--text-mid)}
+.vi-label{font-size:11px;color:var(--text-mid)}
+.fc-label{font-size:10px}.fc-sub{font-size:11px}
+.subscribe-note{font-size:12px;color:rgba(232,213,183,.7)}
+.footer-col h4{font-size:12px;color:var(--latte)}
+/* contrast: text on GREEN (forest) sections */
+.j-step p{color:rgba(210,231,220,.82) !important;font-size:13px}
+.mq-item{color:rgba(210,231,220,.72) !important}
+/* contrast: text on BROWN (espresso / dark-roast) sections */
+.menu-card-desc{color:rgba(233,214,186,.82) !important}
+.footer-bio{color:rgba(212,178,140,.8) !important;font-size:13.5px}
+.footer-col ul a{color:rgba(212,178,140,.78) !important}
+.footer-copy,.footer-tagline{color:rgba(212,178,140,.62) !important}
+@media (max-width:768px){
+  .mobile-menu{top:72px}
+}
+/* legibility pass: brighten remaining faint informational text */
+.menu-header p,.newsletter-inner p{color:rgba(233,214,186,.82)!important}
+.journey-header p{color:rgba(210,231,220,.82)!important}
+.m-tab{color:rgba(233,214,186,.78)!important}
+.open-hours{color:rgba(233,214,186,.8)!important}
+.fc-sub{color:rgba(233,214,186,.82)!important}
+.plate-text{color:rgba(233,214,186,.75)!important}
+.f-soc svg{opacity:.85}
+/* ── revision pass ───────────────────────────── */
+/* hero buttons: distinct, visible colors on the dark hero */
+.hero-actions .btn-dark{background:var(--latte)!important;color:var(--espresso)!important;box-shadow:0 8px 26px rgba(196,154,108,.32)!important}
+.hero-actions .btn-outline{background:transparent!important;color:var(--latte)!important;border-color:var(--latte)!important}
+/* Today's Featured / Current Rating cards: solid (not faint blur) so text is readable */
+.float-chip{background:rgba(30,14,5,.94)!important;backdrop-filter:none!important;-webkit-backdrop-filter:none!important;border:1px solid rgba(232,213,183,.32)!important;box-shadow:0 12px 32px rgba(0,0,0,.45)!important}
+.fc-label{color:var(--latte)!important}
+.fc-val{color:var(--warm-white)!important}
+.fc-sub{color:rgba(233,214,186,.8)!important}
+/* product tags: readable chips on the dark menu cards */
+.m-tag{background:rgba(196,154,108,.2)!important;color:var(--latte)!important;border-color:rgba(196,154,108,.42)!important}
+/* descriptions: bolder + higher contrast */
+.menu-card-desc{font-weight:400!important;color:rgba(233,214,186,.86)!important}
+.exp-item-desc{font-weight:400!important;color:var(--text-mid)!important}
+.journey-header p{font-weight:400!important}
+.j-step p{font-weight:400!important;color:rgba(210,231,220,.85)!important}
+.testi-header p{font-weight:400!important;color:var(--text-mid)!important}
+/* footer: less thin */
+.footer-bio,.footer-col ul a,.footer-copy{font-weight:400!important}
+.footer-tagline{font-weight:500!important}
+</style></head>
+<body>
+
+<!-- ═══ NAV ═══════════════════════════════════════════════ -->
+<nav id="navbar">
+  <div class="nav-inner">
+    <a href="#" class="nav-logo">
+      <div class="logo-mark">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round">
+          <path d="M17 8C8 10 5.9 16.17 3.82 19.34A1 1 0 0 0 4.69 21h8.62a1 1 0 0 0 .87-.5C15 19 17 17 17 14"/>
+          <path d="M17 8c0-2.76-2.24-5-5-5s-5 2.24-5 5"/>
+        </svg>
+      </div>
+      <div>
+        <div class="logo-name">Foliage</div>
+        <div class="logo-sub">Slow Coffee Bar</div>
+      </div>
+    </a>
+    <ul class="nav-links">
+      <li><a href="#menu">Menu</a></li>
+      <li><a href="#experience">Experience</a></li>
+      <li><a href="#journey">Our Beans</a></li>
+      <li><a href="#visit">Visit Us</a></li>
+    </ul>
+    <div style="display:flex;align-items:center;gap:12px">
+      <a href="#menu" class="btn btn-dark nav-cta">Order Now</a>
+      <button class="hamburger" id="hamburger" aria-label="Menu" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </div>
+</nav>
+<div class="mobile-menu" id="mobileMenu">
+  <a href="#menu">Menu</a>
+  <a href="#experience">Experience</a>
+  <a href="#journey">Our Beans</a>
+  <a href="#visit">Visit Us</a>
+  <a href="#menu" class="mm-cta">Order Now</a>
+</div>
+
+<!-- ═══ HERO ══════════════════════════════════════════════ -->
+<section class="hero" id="home">
+  <div class="hero-bg"></div>
+  <div class="hero-bg-glow"></div>
+
+  <!-- floating beans -->
+  <div class="bean bean-1"><svg viewBox="0 0 24 36" fill="currentColor"><ellipse cx="12" cy="18" rx="10" ry="16"/><line x1="12" y1="3" x2="12" y2="33" stroke="rgba(0,0,0,.3)" stroke-width="1"/></svg></div>
+  <div class="bean bean-2"><svg viewBox="0 0 24 36" fill="currentColor"><ellipse cx="12" cy="18" rx="10" ry="16"/><line x1="12" y1="3" x2="12" y2="33" stroke="rgba(0,0,0,.3)" stroke-width="1"/></svg></div>
+  <div class="bean bean-3"><svg viewBox="0 0 24 36" fill="currentColor"><ellipse cx="12" cy="18" rx="10" ry="16"/></svg></div>
+  <div class="bean bean-4"><svg viewBox="0 0 24 36" fill="currentColor"><ellipse cx="12" cy="18" rx="10" ry="16"/></svg></div>
+  <div class="bean bean-5"><svg viewBox="0 0 24 36" fill="currentColor"><ellipse cx="12" cy="18" rx="10" ry="16"/></svg></div>
+
+  <div class="container">
+    <div class="hero-inner">
+      <div class="hero-content">
+        <div class="eyebrow hero-eyebrow">Specialty Coffee · Est. 2018</div>
+        <h1>
+          Where every<br />
+          sip <em>tells</em><br />
+          a story.
+        </h1>
+        <p class="hero-desc">Not just a coffee shop — a place to slow down. We source single-origin beans from small farms, brew with intention, and serve in a space that feels like home.</p>
+        <div class="hero-actions">
+          <a href="#menu" class="btn btn-dark">
+            Explore the Menu
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M5 12h14m-7-7 7 7-7 7"/></svg>
+          </a>
+          <a href="#journey" class="btn btn-outline" style="color:var(--cream);border-color:rgba(232,213,183,.2)">Our Story</a>
+        </div>
+        <div class="hero-tags">
+          <div class="hero-tag-item">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 11l19-9-9 19-2-8-8-2z"/></svg>
+            Single Origin
+          </div>
+          <div class="hero-tag-item">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+            Ethically Sourced
+          </div>
+          <div class="hero-tag-item">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+            Sustainability First
+          </div>
+        </div>
+      </div>
+
+      <!-- Coffee cup visual -->
+      <div class="hero-visual">
+        <div class="cup-scene">
+          <!-- floating chips -->
+          <div class="float-chip chip-1">
+            <div class="fc-label">Today's Featured</div>
+            <div class="fc-val">Ethiopia</div>
+            <div class="fc-sub">Yirgacheffe · Natural</div>
+          </div>
+          <div class="float-chip chip-2">
+            <div class="fc-label">Current Rating</div>
+            <div class="fc-val">4.9 ★</div>
+            <div class="fc-sub">From 840 reviews</div>
+          </div>
+
+          <img class="hero-photo" src="assets/hero.jpg" alt="A cup of freshly made coffee" />
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ MARQUEE ══════════════════════════════════════════ -->
+<div class="marquee-band">
+  <div class="marquee-track">
+    <div class="mq-item">Single Origin<span class="mq-dot"></span></div>
+    <div class="mq-item">Ethiopia Yirgacheffe<span class="mq-dot"></span></div>
+    <div class="mq-item">Slow Brew<span class="mq-dot"></span></div>
+    <div class="mq-item">Colombia Huila<span class="mq-dot"></span></div>
+    <div class="mq-item">Pour Over<span class="mq-dot"></span></div>
+    <div class="mq-item">Guatemala Antigua<span class="mq-dot"></span></div>
+    <div class="mq-item">Cold Brew<span class="mq-dot"></span></div>
+    <div class="mq-item">Kenya AA<span class="mq-dot"></span></div>
+    <div class="mq-item">Latte Art<span class="mq-dot"></span></div>
+    <div class="mq-item">Specialty Grade<span class="mq-dot"></span></div>
+    <!-- dup -->
+    <div class="mq-item">Single Origin<span class="mq-dot"></span></div>
+    <div class="mq-item">Ethiopia Yirgacheffe<span class="mq-dot"></span></div>
+    <div class="mq-item">Slow Brew<span class="mq-dot"></span></div>
+    <div class="mq-item">Colombia Huila<span class="mq-dot"></span></div>
+    <div class="mq-item">Pour Over<span class="mq-dot"></span></div>
+    <div class="mq-item">Guatemala Antigua<span class="mq-dot"></span></div>
+    <div class="mq-item">Cold Brew<span class="mq-dot"></span></div>
+    <div class="mq-item">Kenya AA<span class="mq-dot"></span></div>
+    <div class="mq-item">Latte Art<span class="mq-dot"></span></div>
+    <div class="mq-item">Specialty Grade<span class="mq-dot"></span></div>
+  </div>
+</div>
+
+<!-- ═══ STORY ═════════════════════════════════════════════ -->
+<section class="story" id="story">
+  <div class="container">
+    <div class="story-inner">
+      <!-- Overhead coffee scene illustration -->
+      <div class="story-visual reveal">
+        <div class="overhead-scene">
+          <img class="story-photo" src="assets/story.jpg" alt="Inside the Foliage coffee bar" />
+        </div>
+      </div>
+
+      <div class="story-content reveal">
+        <div class="eyebrow">Our Story</div>
+        <h2 style="margin-top:20px">Coffee isn't a drink.<br />It's a <em>ritual.</em></h2>
+        <p>Foliage was born from a simple belief: that the best cup of coffee isn't the fastest one. We opened our doors in 2018 with a pour-over kettle, a hand-grinder, and an obsessive love for origin flavors.</p>
+        <p>We partner directly with <strong>small-family farms</strong> across Ethiopia, Colombia, and Guatemala — paying fair prices, visiting in person, and co-creating the roast profiles that end up in your cup.</p>
+        <p>Every visit to Foliage is an invitation to slow down, breathe in the warmth, and taste something that took years of care to make possible.</p>
+
+        <div class="story-pillars">
+          <div class="pillar">
+            <div class="pillar-icon">🌱</div>
+            <div class="pillar-name">Farm Direct</div>
+            <div class="pillar-desc">We visit every farm we source from</div>
+          </div>
+          <div class="pillar">
+            <div class="pillar-icon">☕</div>
+            <div class="pillar-name">Slow Brewed</div>
+            <div class="pillar-desc">No shortcuts, ever</div>
+          </div>
+          <div class="pillar">
+            <div class="pillar-icon">🍃</div>
+            <div class="pillar-name">Eco-Minded</div>
+            <div class="pillar-desc">Zero-waste brewing practices</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ MENU ═══════════════════════════════════════════════ -->
+<section class="menu" id="menu">
+  <div class="menu-bg-pattern"></div>
+  <div class="container" style="position:relative;z-index:1">
+    <div class="menu-header reveal">
+      <div class="eyebrow">Signature Menu</div>
+      <h2 style="margin-top:20px">Crafted with intention,<br />sipped with pleasure.</h2>
+      <p>Every drink on our menu tells the story of where its beans came from and the hands that grew them.</p>
+    </div>
+
+    <div class="menu-tabs">
+      <button class="m-tab active" data-filter="all">All Drinks</button>
+      <button class="m-tab" data-filter="espresso">Espresso</button>
+      <button class="m-tab" data-filter="pour">Pour Over</button>
+      <button class="m-tab" data-filter="cold">Cold Brew</button>
+      <button class="m-tab" data-filter="special">Specials</button>
+    </div>
+
+    <div class="menu-grid">
+      <!-- Espresso -->
+      <div class="menu-card reveal" data-type="espresso">
+        <div class="menu-card-visual">
+          <img class="menu-photo" src="assets/drink-1.jpg" alt="Classic espresso" />
+        </div>
+        <div class="menu-card-info">
+          <div class="menu-card-name">Classic Espresso</div>
+          <div class="menu-card-desc">A concentrated shot of Ethiopia Yirgacheffe — bright, citrusy, with a honey-sweet finish that lingers.</div>
+          <div class="menu-card-footer">
+            <div class="menu-card-tags">
+              <span class="m-tag">Single Origin</span>
+              <span class="m-tag">Intense</span>
+            </div>
+            <div class="menu-card-price">$4.50</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Latte -->
+      <div class="menu-card reveal" data-type="espresso">
+        <div class="menu-card-visual">
+          <img class="menu-photo" src="assets/drink-2.jpg" alt="Latte with latte art" />
+        </div>
+        <div class="menu-card-info">
+          <div class="menu-card-name">Foliage Latte</div>
+          <div class="menu-card-desc">Silky microfoam meets our house espresso blend. Sweet, smooth, and grounding — the drink that started it all for us.</div>
+          <div class="menu-card-footer">
+            <div class="menu-card-tags">
+              <span class="m-tag">Creamy</span>
+              <span class="m-tag">Balanced</span>
+            </div>
+            <div class="menu-card-price">$6.00</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Pour Over -->
+      <div class="menu-card reveal" data-type="pour">
+        <div class="menu-card-visual">
+          <img class="menu-photo" src="assets/drink-3.jpg" alt="Pour-over coffee" />
+        </div>
+        <div class="menu-card-info">
+          <div class="menu-card-name">Kenya Pour Over</div>
+          <div class="menu-card-desc">Kenya AA, hand-brewed to order. Expect blackcurrant, tomato acidity, and a long, wine-like finish that changes as it cools.</div>
+          <div class="menu-card-footer">
+            <div class="menu-card-tags">
+              <span class="m-tag">Fruity</span>
+              <span class="m-tag">Complex</span>
+            </div>
+            <div class="menu-card-price">$7.50</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Cold Brew -->
+      <div class="menu-card reveal" data-type="cold">
+        <div class="menu-card-visual">
+          <img class="menu-photo" src="assets/drink-4.jpg" alt="Iced cold brew" />
+        </div>
+        <div class="menu-card-info">
+          <div class="menu-card-name">Nitro Cold Brew</div>
+          <div class="menu-card-desc">18-hour cold-steeped Colombia Huila, infused with nitrogen for a silky, cascading pour. Naturally sweet, zero sugar needed.</div>
+          <div class="menu-card-footer">
+            <div class="menu-card-tags">
+              <span class="m-tag">Smooth</span>
+              <span class="m-tag">Zero Sugar</span>
+            </div>
+            <div class="menu-card-price">$7.00</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Honey Oat -->
+      <div class="menu-card reveal" data-type="special">
+        <div class="menu-card-visual">
+          <img class="menu-photo" src="assets/drink-5.jpg" alt="Signature specialty drink" />
+        </div>
+        <div class="menu-card-info">
+          <div class="menu-card-name">Honey Oat Latte</div>
+          <div class="menu-card-desc">Wild Ethiopian honey stirred into our espresso, finished with hand-steamed oat milk. Seasonal, soulful, and completely irresistible.</div>
+          <div class="menu-card-footer">
+            <div class="menu-card-tags">
+              <span class="m-tag">Seasonal</span>
+              <span class="m-tag">Plant-based</span>
+            </div>
+            <div class="menu-card-price">$7.50</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Matcha -->
+      <div class="menu-card reveal" data-type="special">
+        <div class="menu-card-visual">
+          <img class="menu-photo" src="assets/drink-6.jpg" alt="Specialty coffee latte" />
+        </div>
+        <div class="menu-card-info">
+          <div class="menu-card-name">Ceremonial Matcha</div>
+          <div class="menu-card-desc">First-harvest ceremonial-grade matcha from Uji, Japan — whisked to a perfect froth and layered with warm oat milk. A meditation in a cup.</div>
+          <div class="menu-card-footer">
+            <div class="menu-card-tags">
+              <span class="m-tag">Non-coffee</span>
+              <span class="m-tag">Ceremonial</span>
+            </div>
+            <div class="menu-card-price">$7.00</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ EXPERIENCE ══════════════════════════════════════ -->
+<section class="experience" id="experience">
+  <div class="container">
+    <div class="exp-inner">
+      <div class="exp-mosaic reveal">
+        <!-- Tile 1: interior (tall) -->
+        <div class="exp-tile">
+          <div class="tile-interior" style="height:100%">
+            <img class="tile-photo" src="assets/tile-interior.jpg" alt="Inside the Foliage coffee bar" />
+          </div>
+        </div>
+        <!-- Tile 2: coffee beans -->
+        <div class="exp-tile">
+          <div class="tile-beans">
+            <img class="tile-photo" src="assets/beans.jpg" alt="Freshly roasted coffee beans" />
+          </div>
+        </div>
+        <!-- Tile 3: pour/hands -->
+        <div class="exp-tile">
+          <div class="tile-hands">
+            <img class="tile-photo" src="assets/tile-hands.jpg" alt="Pouring a coffee with care" />
+          </div>
+        </div>
+      </div>
+
+      <div class="exp-content reveal">
+        <div class="eyebrow">The Experience</div>
+        <h2 style="margin-top:20px">Come for the coffee.<br />Stay for the feeling.</h2>
+        <p>Foliage isn't designed to be fast. It's designed to be <em style="font-family:'Playfair Display',serif">felt</em> — the warmth of the light, the low hum of conversation, the ritual of watching your drink be made from scratch.</p>
+
+        <div class="exp-items">
+          <div class="exp-item">
+            <div class="exp-item-icon">🏡</div>
+            <div>
+              <div class="exp-item-title">A space that breathes</div>
+              <div class="exp-item-desc">Designed around natural light, reclaimed wood, and living plants. A counterpoint to the noise outside.</div>
+            </div>
+          </div>
+          <div class="exp-item">
+            <div class="exp-item-icon">🎵</div>
+            <div>
+              <div class="exp-item-title">A curated soundtrack</div>
+              <div class="exp-item-desc">Our playlist changes with the light — slow jazz in the morning, lo-fi in the afternoon, soul on weekends.</div>
+            </div>
+          </div>
+          <div class="exp-item">
+            <div class="exp-item-icon">📖</div>
+            <div>
+              <div class="exp-item-title">The little things</div>
+              <div class="exp-item-desc">A lending library, a community notice board, and a barista who remembers how you take your coffee.</div>
+            </div>
+          </div>
+        </div>
+        <a href="#visit" class="btn btn-dark">
+          Plan Your Visit
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M5 12h14m-7-7 7 7-7 7"/></svg>
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ JOURNEY ════════════════════════════════════════════ -->
+<section class="journey" id="journey">
+  <div class="container">
+    <div class="journey-header reveal">
+      <div class="eyebrow">Bean to Cup</div>
+      <h2 style="margin-top:20px">The long road to<br />your perfect cup.</h2>
+      <p>Great coffee is the result of thousands of small decisions made over months. Here's the journey each of our beans takes.</p>
+    </div>
+    <div class="journey-steps">
+      <div class="j-step reveal">
+        <div class="j-num">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round">
+            <path d="M3 11l19-9-9 19-2-8-8-2z"/>
+          </svg>
+        </div>
+        <h3>Origin & Harvest</h3>
+        <p>We travel to farms in Ethiopia, Colombia, and Guatemala to handpick the best micro-lots from producers we trust and share meals with.</p>
+      </div>
+      <div class="j-step reveal">
+        <div class="j-num">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round">
+            <path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10 10-4.5 10-10c0-1.6-.4-3.1-1-4.4"/>
+            <path d="M8 12a4 4 0 0 0 8 0"/>
+          </svg>
+        </div>
+        <h3>Processing & Drying</h3>
+        <p>Natural, washed, or honey-processed — the method shapes the flavor. We co-design processing with each farm for distinct cup character.</p>
+      </div>
+      <div class="j-step reveal">
+        <div class="j-num">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round">
+            <path d="M8 3H7a2 2 0 0 0-2 2v5a2 2 0 0 0 2 2h1"/>
+            <path d="M16 3h1a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-1"/>
+            <path d="M12 17v4"/>
+            <path d="M8 21h8"/>
+            <rect x="8" y="3" width="8" height="14" rx="1"/>
+          </svg>
+        </div>
+        <h3>Small-Batch Roasting</h3>
+        <p>Our roaster runs in batches of 5kg to maintain control. Each origin gets its own profile — light enough to honor the terroir, never smoky.</p>
+      </div>
+      <div class="j-step reveal">
+        <div class="j-num">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round">
+            <path d="M18 8h1a4 4 0 0 1 0 8h-1"/>
+            <path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"/>
+            <line x1="6" y1="1" x2="6" y2="4"/>
+            <line x1="10" y1="1" x2="10" y2="4"/>
+            <line x1="14" y1="1" x2="14" y2="4"/>
+          </svg>
+        </div>
+        <h3>Brewed For You</h3>
+        <p>Each order is brewed fresh. Pour overs take 4 minutes. Espresso shots, 28 seconds. We don't batch brew — your cup is yours alone.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ TESTIMONIALS ═══════════════════════════════════════ -->
+<section class="testimonials" id="testimonials">
+  <div class="container">
+    <div class="testi-header reveal">
+      <div class="eyebrow">Regulars Say</div>
+      <h2 style="margin-top:20px">What our community<br />comes back for.</h2>
+      <p>We don't ask for reviews. These arrive because people want to share the feeling.</p>
+    </div>
+    <div class="testi-grid">
+      <div class="testi-card reveal">
+        <div class="testi-mark">"</div>
+        <div class="testi-stars"><span>★</span><span>★</span><span>★</span><span>★</span><span>★</span></div>
+        <p class="testi-text">I didn't think I was a "coffee person" until I came here. Now I understand what all the fuss is about. The Kenya pour over made me actually taste my drink for the first time in years.</p>
+        <div class="testi-author">
+          <div class="testi-av">AS</div>
+          <div>
+            <div class="testi-name">Amara Santos</div>
+            <div class="testi-role">Writer · Regular since 2021</div>
+          </div>
+        </div>
+      </div>
+      <div class="testi-card reveal">
+        <div class="testi-mark">"</div>
+        <div class="testi-stars"><span>★</span><span>★</span><span>★</span><span>★</span><span>★</span></div>
+        <p class="testi-text">Foliage is where I write, think, and breathe. The baristas know my order, the playlist is always right, and there's never a rush to leave. It's the one place the city slows down.</p>
+        <div class="testi-author">
+          <div class="testi-av" style="background:linear-gradient(135deg,#5A8A6A,#1E3A2F)">JK</div>
+          <div>
+            <div class="testi-name">James Kwon</div>
+            <div class="testi-role">Architect · Daily regular</div>
+          </div>
+        </div>
+      </div>
+      <div class="testi-card reveal">
+        <div class="testi-mark">"</div>
+        <div class="testi-stars"><span>★</span><span>★</span><span>★</span><span>★</span><span>★</span></div>
+        <p class="testi-text">The Honey Oat Latte literally made me emotional. I don't know how to explain that — it just tasted like something made with real care. That's rare. That's Foliage.</p>
+        <div class="testi-author">
+          <div class="testi-av" style="background:linear-gradient(135deg,#C49A6C,#7A4520)">PN</div>
+          <div>
+            <div class="testi-name">Priya Nair</div>
+            <div class="testi-role">Graphic designer · Weekend visitor</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ VISIT ═══════════════════════════════════════════════ -->
+<section class="visit" id="visit">
+  <div class="container">
+    <div class="visit-inner">
+      <div>
+        <div class="eyebrow reveal">Find Us</div>
+        <h2 style="margin-top:20px" class="reveal">Come in. <em style="font-family:'Playfair Display',serif;color:var(--sage)">Pull up a chair.</em></h2>
+        <p class="reveal" style="font-size:15px;color:var(--text-mid);font-weight:300;line-height:1.85;margin-bottom:36px">No reservations needed. Just walk in, tell us what you're in the mood for, and we'll take it from there. The kettle's always on.</p>
+        <div class="visit-info">
+          <div class="vi-row reveal">
+            <div class="vi-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round">
+                <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/>
+                <circle cx="12" cy="10" r="3"/>
+              </svg>
+            </div>
+            <div>
+              <div class="vi-label">Address</div>
+              <div class="vi-val">48 Foliage Lane, Green Quarter<br />Jakarta Selatan, 12430</div>
+            </div>
+          </div>
+          <div class="vi-row reveal">
+            <div class="vi-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round">
+                <circle cx="12" cy="12" r="10"/>
+                <polyline points="12 6 12 12 16 14"/>
+              </svg>
+            </div>
+            <div>
+              <div class="vi-label">Opening Hours</div>
+              <div class="vi-val">Mon–Fri: 7:00 AM – 8:00 PM<br />Sat–Sun: 8:00 AM – 9:00 PM</div>
+            </div>
+          </div>
+          <div class="vi-row reveal">
+            <div class="vi-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round">
+                <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.99 12 19.79 19.79 0 0 1 1.93 3.18a2 2 0 0 1 1.99-2.18h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 8.91a16 16 0 0 0 5.99 5.99l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/>
+              </svg>
+            </div>
+            <div>
+              <div class="vi-label">Reservations & Inquiries</div>
+              <div class="vi-val">hello@foliagebeans.com</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Map illustration -->
+      <div class="map-card reveal">
+        <div class="map-scene">
+          <img class="map-photo" src="assets/map.jpg" alt="Map of the Foliage Coffee location" />
+          <div class="map-grid"></div>
+          <!-- roads -->
+          <div class="map-road road-h road-h1"></div>
+          <div class="map-road road-h road-h2"></div>
+          <div class="map-road road-v road-v1"></div>
+          <div class="map-road road-v road-v2"></div>
+          <div class="map-road road-v road-v3"></div>
+          <!-- blocks -->
+          <div class="map-block" style="top:10%;left:5%;width:18%;height:22%"></div>
+          <div class="map-block" style="top:10%;left:28%;width:28%;height:18%"></div>
+          <div class="map-block" style="top:10%;right:5%;width:15%;height:20%"></div>
+          <div class="map-block" style="top:40%;left:5%;width:16%;height:18%"></div>
+          <div class="map-block" style="top:68%;left:5%;width:15%;height:22%"></div>
+          <div class="map-block" style="top:68%;left:28%;width:24%;height:18%"></div>
+          <div class="map-block" style="top:40%;right:5%;width:18%;height:20%"></div>
+          <div class="map-block" style="top:68%;right:5%;width:16%;height:18%"></div>
+          <!-- park -->
+          <div class="map-park" style="top:42%;left:28%;width:26%;height:22%"></div>
+          <!-- road labels -->
+          <div class="map-label-small" style="top:33%;left:28%;transform:translateY(-50%)">Foliage Lane</div>
+          <div class="map-label-small" style="top:60%;left:28%;transform:translateY(-50%)">Green St.</div>
+          <!-- pin -->
+          <div class="map-pin">
+            <div class="pin-head"></div>
+            <div class="pin-tail"></div>
+            <div class="pin-label">☕ Foliage Coffee</div>
+          </div>
+          <!-- open badge bar -->
+          <div class="map-opening">
+            <div class="open-badge"><div class="open-dot"></div>Open Now</div>
+            <div class="open-hours">Closes at 8:00 PM today</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ NEWSLETTER ══════════════════════════════════════════ -->
+<section class="newsletter">
+  <div class="container">
+    <div class="newsletter-inner reveal">
+      <div class="eyebrow">Stay Connected</div>
+      <h2 style="margin-top:20px">Join the Foliage family.</h2>
+      <p>Monthly brew notes, origin stories, seasonal specials, and occasional musings about the slow art of coffee-making. No spam, ever.</p>
+      <form class="subscribe-form" onsubmit="return false">
+        <input type="email" class="subscribe-input" placeholder="your@email.com" />
+        <button type="submit" class="btn btn-green">Subscribe</button>
+      </form>
+      <p class="subscribe-note">Join 3,400+ coffee lovers already subscribed · Unsubscribe anytime</p>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ FOOTER ═════════════════════════════════════════════ -->
+<footer>
+  <div class="container">
+    <div class="footer-top">
+      <div class="footer-brand">
+        <div class="footer-logo-row">
+          <div class="logo-mark" style="width:36px;height:36px">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" style="width:18px;height:18px;color:var(--cream)">
+              <path d="M17 8C8 10 5.9 16.17 3.82 19.34A1 1 0 0 0 4.69 21h8.62a1 1 0 0 0 .87-.5C15 19 17 17 17 14"/>
+              <path d="M17 8c0-2.76-2.24-5-5-5s-5 2.24-5 5"/>
+            </svg>
+          </div>
+          <span>Foliage Coffee</span>
+        </div>
+        <p class="footer-bio">A slow coffee bar where every sip is a story. Mindfully sourced, carefully brewed, gratefully served.</p>
+        <div class="footer-social">
+          <a href="#" class="f-soc" aria-label="Instagram">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r=".5" fill="currentColor"/></svg>
+          </a>
+          <a href="#" class="f-soc" aria-label="Facebook">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg>
+          </a>
+          <a href="#" class="f-soc" aria-label="TikTok">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 12a4 4 0 1 0 4 4V4a5 5 0 0 0 5 5"/></svg>
+          </a>
+        </div>
+      </div>
+      <div class="footer-col">
+        <h4>Menu</h4>
+        <ul>
+          <li><a href="#">Espresso Bar</a></li>
+          <li><a href="#">Pour Over</a></li>
+          <li><a href="#">Cold Brew</a></li>
+          <li><a href="#">Seasonal Specials</a></li>
+          <li><a href="#">Non-Coffee</a></li>
+          <li><a href="#">Food & Pastries</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Visit</h4>
+        <ul>
+          <li><a href="#">Location & Hours</a></li>
+          <li><a href="#">Private Events</a></li>
+          <li><a href="#">Brewing Workshops</a></li>
+          <li><a href="#">Coffee Subscriptions</a></li>
+          <li><a href="#">Gift Cards</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>About</h4>
+        <ul>
+          <li><a href="#">Our Story</a></li>
+          <li><a href="#">Origin Partners</a></li>
+          <li><a href="#">Sustainability</a></li>
+          <li><a href="#">Journal</a></li>
+          <li><a href="#">Careers</a></li>
+          <li><a href="#">Contact</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p class="footer-copy">© 2026 Foliage Coffee. All rights reserved.</p>
+      <p class="footer-tagline">Slow down. Taste more.</p>
+    </div>
+  </div>
+</footer>
+
+<script>
+  // Nav scroll
+  const nav = document.getElementById('navbar');
+  window.addEventListener('scroll', () => nav.classList.toggle('scrolled', window.scrollY > 20), { passive: true });
+
+  // Mobile hamburger menu
+  const hb = document.getElementById('hamburger');
+  const mm = document.getElementById('mobileMenu');
+  if (hb && mm) {
+    const toggle = (open) => {
+      const willOpen = open ?? !mm.classList.contains('open');
+      mm.classList.toggle('open', willOpen);
+      hb.classList.toggle('open', willOpen);
+      hb.setAttribute('aria-expanded', willOpen);
+    };
+    hb.addEventListener('click', () => toggle());
+    mm.querySelectorAll('a').forEach(a => a.addEventListener('click', () => toggle(false)));
+  }
+
+  // Scroll reveal with stagger
+  const ro = new IntersectionObserver(entries => {
+    entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); ro.unobserve(e.target); } });
+  }, { threshold: 0.08, rootMargin: '0px 0px -30px 0px' });
+  document.querySelectorAll('.reveal').forEach((el, i) => {
+    el.style.transitionDelay = `${(i % 4) * 90}ms`;
+    ro.observe(el);
+  });
+
+  // Menu tab filter
+  const tabs = document.querySelectorAll('.m-tab');
+  const cards = document.querySelectorAll('.menu-card[data-type]');
+  tabs.forEach(tab => {
+    tab.addEventListener('click', () => {
+      tabs.forEach(t => t.classList.remove('active'));
+      tab.classList.add('active');
+      const f = tab.dataset.filter;
+      cards.forEach(c => {
+        c.classList.toggle('hidden', f !== 'all' && c.dataset.type !== f);
+      });
+    });
+  });
+</script>
+</body>
+</html>
