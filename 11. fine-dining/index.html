@@ -1,0 +1,1626 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Aurum — Fine Dining Restaurant</title>
+  <meta name="description" content="A singular dining experience where classical French technique meets the finest seasonal produce. Reserve your table at Aurum." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600&family=Cormorant:ital,wght@0,300;1,300&family=Lato:wght@300;400&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --black:       #080604;
+      --dark:        #120F09;
+      --dark-mid:    #1E1910;
+      --gold:        #C9A25A;
+      --gold-light:  #E2CB96;
+      --gold-pale:   #F5EDD8;
+      --gold-dark:   #8B6C2A;
+      --white:       #FFFFF8;
+      --warm-white:  #FAF8F3;
+      --cream:       #F3EFE6;
+      --platinum:    rgba(201,162,90,.12);
+      --platinum-md: rgba(201,162,90,.22);
+      --platinum-hi: rgba(201,162,90,.45);
+      --text-dark:   #0E0C08;
+      --text-mid:    #3A3020;
+      --text-light:  #5C4A32;
+      --text-gold:   #A8853A;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Lato', sans-serif;
+      background: var(--warm-white);
+      color: var(--text-dark);
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+      font-weight: 300;
+      overflow-x: hidden;
+    }
+
+    /* ─── TYPE ───────────────────────────────────────────── */
+    .serif   { font-family: 'Cormorant Garamond', 'Cormorant', Georgia, serif; }
+    .caps    { letter-spacing: .22em; text-transform: uppercase; }
+    .italic  { font-style: italic; }
+
+    /* ─── UTILS ──────────────────────────────────────────── */
+    .container { max-width: 1100px; margin: 0 auto; padding: 0 48px; }
+    .container-wide { max-width: 1360px; margin: 0 auto; padding: 0 48px; }
+    .container-narrow { max-width: 720px; margin: 0 auto; padding: 0 48px; }
+
+    /* decorative rule */
+    .rule {
+      display: flex; align-items: center; gap: 16px;
+    }
+    .rule-line { flex: 1; height: 1px; background: var(--gold); opacity: .3; }
+    .rule-diamond {
+      width: 6px; height: 6px; background: var(--gold);
+      transform: rotate(45deg); flex-shrink: 0;
+    }
+    .rule-text {
+      font-family: 'Lato', sans-serif; font-size: 9px; font-weight: 400;
+      letter-spacing: .24em; text-transform: uppercase; color: var(--gold);
+    }
+
+    /* section eyebrow */
+    .eyebrow {
+      font-family: 'Lato', sans-serif; font-size: 9px; font-weight: 400;
+      letter-spacing: .28em; text-transform: uppercase; color: var(--gold);
+    }
+
+    /* gold line */
+    .gold-line { height: 1px; background: var(--gold); opacity: .25; }
+
+    /* btn */
+    .btn {
+      display: inline-flex; align-items: center; gap: 12px;
+      font-family: 'Lato', sans-serif; font-size: 10px; font-weight: 400;
+      letter-spacing: .28em; text-transform: uppercase;
+      cursor: pointer; text-decoration: none;
+      transition: all .35s ease; border: none; background: none;
+    }
+    .btn::after {
+      content: ''; display: block;
+      width: 32px; height: 1px; background: currentColor;
+      transition: width .35s ease;
+    }
+    .btn:hover::after { width: 52px; }
+
+    .btn-light { color: var(--gold-light); }
+    .btn-dark  { color: var(--text-gold); }
+    .btn-white { color: var(--white); }
+
+    .btn-box {
+      display: inline-flex; align-items: center; gap: 0;
+      font-family: 'Lato', sans-serif; font-size: 10px; font-weight: 400;
+      letter-spacing: .26em; text-transform: uppercase;
+      cursor: pointer; text-decoration: none; border: none;
+      padding: 16px 40px;
+      transition: all .35s ease;
+    }
+    .btn-box-gold {
+      background: var(--gold); color: var(--black);
+    }
+    .btn-box-gold:hover { background: var(--gold-light); }
+
+    .btn-box-outline-light {
+      background: transparent; color: var(--gold-light);
+      border: 1px solid rgba(201,162,90,.4);
+    }
+    .btn-box-outline-light:hover { border-color: var(--gold); color: var(--gold-light); background: rgba(201,162,90,.06); }
+
+    .btn-box-outline-dark {
+      background: transparent; color: var(--text-gold);
+      border: 1px solid rgba(139,108,42,.35);
+    }
+    .btn-box-outline-dark:hover { border-color: var(--gold); color: var(--gold-dark); }
+
+    /* ─── NAV ────────────────────────────────────────────── */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 300;
+      transition: all .5s ease;
+    }
+    nav.scrolled {
+      background: rgba(8,6,4,.92);
+      backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--platinum);
+    }
+    .nav-inner {
+      max-width: 1360px; margin: 0 auto; padding: 0 48px;
+      display: grid; grid-template-columns: 1fr auto 1fr;
+      align-items: center; height: 88px;
+    }
+    .nav-links-left, .nav-links-right {
+      display: flex; align-items: center; gap: 40px; list-style: none;
+    }
+    .nav-links-right { justify-content: flex-end; }
+    .nav-links-left a, .nav-links-right a {
+      font-family: 'Lato', sans-serif; font-size: 9px; font-weight: 400;
+      letter-spacing: .24em; text-transform: uppercase;
+      color: rgba(201,162,90,.65); text-decoration: none;
+      transition: color .3s;
+    }
+    .nav-links-left a:hover, .nav-links-right a:hover { color: var(--gold-light); }
+    .nav-logo { text-align: center; }
+    .nav-logo-name {
+      font-family: 'Cormorant Garamond', serif; font-size: 28px; font-weight: 300;
+      letter-spacing: .35em; color: var(--gold-light); text-decoration: none;
+      text-transform: uppercase; display: block;
+    }
+    .nav-logo-sub {
+      font-size: 7px; letter-spacing: .4em; text-transform: uppercase;
+      color: rgba(201,162,90,.65); display: block; margin-top: 2px;
+    }
+    .nav-reserve {
+      font-family: 'Lato', sans-serif; font-size: 9px; font-weight: 400;
+      letter-spacing: .22em; text-transform: uppercase; color: var(--black);
+      background: var(--gold); padding: 10px 22px; text-decoration: none;
+      transition: background .3s;
+    }
+    .nav-reserve:hover { background: var(--gold-light); }
+    .hamburger { display: none; background: none; border: none; cursor: pointer; flex-direction: column; gap: 5px; }
+    .hamburger span { display: block; width: 24px; height: 1px; background: var(--gold); transition: all .3s; }
+
+    /* ─── HERO ───────────────────────────────────────────── */
+    .hero {
+      min-height: 100vh; display: flex; flex-direction: column;
+      position: relative; overflow: hidden;
+      background: var(--black);
+    }
+
+    /* Hero abstract food art */
+    .hero-canvas {
+      position: absolute; inset: 0;
+      display: flex; align-items: center; justify-content: center;
+    }
+    /* subtle grid */
+    .hero-canvas::before {
+      content: ''; position: absolute; inset: 0;
+      background-image:
+        linear-gradient(rgba(201,162,90,.025) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(201,162,90,.025) 1px, transparent 1px);
+      background-size: 80px 80px;
+    }
+    /* vignette */
+    .hero-canvas::after {
+      content: ''; position: absolute; inset: 0;
+      background: radial-gradient(ellipse 70% 70% at 50% 50%, transparent 30%, rgba(8,6,4,.85) 100%);
+    }
+
+    /* Hero plate illustration */
+    .hero-plate-wrap {
+      position: absolute; right: 8%; top: 50%; transform: translateY(-50%);
+      opacity: .18; pointer-events: none; z-index: 1;
+    }
+
+    .hero-content {
+      position: relative; z-index: 2;
+      flex: 1; display: flex; align-items: center;
+      padding-top: 88px;
+    }
+    .hero-text { max-width: 680px; padding: 0 48px; }
+    .hero-eyebrow {
+      font-family: 'Lato', sans-serif; font-size: 9px; font-weight: 400;
+      letter-spacing: .32em; text-transform: uppercase; color: var(--gold);
+      margin-bottom: 36px; display: flex; align-items: center; gap: 16px;
+    }
+    .hero-eyebrow::after { content: ''; display: block; width: 48px; height: 1px; background: var(--gold); opacity: .5; }
+
+    .hero h1 {
+      font-family: 'Cormorant Garamond', serif; font-size: clamp(62px, 7vw, 108px);
+      font-weight: 300; line-height: .95; letter-spacing: -.01em;
+      color: var(--white); margin-bottom: 0;
+    }
+    .hero h1 .italic-line { font-style: italic; color: var(--gold-light); }
+    .hero h1 .thin-line { font-weight: 300; color: rgba(255,255,248,.78); }
+
+    .hero-divider {
+      width: 48px; height: 1px; background: var(--gold);
+      margin: 40px 0; opacity: .6;
+    }
+    .hero-desc {
+      font-size: 14px; font-weight: 400; color: rgba(255,255,248,.78);
+      line-height: 2; max-width: 400px; letter-spacing: .02em;
+      margin-bottom: 48px;
+    }
+    .hero-actions { display: flex; gap: 24px; align-items: center; flex-wrap: wrap; }
+
+    /* hero bottom bar */
+    .hero-bar {
+      position: relative; z-index: 2;
+      border-top: 1px solid var(--platinum);
+    }
+    .hero-bar-inner {
+      max-width: 1360px; margin: 0 auto; padding: 0 48px;
+      display: flex; justify-content: space-between; align-items: center;
+      height: 60px;
+    }
+    .hero-bar-item {
+      display: flex; align-items: center; gap: 10px;
+      font-size: 9px; letter-spacing: .2em; text-transform: uppercase;
+      color: rgba(201,162,90,.78);
+    }
+    .hero-bar-dot { width: 4px; height: 4px; border-radius: 50%; background: var(--gold); opacity: .4; }
+
+    /* ─── INTRO ──────────────────────────────────────────── */
+    .intro { padding: 140px 0; background: var(--warm-white); }
+    .intro-inner { text-align: center; }
+    .intro-rule { margin: 0 auto 56px; max-width: 320px; }
+    .intro-statement {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(28px, 3.5vw, 46px);
+      font-weight: 300; line-height: 1.45; letter-spacing: .01em;
+      color: var(--text-dark); max-width: 780px; margin: 0 auto 48px;
+    }
+    .intro-statement em { color: var(--text-gold); font-style: italic; }
+    .intro-meta {
+      display: flex; align-items: center; justify-content: center; gap: 48px;
+      flex-wrap: wrap;
+    }
+    .intro-meta-item { text-align: center; }
+    .intro-meta-num {
+      font-family: 'Cormorant Garamond', serif; font-size: 48px; font-weight: 300;
+      color: var(--gold); line-height: 1; letter-spacing: .04em;
+    }
+    .intro-meta-label {
+      font-size: 9px; letter-spacing: .24em; text-transform: uppercase;
+      color: var(--text-mid); margin-top: 6px; font-weight: 400;
+    }
+    .intro-meta-sep { width: 1px; height: 48px; background: var(--cream); }
+
+    /* ─── SIGNATURE DISHES ───────────────────────────────── */
+    .dishes { padding: 0; }
+    .dish-block {
+      display: grid; grid-template-columns: 1fr 1fr; min-height: 680px;
+    }
+    .dish-block.reverse { direction: rtl; }
+    .dish-block.reverse > * { direction: ltr; }
+
+    .dish-visual {
+      background: var(--dark); position: relative; overflow: hidden;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .dish-glow {
+      position: absolute; border-radius: 50%; pointer-events: none;
+      background: radial-gradient(circle, rgba(201,162,90,.12) 0%, transparent 65%);
+    }
+
+    /* Plate illustrations */
+    .plate-scene {
+      position: relative; width: 360px; height: 360px;
+      display: flex; align-items: center; justify-content: center;
+    }
+    /* outer ring */
+    .plate-outer {
+      position: absolute; inset: 0; border-radius: 50%;
+      border: 1px solid rgba(201,162,90,.12);
+    }
+    /* plate base */
+    .plate-base {
+      width: 280px; height: 280px; border-radius: 50%;
+      position: absolute;
+      box-shadow: 0 0 0 1px rgba(201,162,90,.08), 0 24px 80px rgba(0,0,0,.6);
+    }
+    /* plate rim shadow */
+    .plate-rim {
+      position: absolute; inset: 0; border-radius: 50%;
+      background: conic-gradient(from 220deg, rgba(255,255,255,.04) 0deg, transparent 40deg, transparent 200deg, rgba(255,255,255,.03) 280deg, transparent 360deg);
+    }
+
+    /* dish food elements — SVG compositions */
+    .food-comp { position: absolute; z-index: 2; }
+
+    .dish-info {
+      background: var(--warm-white); display: flex; flex-direction: column;
+      justify-content: center; padding: 80px 72px;
+    }
+    .dish-course {
+      font-family: 'Cormorant Garamond', serif; font-size: 96px; font-weight: 300;
+      color: var(--cream); line-height: 1; margin-bottom: 0; letter-spacing: -.02em;
+      pointer-events: none; user-select: none; margin-bottom: -20px;
+    }
+    .dish-eyebrow { margin-bottom: 16px; }
+    .dish-name {
+      font-family: 'Cormorant Garamond', serif; font-size: clamp(32px, 3vw, 46px);
+      font-weight: 400; line-height: 1.1; color: var(--text-dark);
+      letter-spacing: -.01em; margin-bottom: 20px;
+    }
+    .dish-name em { font-style: italic; color: var(--text-gold); }
+    .dish-desc {
+      font-size: 15px; font-weight: 400; color: var(--text-mid);
+      line-height: 1.85; max-width: 380px; margin-bottom: 32px;
+    }
+    .dish-components {
+      display: flex; gap: 0; flex-direction: column; gap: 8px; margin-bottom: 36px;
+    }
+    .dish-comp-item {
+      font-size: 10px; letter-spacing: .18em; text-transform: uppercase;
+      color: var(--text-mid); display: flex; align-items: center; gap: 10px;
+    }
+    .dish-comp-item::before { content: ''; width: 14px; height: 1px; background: var(--gold); opacity: .5; }
+
+    /* ─── TASTING MENU ───────────────────────────────────── */
+    .tasting { padding: 140px 0; background: var(--black); position: relative; overflow: hidden; }
+    .tasting::before {
+      content: ''; position: absolute; top: -100px; left: 50%; transform: translateX(-50%);
+      width: 600px; height: 400px;
+      background: radial-gradient(ellipse, rgba(201,162,90,.06) 0%, transparent 70%);
+    }
+    .tasting-header { text-align: center; margin-bottom: 80px; }
+    .tasting-header .eyebrow { margin-bottom: 24px; }
+    .tasting-header h2 {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(36px, 4vw, 60px); font-weight: 300;
+      color: var(--white); letter-spacing: .02em; margin-bottom: 16px;
+    }
+    .tasting-header h2 em { color: var(--gold-light); font-style: italic; }
+    .tasting-header p { font-size: 13px; color: rgba(201,162,90,.72); letter-spacing: .06em; }
+
+    .tasting-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0; }
+    .tasting-col { padding: 0 64px; }
+    .tasting-col:first-child { border-right: 1px solid var(--platinum); }
+    .tasting-col-label {
+      font-size: 9px; letter-spacing: .28em; text-transform: uppercase;
+      color: var(--gold); margin-bottom: 40px; padding-bottom: 20px;
+      border-bottom: 1px solid var(--platinum);
+    }
+    .course {
+      display: grid; grid-template-columns: 36px 1fr auto;
+      gap: 20px; align-items: start; padding: 24px 0;
+      border-bottom: 1px solid rgba(201,162,90,.06);
+      transition: all .3s;
+    }
+    .course:hover { background: rgba(201,162,90,.02); }
+    .course:last-child { border-bottom: none; }
+    .course-num {
+      font-family: 'Cormorant Garamond', serif; font-size: 13px; font-weight: 400;
+      color: var(--gold); padding-top: 2px; letter-spacing: .08em;
+    }
+    .course-name {
+      font-family: 'Cormorant Garamond', serif; font-size: 18px; font-weight: 400;
+      color: rgba(255,255,248,.8); letter-spacing: .01em; margin-bottom: 4px;
+    }
+    .course-name em { font-style: italic; color: var(--gold-light); }
+    .course-desc {
+      font-size: 11px; color: rgba(201,162,90,.72); letter-spacing: .08em;
+      line-height: 1.7; font-weight: 400;
+    }
+    .course-price {
+      font-family: 'Cormorant Garamond', serif; font-size: 14px; font-weight: 300;
+      color: rgba(201,162,90,.5); white-space: nowrap; padding-top: 2px;
+    }
+    .tasting-footer {
+      margin-top: 64px; padding-top: 48px; border-top: 1px solid var(--platinum);
+      display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 24px;
+    }
+    .tasting-price-block {}
+    .tasting-price-label { font-size: 9px; letter-spacing: .24em; text-transform: uppercase; color: rgba(201,162,90,.72); margin-bottom: 6px; }
+    .tasting-price-val {
+      font-family: 'Cormorant Garamond', serif; font-size: 42px; font-weight: 300;
+      color: var(--gold-light); line-height: 1;
+    }
+    .tasting-price-note { font-size: 10px; color: rgba(201,162,90,.62); letter-spacing: .1em; margin-top: 4px; }
+
+    /* ─── CHEF ───────────────────────────────────────────── */
+    .chef { padding: 140px 0; background: var(--cream); }
+    .chef-inner { display: grid; grid-template-columns: 1fr 1fr; gap: 100px; align-items: center; }
+    .chef-visual { position: relative; }
+    .chef-portrait {
+      width: 100%; aspect-ratio: 3/4;
+      background: var(--dark-mid);
+      position: relative; overflow: hidden;
+    }
+    /* portrait illustration */
+    .portrait-scene {
+      width: 100%; height: 100%; position: relative;
+      display: flex; align-items: flex-end; justify-content: center;
+    }
+    .portrait-bg {
+      position: absolute; inset: 0;
+      background: linear-gradient(175deg, #2A1E0E 0%, #150E05 60%, #080604 100%);
+    }
+    /* soft light from above */
+    .portrait-light {
+      position: absolute; top: 0; left: 50%; transform: translateX(-50%);
+      width: 200px; height: 200px;
+      background: radial-gradient(ellipse, rgba(201,162,90,.12) 0%, transparent 70%);
+    }
+    /* chef silhouette — abstract -->
+    .chef-silhouette {
+      position: absolute; bottom: 0; left: 50%; transform: translateX(-50%);
+      width: 60%; display: flex; flex-direction: column; align-items: center;
+    }
+    /* chef whites jacket shape */
+    .jacket {
+      width: 140px; height: 180px;
+      background: linear-gradient(175deg, rgba(240,235,225,.06) 0%, rgba(200,195,185,.03) 100%);
+      border: 1px solid rgba(201,162,90,.06);
+      border-bottom: none; border-radius: 4px 4px 0 0; position: relative;
+      margin-bottom: 0;
+    }
+    .jacket::before {
+      content: ''; position: absolute; top: 0; left: 50%; transform: translateX(-50%);
+      width: 1px; height: 80%; background: rgba(201,162,90,.08);
+    }
+    /* buttons on jacket */
+    .jacket-btn {
+      position: absolute; width: 4px; height: 4px; border-radius: 50%;
+      background: rgba(201,162,90,.2); left: calc(50% - 2px);
+    }
+    /* head */
+    .chef-head {
+      width: 72px; height: 80px; border-radius: 50% 50% 45% 45%;
+      background: linear-gradient(175deg, rgba(201,162,90,.08), rgba(160,120,70,.05));
+      border: 1px solid rgba(201,162,90,.06);
+      margin-bottom: 0; position: relative;
+    }
+    /* toque */
+    .toque {
+      width: 78px; height: 44px; position: absolute; top: -36px; left: -3px;
+    }
+    .toque-body {
+      width: 66px; height: 36px; margin: 0 auto;
+      background: rgba(240,235,225,.04); border: 1px solid rgba(201,162,90,.06);
+      border-radius: 4px 4px 0 0;
+    }
+    .toque-brim {
+      width: 78px; height: 10px;
+      background: rgba(240,235,225,.03); border: 1px solid rgba(201,162,90,.05);
+      border-radius: 2px;
+    }
+
+    .portrait-gold-line {
+      position: absolute; bottom: 0; left: 0; right: 0; height: 2px;
+      background: linear-gradient(90deg, transparent, var(--gold), transparent);
+      opacity: .3;
+    }
+
+    .chef-caption {
+      position: absolute; bottom: -1px; right: -36px;
+      background: var(--black); padding: 20px 24px;
+      border: 1px solid var(--platinum);
+    }
+    .chef-caption-role { font-size: 9px; letter-spacing: .22em; text-transform: uppercase; color: var(--gold); margin-bottom: 4px; }
+    .chef-caption-name {
+      font-family: 'Cormorant Garamond', serif; font-size: 22px; font-weight: 300;
+      color: var(--white); letter-spacing: .06em;
+    }
+
+    .chef-content {}
+    .chef-content .eyebrow { margin-bottom: 20px; }
+    .chef-content h2 {
+      font-family: 'Cormorant Garamond', serif; font-size: clamp(32px, 3vw, 46px);
+      font-weight: 300; line-height: 1.2; letter-spacing: .01em;
+      color: var(--text-dark); margin-bottom: 28px;
+    }
+    .chef-content h2 em { font-style: italic; color: var(--text-gold); }
+    .chef-pull {
+      font-family: 'Cormorant Garamond', serif; font-size: 22px; font-weight: 400;
+      font-style: italic; color: #8B6C2A; line-height: 1.5;
+      margin-bottom: 28px; padding-left: 20px;
+      border-left: 1px solid var(--gold); opacity: 1;
+    }
+    .chef-content p { font-size: 14px; font-weight: 400; color: var(--text-mid); line-height: 2; margin-bottom: 14px; }
+    .chef-awards {
+      margin-top: 36px; padding-top: 36px; border-top: 1px solid var(--cream);
+      display: flex; gap: 32px; flex-wrap: wrap;
+    }
+    .award-item {}
+    .award-icon { font-size: 22px; margin-bottom: 6px; }
+    .award-label { font-size: 9px; letter-spacing: .18em; text-transform: uppercase; color: var(--text-mid); margin-bottom: 2px; }
+    .award-name { font-family: 'Cormorant Garamond', serif; font-size: 14px; color: var(--text-dark); }
+
+    /* ─── PRIVATE DINING ─────────────────────────────────── */
+    .private { padding: 0; background: var(--black); }
+    .private-inner { display: grid; grid-template-columns: 1fr 1fr; min-height: 600px; }
+    .private-visual {
+      position: relative; overflow: hidden;
+      display: flex; align-items: center; justify-content: center;
+      background: var(--dark);
+    }
+    /* table setting illustration */
+    .table-scene {
+      width: 100%; height: 100%; position: relative;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .table-surface {
+      width: 380px; height: 220px; position: relative;
+      transform: perspective(600px) rotateX(18deg);
+    }
+    .table-cloth {
+      position: absolute; inset: 0; border-radius: 8px;
+      background: linear-gradient(160deg, #1A1510 0%, #0E0C08 100%);
+      border: 1px solid rgba(201,162,90,.08);
+      box-shadow: 0 24px 80px rgba(0,0,0,.6);
+    }
+    /* plate */
+    .t-plate {
+      position: absolute; width: 80px; height: 80px; border-radius: 50%;
+      background: linear-gradient(145deg, #1E1A14, #0E0C08);
+      border: 1px solid rgba(201,162,90,.15);
+      box-shadow: 0 0 0 3px rgba(201,162,90,.06);
+    }
+    .t-plate-l { top: 50%; left: 22%; transform: translateY(-50%); }
+    .t-plate-r { top: 50%; right: 22%; transform: translateY(-50%); }
+    /* silverware */
+    .t-fork, .t-knife, .t-spoon {
+      position: absolute; background: linear-gradient(180deg, rgba(201,162,90,.3), rgba(201,162,90,.1));
+      border-radius: 1px;
+    }
+    /* left place */
+    .t-fork { width: 2px; height: 60px; top: 50%; transform: translateY(-50%); }
+    .t-fork-l { left: 14%; }
+    .t-knife-l { left: 11%; width: 2px; height: 60px; top: 50%; transform: translateY(-50%); background: linear-gradient(180deg,rgba(201,162,90,.2),rgba(201,162,90,.08)); position: absolute; }
+    .t-knife { width: 2px; height: 60px; top: 50%; transform: translateY(-50%); }
+    .t-knife-r { right: 11%; }
+    .t-spoon { width: 2px; height: 56px; top: 50%; transform: translateY(-50%); }
+    .t-spoon-r { right: 14%; }
+    /* wine glass */
+    .t-glass {
+      position: absolute; top: -50px; width: 22px;
+      display: flex; flex-direction: column; align-items: center;
+    }
+    .t-glass-l { left: calc(22% + 29px); }
+    .t-glass-r { right: calc(22% + 29px); }
+    .g-bowl {
+      width: 22px; height: 24px; border-radius: 50% 50% 30% 30%;
+      background: rgba(201,162,90,.06); border: 1px solid rgba(201,162,90,.2);
+    }
+    .g-stem { width: 1px; height: 24px; background: rgba(201,162,90,.2); }
+    .g-base { width: 18px; height: 2px; background: rgba(201,162,90,.18); border-radius: 1px; }
+    /* candle center */
+    .t-candle {
+      position: absolute; top: -70px; left: 50%; transform: translateX(-50%);
+      display: flex; flex-direction: column; align-items: center;
+    }
+    .candle-flame {
+      width: 8px; height: 12px; border-radius: 50% 50% 30% 30%;
+      background: radial-gradient(ellipse, #FFD060 0%, #FF8C00 50%, transparent 80%);
+      margin-bottom: 1px; animation: flicker 1.5s ease-in-out infinite;
+    }
+    @keyframes flicker {
+      0%,100% { transform: scale(1) rotate(-1deg); opacity: 1; }
+      25% { transform: scale(.95,1.05) rotate(1deg); opacity: .95; }
+      50% { transform: scale(1.02,.98) rotate(-1.5deg); opacity: 1; }
+      75% { transform: scale(.98,1.02) rotate(.5deg); opacity: .92; }
+    }
+    .candle-body { width: 10px; height: 44px; background: linear-gradient(180deg,rgba(240,235,220,.08),rgba(201,162,90,.05)); border: 1px solid rgba(201,162,90,.12); border-radius: 1px; }
+    .candle-glow {
+      position: absolute; top: -20px; left: 50%; transform: translateX(-50%);
+      width: 60px; height: 60px;
+      background: radial-gradient(circle, rgba(255,200,50,.08) 0%, transparent 70%);
+    }
+    /* folded napkin */
+    .t-napkin {
+      position: absolute; top: 50%; transform: translateY(-50%);
+    }
+    .t-napkin-l { left: calc(22% + 6px); }
+    .t-napkin-r { right: calc(22% + 6px); }
+    .napkin-fold {
+      width: 36px; height: 36px;
+      background: linear-gradient(135deg, rgba(201,162,90,.06), rgba(201,162,90,.02));
+      border: 1px solid rgba(201,162,90,.1); border-radius: 2px;
+      transform: rotate(8deg);
+    }
+    /* ambient glow for table */
+    .table-glow {
+      position: absolute; top: 10%; left: 50%; transform: translateX(-50%);
+      width: 300px; height: 200px;
+      background: radial-gradient(ellipse, rgba(201,162,90,.05) 0%, transparent 70%);
+    }
+
+    .private-content {
+      padding: 80px 72px; display: flex; flex-direction: column; justify-content: center;
+    }
+    .private-content .eyebrow { color: var(--gold); margin-bottom: 28px; }
+    .private-content h2 {
+      font-family: 'Cormorant Garamond', serif; font-size: clamp(32px, 3vw, 48px);
+      font-weight: 300; color: var(--white); line-height: 1.2; letter-spacing: .01em;
+      margin-bottom: 24px;
+    }
+    .private-content h2 em { font-style: italic; color: var(--gold-light); }
+    .private-content p { font-size: 14px; color: rgba(201,162,90,.75); line-height: 2; margin-bottom: 14px; }
+    .private-features { margin: 32px 0 40px; display: flex; flex-direction: column; gap: 16px; }
+    .pf-item { display: flex; gap: 14px; align-items: flex-start; }
+    .pf-line { width: 20px; height: 1px; background: var(--gold); opacity: .4; margin-top: 8px; flex-shrink: 0; }
+    .pf-text { font-size: 12px; letter-spacing: .08em; color: rgba(255,255,248,.82); line-height: 1.7; }
+    .pf-text strong { color: var(--gold-light); font-weight: 400; letter-spacing: .1em; text-transform: uppercase; font-size: 10px; display: block; margin-bottom: 2px; }
+
+    /* ─── ACCOLADES ──────────────────────────────────────── */
+    .accolades { padding: 100px 0; background: var(--warm-white); border-top: 1px solid var(--cream); border-bottom: 1px solid var(--cream); }
+    .accolades-header { text-align: center; margin-bottom: 60px; }
+    .accolades-header p { font-size: 9px; letter-spacing: .28em; text-transform: uppercase; color: var(--text-light); }
+    .accolades-track { display: flex; align-items: center; justify-content: center; gap: 64px; flex-wrap: wrap; }
+    .accolade-item { text-align: center; }
+    .accolade-stars { display: flex; gap: 4px; justify-content: center; margin-bottom: 8px; }
+    .accolade-stars span { color: var(--gold); font-size: 12px; }
+    .accolade-name {
+      font-family: 'Cormorant Garamond', serif; font-size: 18px; font-weight: 300;
+      color: var(--text-dark); letter-spacing: .06em; margin-bottom: 4px;
+    }
+    .accolade-year { font-size: 9px; letter-spacing: .2em; text-transform: uppercase; color: var(--text-light); }
+    .accolade-sep { width: 1px; height: 48px; background: var(--cream); }
+
+    /* ─── TESTIMONIALS ───────────────────────────────────── */
+    .testimonials { padding: 140px 0; background: var(--dark); }
+    .testi-inner { max-width: 860px; margin: 0 auto; }
+    .testi-header { text-align: center; margin-bottom: 80px; }
+    .testi-header .eyebrow { margin-bottom: 20px; }
+    .testi-header h2 {
+      font-family: 'Cormorant Garamond', serif; font-size: clamp(28px, 3vw, 44px);
+      font-weight: 300; color: var(--white); letter-spacing: .02em;
+    }
+    .testi-header h2 em { font-style: italic; color: var(--gold-light); }
+    .testi-carousel { position: relative; }
+    .testi-slide { display: none; text-align: center; }
+    .testi-slide.active { display: block; animation: fadeIn .6s ease; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+    .testi-quote-mark {
+      font-family: 'Cormorant Garamond', serif; font-size: 80px; font-weight: 300;
+      color: var(--gold); opacity: .2; line-height: .6; margin-bottom: 24px;
+    }
+    .testi-text {
+      font-family: 'Cormorant Garamond', serif; font-size: clamp(20px, 2.5vw, 28px);
+      font-weight: 300; font-style: italic; color: rgba(255,255,248,.8);
+      line-height: 1.65; letter-spacing: .01em; margin-bottom: 40px;
+    }
+    .testi-author { font-size: 9px; letter-spacing: .26em; text-transform: uppercase; color: var(--gold); }
+    .testi-source { font-size: 9px; letter-spacing: .18em; text-transform: uppercase; color: rgba(201,162,90,.65); margin-top: 4px; }
+    .testi-dots { display: flex; gap: 10px; justify-content: center; margin-top: 48px; }
+    .t-dot {
+      width: 6px; height: 6px; border-radius: 50%; cursor: pointer;
+      background: rgba(201,162,90,.2); transition: background .3s;
+    }
+    .t-dot.active { background: var(--gold); }
+
+    /* ─── RESERVATION ────────────────────────────────────── */
+    .reservation { padding: 0; background: var(--black); }
+    .reservation-inner { display: grid; grid-template-columns: 1fr 1fr; }
+    .res-left {
+      padding: 100px 72px; background: var(--dark-mid);
+      display: flex; flex-direction: column; justify-content: center;
+      border-right: 1px solid var(--platinum);
+    }
+    .res-left .eyebrow { margin-bottom: 28px; }
+    .res-left h2 {
+      font-family: 'Cormorant Garamond', serif; font-size: clamp(32px, 3.5vw, 52px);
+      font-weight: 300; color: var(--white); line-height: 1.1; letter-spacing: .01em;
+      margin-bottom: 20px;
+    }
+    .res-left h2 em { font-style: italic; color: var(--gold-light); }
+    .res-left p { font-size: 13px; color: rgba(201,162,90,.75); line-height: 2; margin-bottom: 36px; }
+    .res-contact { display: flex; flex-direction: column; gap: 18px; }
+    .res-contact-item { display: flex; gap: 14px; align-items: center; }
+    .res-contact-line { width: 18px; height: 1px; background: var(--gold); opacity: .4; }
+    .res-contact-label { font-size: 9px; letter-spacing: .2em; text-transform: uppercase; color: rgba(201,162,90,.68); margin-bottom: 2px; }
+    .res-contact-val { font-family: 'Cormorant Garamond', serif; font-size: 16px; color: rgba(255,255,248,.9); letter-spacing: .04em; }
+
+    .res-right { padding: 80px 64px; display: flex; flex-direction: column; justify-content: center; }
+    .res-right h3 {
+      font-family: 'Cormorant Garamond', serif; font-size: 24px; font-weight: 300;
+      color: var(--gold-light); letter-spacing: .06em; margin-bottom: 40px;
+    }
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    .form-group { margin-bottom: 20px; }
+    .form-label { font-size: 8px; letter-spacing: .26em; text-transform: uppercase; color: rgba(201,162,90,.72); display: block; margin-bottom: 8px; }
+    .form-input, .form-select, .form-textarea {
+      width: 100%; padding: 13px 16px;
+      background: rgba(255,255,248,.04); border: 1px solid rgba(201,162,90,.22);
+      color: rgba(255,255,248,.9); font-family: 'Lato', sans-serif; font-size: 13px;
+      font-weight: 300; letter-spacing: .04em; outline: none;
+      transition: border-color .3s;
+      -webkit-appearance: none; border-radius: 0;
+    }
+    .form-input::placeholder, .form-textarea::placeholder { color: rgba(201,162,90,.38); }
+    .form-input:focus, .form-select:focus, .form-textarea:focus { border-color: rgba(201,162,90,.4); }
+    .form-select {
+      cursor: pointer;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath d='M1 1l4 4 4-4' stroke='rgba(201,162,90,0.4)' stroke-width='1' fill='none'/%3E%3C/svg%3E");
+      background-repeat: no-repeat; background-position: right 14px center;
+    }
+    .form-select option { background: #120F09; color: rgba(255,255,248,.7); }
+    .form-textarea { resize: vertical; min-height: 80px; }
+    .form-note { font-size: 10px; letter-spacing: .1em; color: rgba(201,162,90,.58); margin-top: 12px; line-height: 1.7; }
+
+    /* ─── VISIT ──────────────────────────────────────────── */
+    .visit { padding: 120px 0; background: var(--warm-white); }
+    .visit-inner { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 64px; }
+    .visit-col h3 {
+      font-family: 'Cormorant Garamond', serif; font-size: 26px; font-weight: 300;
+      color: var(--text-dark); letter-spacing: .04em; margin-bottom: 24px;
+    }
+    .visit-col h3 em { font-style: italic; color: var(--text-gold); }
+    .visit-col .eyebrow { margin-bottom: 16px; }
+    .visit-info-list { display: flex; flex-direction: column; gap: 12px; }
+    .vi-item { display: flex; flex-direction: column; gap: 3px; }
+    .vi-day { font-size: 9px; letter-spacing: .2em; text-transform: uppercase; color: var(--text-mid); }
+    .vi-time { font-family: 'Cormorant Garamond', serif; font-size: 18px; color: var(--text-dark); font-weight: 400; }
+    .visit-divider { width: 32px; height: 1px; background: var(--gold); opacity: .3; margin: 20px 0; }
+    .visit-note { font-size: 12px; color: var(--text-mid); line-height: 1.9; font-weight: 400; }
+    .visit-address {
+      font-family: 'Cormorant Garamond', serif; font-size: 20px; font-weight: 300;
+      color: var(--text-dark); line-height: 1.6; margin-bottom: 16px;
+    }
+    .visit-phone { font-size: 12px; letter-spacing: .1em; color: var(--text-mid); }
+
+    /* dress code visual */
+    .dress-items { display: flex; flex-direction: column; gap: 10px; margin-bottom: 20px; }
+    .dress-item { display: flex; gap: 10px; align-items: center; }
+    .dress-line { width: 14px; height: 1px; background: var(--gold); opacity: .4; flex-shrink: 0; }
+    .dress-text { font-size: 12px; color: var(--text-mid); font-weight: 400; }
+
+    /* ─── FOOTER ─────────────────────────────────────────── */
+    footer { background: var(--black); padding: 72px 0 36px; }
+    .footer-top { display: grid; grid-template-columns: 1fr 2fr 1fr; gap: 64px; margin-bottom: 64px; align-items: start; }
+    .footer-brand { text-align: center; }
+    .footer-logo-name {
+      font-family: 'Cormorant Garamond', serif; font-size: 32px; font-weight: 300;
+      letter-spacing: .35em; color: var(--gold-light); text-transform: uppercase;
+      display: block; margin-bottom: 6px;
+    }
+    .footer-logo-sub { font-size: 7px; letter-spacing: .4em; text-transform: uppercase; color: rgba(201,162,90,.6); }
+    .footer-rule { width: 32px; height: 1px; background: var(--gold); opacity: .4; margin: 20px auto; }
+    .footer-bio { font-size: 11px; color: rgba(201,162,90,.58); line-height: 2; letter-spacing: .06em; text-align: center; font-weight: 300; }
+
+    .footer-links-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 40px; }
+    .footer-col h4 { font-size: 8px; letter-spacing: .28em; text-transform: uppercase; color: rgba(201,162,90,.72); margin-bottom: 20px; }
+    .footer-col ul { list-style: none; display: flex; flex-direction: column; gap: 10px; }
+    .footer-col ul a { font-size: 12px; color: rgba(201,162,90,.58); text-decoration: none; letter-spacing: .08em; transition: color .3s; font-weight: 300; }
+    .footer-col ul a:hover { color: var(--gold-light); }
+
+    .footer-social { text-align: right; }
+    .footer-social-label { font-size: 8px; letter-spacing: .24em; text-transform: uppercase; color: rgba(201,162,90,.65); margin-bottom: 16px; }
+    .social-links { display: flex; gap: 16px; justify-content: flex-end; }
+    .s-link {
+      font-size: 9px; letter-spacing: .18em; text-transform: uppercase;
+      color: rgba(201,162,90,.62); text-decoration: none; transition: color .3s;
+    }
+    .s-link:hover { color: var(--gold); }
+
+    .footer-bottom {
+      border-top: 1px solid var(--platinum); padding-top: 28px;
+      display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;
+    }
+    .footer-copy { font-size: 9px; letter-spacing: .18em; text-transform: uppercase; color: rgba(201,162,90,.52); }
+    .footer-legal { display: flex; gap: 24px; }
+    .footer-legal a { font-size: 9px; letter-spacing: .14em; text-transform: uppercase; color: rgba(201,162,90,.52); text-decoration: none; transition: color .3s; }
+    .footer-legal a:hover { color: rgba(201,162,90,.85); }
+
+    /* ─── SCROLL REVEAL ──────────────────────────────────── */
+    .reveal { opacity: 0; transform: translateY(18px); transition: opacity .8s ease, transform .8s ease; }
+    .reveal.in { opacity: 1; transform: none; }
+    .reveal-left { opacity: 0; transform: translateX(-18px); transition: opacity .9s ease, transform .9s ease; }
+    .reveal-left.in { opacity: 1; transform: none; }
+    .reveal-right { opacity: 0; transform: translateX(18px); transition: opacity .9s ease, transform .9s ease; }
+    .reveal-right.in { opacity: 1; transform: none; }
+
+    /* ─── RESPONSIVE ─────────────────────────────────────── */
+    @media (max-width: 1100px) {
+      .dish-block { grid-template-columns: 1fr; min-height: auto; }
+      .dish-visual { min-height: 400px; }
+      .dish-block.reverse { direction: ltr; }
+      .tasting-grid { grid-template-columns: 1fr; }
+      .tasting-col:first-child { border-right: none; border-bottom: 1px solid var(--platinum); padding-bottom: 48px; }
+      .chef-inner { grid-template-columns: 1fr; }
+      .chef-caption { right: 0; }
+      .private-inner { grid-template-columns: 1fr; }
+      .reservation-inner { grid-template-columns: 1fr; }
+      .visit-inner { grid-template-columns: 1fr; gap: 48px; }
+      .footer-top { grid-template-columns: 1fr; gap: 48px; }
+      .footer-social { text-align: left; }
+      .social-links { justify-content: flex-start; }
+    }
+    @media (max-width: 768px) {
+      .container, .container-wide, .container-narrow { padding: 0 24px; }
+      .nav-links-left, .nav-links-right { display: none; }
+      .nav-inner { grid-template-columns: 1fr auto; }
+      .nav-links-right { display: none; }
+      .hamburger { display: flex; }
+      .hero-text { padding: 0 24px; }
+      .dish-info { padding: 56px 32px; }
+      .tasting-col { padding: 0 24px; }
+      .chef-content { padding: 0; }
+      .private-content { padding: 56px 32px; }
+      .res-left, .res-right { padding: 56px 32px; }
+      .form-row { grid-template-columns: 1fr; }
+      .footer-links-grid { grid-template-columns: 1fr 1fr; }
+      .accolades-track { gap: 32px; }
+      .accolade-sep { display: none; }
+    }
+  </style>
+<link rel="icon" type="image/svg+xml" href="favicon.svg" />
+<style id="photo-css">.hero-plate-wrap{opacity:.5!important}.hero-plate-wrap img.fd-hero-plate{width:460px;max-width:100%;height:460px;border-radius:50%;object-fit:cover;display:block}.dish-visual img.fd-photo,.chef-portrait img.fd-photo,.private-visual img.fd-photo{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}</style>
+<style id="fix-fd">
+/* mobile hamburger dropdown */
+.mobile-menu{display:none;position:fixed;top:88px;left:0;right:0;z-index:299;background:rgba(8,6,4,.98);backdrop-filter:blur(16px);border-bottom:1px solid var(--platinum-md);box-shadow:0 24px 44px -16px rgba(0,0,0,.85);flex-direction:column;padding:8px 32px 24px}
+.mobile-menu.open{display:flex}
+.mobile-menu a{font-size:15px;letter-spacing:.18em;text-transform:uppercase;color:var(--gold-light);text-decoration:none;padding:16px 2px;border-bottom:1px solid var(--platinum)}
+.mobile-menu a:last-child{border-bottom:0}
+.mobile-menu a.mm-reserve{margin-top:14px;text-align:center;background:var(--gold);color:var(--black);padding:15px;font-weight:700}
+.hamburger.open span:nth-child(1){transform:translateY(6px) rotate(45deg)}
+.hamburger.open span:nth-child(2){opacity:0}
+.hamburger.open span:nth-child(3){transform:translateY(-6px) rotate(-45deg)}
+/* legibility: enlarge tiny letter-spaced labels */
+.eyebrow,.hero-eyebrow,.rule-text,.nav-reserve,.hero-bar-item,.intro-meta-label,.tasting-col-label,.tasting-price-label,.chef-caption-role,.award-label,.accolades-header p,.accolade-year,.testi-author,.testi-source,.res-contact-label,.vi-day,.s-link,.footer-copy,.footer-legal a{font-size:11px !important}
+.nav-links-left a,.nav-links-right a{font-size:11px !important}
+.btn,.btn-box,.dish-comp-item,.tasting-price-note,.pf-text strong,.form-note{font-size:12px !important}
+.nav-logo-sub,.footer-logo-sub{font-size:9px !important}
+.form-label,.footer-col h4,.footer-social-label{font-size:11px !important}
+/* contrast: brighten the dimmest labels against the dark background */
+.hero-bar-item,.footer-col h4,.footer-social-label,.tasting-col-label,.res-contact-label,.form-label,.intro-meta-label{color:var(--gold-light) !important}
+.testi-source,.footer-copy,.footer-legal a,.form-note,.accolade-year,.vi-day{color:var(--text-gold) !important}
+@media (max-width:768px){
+  .hero-plate-wrap{opacity:.12 !important}
+  .hero-bar-inner{display:grid !important;grid-template-columns:1fr 1fr;gap:16px 18px}
+}
+/* legibility pass: brighten faint gold text on black */
+.course-price{color:var(--gold-light)!important}
+.footer-bio,.footer-col ul a{color:rgba(226,203,150,.82)!important}
+.footer-copy,.footer-legal a,.form-note,.testi-source{color:rgba(226,203,150,.68)!important}
+.intro-meta-value,.tasting-price-note{color:rgba(240,232,214,.82)!important}
+/* ── revision pass 2 ─────────────────────────── */
+/* Reserve buttons: bold dark text so it stands out on the gold fill */
+.btn-box-gold{color:#0a0806!important;font-weight:700!important}
+.nav-reserve{font-weight:700!important;font-size:11px!important}
+.btn.btn-dark{color:var(--gold-light)!important;font-weight:700!important}
+.dish-comp-item{font-size:12px!important}
+/* bolder / larger body copy */
+.testi-text{font-weight:400!important;font-size:16px!important;color:rgba(255,255,248,.9)!important}
+.intro-statement{font-weight:400!important}
+.course-desc{font-size:12px!important;color:rgba(226,203,150,.8)!important}
+.pf-text{font-size:13px!important}
+.visit-note{font-size:13px!important;font-weight:400!important}
+.footer-bio{font-weight:400!important;font-size:12.5px!important}
+.footer-copy{font-size:11px!important}
+.form-note{font-size:12px!important}
+/* nudge the small uppercase labels up from 11px */
+.eyebrow,.hero-eyebrow,.rule-text,.hero-bar-item,.intro-meta-label,.tasting-col-label,.tasting-price-label,.chef-caption-role,.award-label,.accolade-year,.testi-author,.testi-source,.res-contact-label,.vi-day,.s-link,.footer-legal a,.nav-links-left a,.nav-links-right a{font-size:12px!important}
+</style></head>
+<body>
+
+<!-- ═══ NAV ════════════════════════════════════════════════ -->
+<nav id="navbar">
+  <div class="nav-inner">
+    <ul class="nav-links-left">
+      <li><a href="#dishes">Menu</a></li>
+      <li><a href="#tasting">Tasting</a></li>
+      <li><a href="#chef">Chef</a></li>
+    </ul>
+
+    <div class="nav-logo">
+      <a href="#" class="nav-logo-name">Aurum</a>
+      <span class="nav-logo-sub">Restaurant · Jakarta</span>
+    </div>
+
+    <ul class="nav-links-right">
+      <li><a href="#private">Private Dining</a></li>
+      <li><a href="#visit">Visit</a></li>
+      <li><a href="#reservation" class="nav-reserve">Reserve</a></li>
+    </ul>
+
+    <button class="hamburger" id="hamburger" aria-label="Menu" aria-expanded="false">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</nav>
+<div class="mobile-menu" id="mobileMenu">
+  <a href="#dishes">Menu</a>
+  <a href="#tasting">Tasting</a>
+  <a href="#chef">Chef</a>
+  <a href="#private">Private Dining</a>
+  <a href="#visit">Visit</a>
+  <a href="#reservation" class="mm-reserve">Reserve</a>
+</div>
+
+<!-- ═══ HERO ════════════════════════════════════════════════ -->
+<section class="hero">
+  <div class="hero-canvas">
+    <!-- Abstract plate art (right side) -->
+    <div class="hero-plate-wrap">
+        <img class="fd-hero-plate" src="assets/hero-plate.jpg" alt="Plated fine-dining dish" />
+      </div>
+  </div>
+
+  <div class="hero-content">
+    <div class="hero-text">
+      <div class="hero-eyebrow">Fine Dining · Jakarta · Est. 2016</div>
+      <h1>
+        The art<br />
+        <span class="italic-line">of dining</span><br />
+        <span class="thin-line">reimagined.</span>
+      </h1>
+      <div class="hero-divider"></div>
+      <p class="hero-desc">A singular table where classical French technique meets Indonesia's finest seasonal produce — composed into experiences that transcend the act of eating.</p>
+      <div class="hero-actions">
+        <a href="#reservation" class="btn-box btn-box-gold">Reserve a Table</a>
+        <a href="#tasting" class="btn btn-light">View tasting menu</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="hero-bar">
+    <div class="hero-bar-inner">
+      <div class="hero-bar-item">
+        <span class="hero-bar-dot"></span>
+        Open Tuesday–Sunday
+      </div>
+      <div class="hero-bar-item">
+        <span class="hero-bar-dot"></span>
+        7 Course Tasting Menu
+      </div>
+      <div class="hero-bar-item">
+        <span class="hero-bar-dot"></span>
+        2 Michelin Stars · 2024
+      </div>
+      <div class="hero-bar-item">
+        <span class="hero-bar-dot"></span>
+        Dress Code: Smart Formal
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ INTRO ═══════════════════════════════════════════════ -->
+<section class="intro">
+  <div class="container-narrow">
+    <div class="intro-inner">
+      <div class="intro-rule reveal">
+        <div class="rule">
+          <div class="rule-line"></div>
+          <div class="rule-diamond"></div>
+          <div class="rule-text">Our Philosophy</div>
+          <div class="rule-diamond"></div>
+          <div class="rule-line"></div>
+        </div>
+      </div>
+      <p class="intro-statement reveal">
+        "We believe a meal should be felt as much as tasted — a composition of memory, season, and <em>quiet precision</em> that leaves a mark long after the last plate is cleared."
+      </p>
+      <div class="intro-meta reveal">
+        <div class="intro-meta-item">
+          <div class="intro-meta-num">7</div>
+          <div class="intro-meta-label">Courses</div>
+        </div>
+        <div class="intro-meta-sep"></div>
+        <div class="intro-meta-item">
+          <div class="intro-meta-num">2</div>
+          <div class="intro-meta-label">Michelin Stars</div>
+        </div>
+        <div class="intro-meta-sep"></div>
+        <div class="intro-meta-item">
+          <div class="intro-meta-num">32</div>
+          <div class="intro-meta-label">Covers nightly</div>
+        </div>
+        <div class="intro-meta-sep"></div>
+        <div class="intro-meta-item">
+          <div class="intro-meta-num">18</div>
+          <div class="intro-meta-label">Years combined</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ SIGNATURE DISHES ════════════════════════════════════ -->
+<section class="dishes" id="dishes">
+
+  <!-- Dish 1 -->
+  <div class="dish-block reveal-left">
+    <div class="dish-visual">
+        <img class="fd-photo" src="assets/dish-1.jpg" alt="Aurum signature dish" />
+      </div>
+    <div class="dish-info">
+      <div class="dish-course">I</div>
+      <div class="eyebrow dish-eyebrow">First Course · Amuse</div>
+      <h2 class="dish-name">Hokkaido Scallop,<br /><em>Saffron & Pomelo</em></h2>
+      <p class="dish-desc">A single Hokkaido scallop seared in cultured butter until caramelised gold, resting on a pool of saffron beurre blanc drawn from a 48-hour reduction. Finished with compressed pomelo and a dusting of gold.</p>
+      <div class="dish-components">
+        <div class="dish-comp-item">Hokkaido scallop A+</div>
+        <div class="dish-comp-item">Saffron & lemon beurre blanc</div>
+        <div class="dish-comp-item">Compressed pomelo, micro basil</div>
+        <div class="dish-comp-item">24-carat gold leaf</div>
+      </div>
+      <a href="#tasting" class="btn btn-dark">View full menu</a>
+    </div>
+  </div>
+
+  <div class="gold-line"></div>
+
+  <!-- Dish 2 -->
+  <div class="dish-block reverse reveal-right" style="background:var(--dark)">
+    <div class="dish-visual" style="background:var(--dark-mid)">
+        <img class="fd-photo" src="assets/dish-2.jpg" alt="Aurum signature dish" />
+      </div>
+    <div class="dish-info" style="background:var(--dark-mid)">
+      <div class="dish-course" style="color:rgba(201,162,90,.06)">V</div>
+      <div class="eyebrow dish-eyebrow" style="color:var(--gold)">Fifth Course · Mains</div>
+      <h2 class="dish-name" style="color:var(--white)">Wagyu Tenderloin A5,<br /><em>Périgord Truffle</em></h2>
+      <p class="dish-desc" style="color:rgba(201,162,90,.82)">Our centrepiece: 60-day dry-aged A5 Kagoshima wagyu, rested for precisely 12 minutes before service. Accompanied by a 6-hour Périgueux reduction and hand-shaved Périgord black truffle at your table.</p>
+      <div class="dish-components" style="border-color:rgba(201,162,90,.15)">
+        <div class="dish-comp-item" style="color:rgba(201,162,90,.78)">A5 Kagoshima wagyu, 60-day aged</div>
+        <div class="dish-comp-item" style="color:rgba(201,162,90,.78)">Périgord black truffle, shaved tableside</div>
+        <div class="dish-comp-item" style="color:rgba(201,162,90,.78)">Sauce Périgueux, foie gras emulsion</div>
+        <div class="dish-comp-item" style="color:rgba(201,162,90,.78)">Heritage baby vegetables, Madeira jus</div>
+      </div>
+      <a href="#tasting" class="btn btn-light">View full menu</a>
+    </div>
+  </div>
+
+  <div style="height:1px;background:linear-gradient(90deg,transparent,rgba(201,162,90,.15),transparent)"></div>
+
+  <!-- Dish 3 -->
+  <div class="dish-block reveal-left">
+    <div class="dish-visual">
+        <img class="fd-photo" src="assets/dish-3.jpg" alt="Aurum signature dish" />
+      </div>
+    <div class="dish-info">
+      <div class="dish-course">VII</div>
+      <div class="eyebrow dish-eyebrow">Seventh Course · Dessert</div>
+      <h2 class="dish-name">Dark Chocolate Sphere,<br /><em>Raspberry & Gold</em></h2>
+      <p class="dish-desc">Our signature dessert: a 72% Valrhona chocolate sphere, painted with edible 24-carat gold, which dissolves at the table with warm caramel to reveal a heart of raspberry parfait and praline feuilletine.</p>
+      <div class="dish-components">
+        <div class="dish-comp-item">72% Valrhona dark chocolate</div>
+        <div class="dish-comp-item">Warm salted caramel, tableside</div>
+        <div class="dish-comp-item">Raspberry parfait, praline feuilletine</div>
+        <div class="dish-comp-item">24-carat gold, freeze-dried raspberry</div>
+      </div>
+      <a href="#tasting" class="btn btn-dark">View full menu</a>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ TASTING MENU ════════════════════════════════════════ -->
+<section class="tasting" id="tasting">
+  <div class="container">
+    <div class="tasting-header reveal">
+      <div class="eyebrow">Autumn–Winter 2025</div>
+      <h2 style="margin-top:20px">The <em>Aurum</em> Tasting Menu</h2>
+      <p>Seven courses · Approximately 3 hours · Wine pairing available</p>
+    </div>
+
+    <div class="tasting-grid reveal">
+      <div class="tasting-col">
+        <div class="tasting-col-label">Courses I–IV · Opening</div>
+
+        <div class="course">
+          <div class="course-num">I</div>
+          <div>
+            <div class="course-name">Amuse-Bouche</div>
+            <div class="course-desc">Chef's daily selection of one-bite compositions</div>
+          </div>
+          <div class="course-price">—</div>
+        </div>
+        <div class="course">
+          <div class="course-num">II</div>
+          <div>
+            <div class="course-name">Hokkaido Scallop, <em>Saffron</em></div>
+            <div class="course-desc">Saffron beurre blanc · compressed pomelo · gold</div>
+          </div>
+          <div class="course-price"></div>
+        </div>
+        <div class="course">
+          <div class="course-num">III</div>
+          <div>
+            <div class="course-name">Foie Gras Torchon</div>
+            <div class="course-desc">Sauternes gelée · brioche · pickled grapes · hazelnuts</div>
+          </div>
+          <div class="course-price"></div>
+        </div>
+        <div class="course">
+          <div class="course-num">IV</div>
+          <div>
+            <div class="course-name">Fettuccine, <em>Truffle & Parmesan</em></div>
+            <div class="course-desc">House-made egg pasta · 48-month Parmigiano · black truffle</div>
+          </div>
+          <div class="course-price"></div>
+        </div>
+      </div>
+
+      <div class="tasting-col">
+        <div class="tasting-col-label">Courses V–VII · Closing</div>
+
+        <div class="course">
+          <div class="course-num">V</div>
+          <div>
+            <div class="course-name">A5 Wagyu, <em>Périgord Truffle</em></div>
+            <div class="course-desc">60-day aged · shaved tableside · Périgueux reduction</div>
+          </div>
+          <div class="course-price"></div>
+        </div>
+        <div class="course">
+          <div class="course-num">VI</div>
+          <div>
+            <div class="course-name">Cheese Chariot</div>
+            <div class="course-desc">Selection of 12 European artisan cheeses · accompaniments</div>
+          </div>
+          <div class="course-price"></div>
+        </div>
+        <div class="course">
+          <div class="course-num">VII</div>
+          <div>
+            <div class="course-name">Dark Chocolate Sphere</div>
+            <div class="course-desc">Valrhona 72% · raspberry parfait · caramel · gold leaf</div>
+          </div>
+          <div class="course-price"></div>
+        </div>
+        <div class="course">
+          <div class="course-num">+</div>
+          <div>
+            <div class="course-name">Mignardises</div>
+            <div class="course-desc">Selection of petits fours with coffee or tea service</div>
+          </div>
+          <div class="course-price"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="tasting-footer reveal">
+      <div class="tasting-price-block">
+        <div class="tasting-price-label">Tasting Menu</div>
+        <div class="tasting-price-val">IDR 1.850.000</div>
+        <div class="tasting-price-note">Per person · Excluding beverages & service</div>
+      </div>
+      <div style="display:flex;gap:28px;flex-wrap:wrap;align-items:center">
+        <div>
+          <div class="tasting-price-label">Wine Pairing</div>
+          <div class="tasting-price-val" style="font-size:28px">+ IDR 980.000</div>
+          <div class="tasting-price-note">6 paired wines, somm-selected</div>
+        </div>
+        <div>
+          <div class="tasting-price-label">Non-Alcoholic Pairing</div>
+          <div class="tasting-price-val" style="font-size:28px">+ IDR 620.000</div>
+          <div class="tasting-price-note">Artisan juices & tea infusions</div>
+        </div>
+      </div>
+      <a href="#reservation" class="btn-box btn-box-outline-light">Reserve Your Evening</a>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ CHEF ══════════════════════════════════════════════ -->
+<section class="chef" id="chef">
+  <div class="container">
+    <div class="chef-inner">
+      <div class="chef-visual reveal-left">
+        <div class="chef-portrait">
+        <img class="fd-photo" src="assets/chef.jpg" alt="The chef at Aurum" />
+      </div>
+        <div class="chef-caption">
+          <div class="chef-caption-role">Executive Chef</div>
+          <div class="chef-caption-name">Élise Marchetti</div>
+        </div>
+      </div>
+
+      <div class="chef-content reveal-right">
+        <div class="eyebrow">The Chef</div>
+        <h2 style="margin-top:20px">Precision forged<br />in <em>Paris and Tokyo.</em></h2>
+        <div class="chef-pull">
+          "I don't cook dishes. I build moments — small, deliberate acts of beauty that say something true about where we are and what this season has to offer."
+        </div>
+        <p>Chef Élise Marchetti spent a decade in France under three Michelin-starred kitchens — from the structured discipline of Paris to the hushed precision of Lyon — before moving to Tokyo, where an apprenticeship with a kaiseki master fundamentally changed how she understood restraint.</p>
+        <p>At Aurum, she brings both worlds to the table: the rigour of classical French technique and a Japanese sensitivity to impermanence, seasonality, and the poetry of a single perfect ingredient.</p>
+        <div class="chef-awards">
+          <div class="award-item">
+            <div class="award-icon">★★</div>
+            <div class="award-label">Michelin Guide</div>
+            <div class="award-name">Two Stars, 2024</div>
+          </div>
+          <div class="award-item">
+            <div class="award-icon">◆</div>
+            <div class="award-label">Asia's 50 Best</div>
+            <div class="award-name">#14 Restaurant, 2024</div>
+          </div>
+          <div class="award-item">
+            <div class="award-icon">✦</div>
+            <div class="award-label">Gault & Millau</div>
+            <div class="award-name">Chef of the Year</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ PRIVATE DINING ══════════════════════════════════════ -->
+<section class="private" id="private">
+  <div class="private-inner">
+    <!-- table setting illustration -->
+    <div class="private-visual reveal-left">
+        <img class="fd-photo" src="assets/private.jpg" alt="Private dining room" />
+      </div>
+
+    <div class="private-content reveal-right">
+      <div class="eyebrow">Private Dining</div>
+      <h2 style="margin-top:28px">An evening entirely<br /><em>your own.</em></h2>
+      <p>Our private dining room — The Salon — accommodates up to 14 guests for exclusive events, business entertaining, and celebrations that demand something beyond ordinary.</p>
+      <div class="private-features">
+        <div class="pf-item">
+          <div class="pf-line"></div>
+          <div class="pf-text">
+            <strong>Bespoke Menu</strong>
+            Chef Marchetti creates a menu entirely around your guests, their preferences, and the season's finest produce.
+          </div>
+        </div>
+        <div class="pf-item">
+          <div class="pf-line"></div>
+          <div class="pf-text">
+            <strong>Wine Curation</strong>
+            Our sommelier builds a wine journey from our 2,400-label cellar — or sources a specific bottle for your occasion.
+          </div>
+        </div>
+        <div class="pf-item">
+          <div class="pf-line"></div>
+          <div class="pf-text">
+            <strong>Exclusive Buyout</strong>
+            The full restaurant is available for private events of up to 32 covers, with complete menu customisation.
+          </div>
+        </div>
+      </div>
+      <a href="mailto:private@aurum-jakarta.com" class="btn-box btn-box-outline-light">Enquire About The Salon</a>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ ACCOLADES ════════════════════════════════════════════ -->
+<section class="accolades">
+  <div class="container">
+    <div class="accolades-header reveal">
+      <p>As recognised by</p>
+    </div>
+    <div class="accolades-track reveal">
+      <div class="accolade-item">
+        <div class="accolade-stars"><span>★</span><span>★</span></div>
+        <div class="accolade-name">Michelin Guide</div>
+        <div class="accolade-year">Two Stars · 2024</div>
+      </div>
+      <div class="accolade-sep"></div>
+      <div class="accolade-item">
+        <div class="accolade-name" style="font-size:22px;margin-bottom:4px">#14</div>
+        <div class="accolade-name" style="font-size:14px">Asia's 50 Best</div>
+        <div class="accolade-year">Restaurants · 2024</div>
+      </div>
+      <div class="accolade-sep"></div>
+      <div class="accolade-item">
+        <div class="accolade-name" style="font-size:36px;margin-bottom:2px;color:var(--gold)">19</div>
+        <div class="accolade-name" style="font-size:14px">Gault & Millau</div>
+        <div class="accolade-year">Out of 20 · 2024</div>
+      </div>
+      <div class="accolade-sep"></div>
+      <div class="accolade-item">
+        <div class="accolade-name" style="font-size:22px;margin-bottom:4px">Best New</div>
+        <div class="accolade-name" style="font-size:14px">Jakarta Food Awards</div>
+        <div class="accolade-year">Fine Dining · 2022</div>
+      </div>
+      <div class="accolade-sep"></div>
+      <div class="accolade-item">
+        <div class="accolade-name" style="font-size:36px;margin-bottom:2px;color:var(--gold)">★</div>
+        <div class="accolade-name" style="font-size:14px">Green Star</div>
+        <div class="accolade-year">Michelin Sustainability · 2024</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ TESTIMONIALS ════════════════════════════════════════ -->
+<section class="testimonials">
+  <div class="container">
+    <div class="testi-inner">
+      <div class="testi-header reveal">
+        <div class="eyebrow">Guest Reflections</div>
+        <h2 style="margin-top:20px">Words from those<br /><em>who have dined with us.</em></h2>
+      </div>
+
+      <div class="testi-carousel reveal">
+        <div class="testi-slide active">
+          <div class="testi-quote-mark">"</div>
+          <p class="testi-text">Aurum doesn't serve dinner. It composes an argument — a careful, beautiful case for why food matters. The wagyu course made the table fall completely silent. Not because there was nothing to say, but because nothing needed to be said.</p>
+          <div class="testi-author">Natalia Voss</div>
+          <div class="testi-source">Condé Nast Traveller · Best Restaurants 2024</div>
+        </div>
+        <div class="testi-slide">
+          <div class="testi-quote-mark">"</div>
+          <p class="testi-text">In thirty years of writing about food, I have sat at tables on four continents. Chef Marchetti's scallop with saffron belongs in a conversation with the very finest dishes I have ever eaten. It was that precise, and that moving.</p>
+          <div class="testi-author">Dominique Arnal</div>
+          <div class="testi-source">Le Monde Gastronomie · Editor-at-Large</div>
+        </div>
+        <div class="testi-slide">
+          <div class="testi-quote-mark">"</div>
+          <p class="testi-text">We came for our anniversary and stayed three and a half hours. The chocolate sphere moment — when the warm caramel cracked it open at the table — drew an involuntary gasp from every couple around us. A memory we will carry for years.</p>
+          <div class="testi-author">Sari & Thomas Bernardi</div>
+          <div class="testi-source">Anniversary guests · September 2024</div>
+        </div>
+        <div class="testi-dots">
+          <div class="t-dot active" data-i="0"></div>
+          <div class="t-dot" data-i="1"></div>
+          <div class="t-dot" data-i="2"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ RESERVATION ══════════════════════════════════════════ -->
+<section class="reservation" id="reservation">
+  <div class="reservation-inner">
+    <div class="res-left reveal-left">
+      <div class="eyebrow">Reserve a Table</div>
+      <h2 style="margin-top:28px">Begin your<br /><em>evening with us.</em></h2>
+      <p>We seat only 32 guests each evening — ensuring every table receives the full attention of our kitchen and service team. Reservations are held for 15 minutes.</p>
+      <div class="res-contact">
+        <div class="res-contact-item">
+          <div class="res-contact-line"></div>
+          <div>
+            <div class="res-contact-label">By telephone</div>
+            <div class="res-contact-val">+62 21 2988 4400</div>
+          </div>
+        </div>
+        <div class="res-contact-item">
+          <div class="res-contact-line"></div>
+          <div>
+            <div class="res-contact-label">By email</div>
+            <div class="res-contact-val">reserve@aurum-jakarta.com</div>
+          </div>
+        </div>
+        <div class="res-contact-item">
+          <div class="res-contact-line"></div>
+          <div>
+            <div class="res-contact-label">Service hours</div>
+            <div class="res-contact-val">Tue–Sun · 18:30 & 21:00</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="res-right reveal-right">
+      <h3>Request a Reservation</h3>
+      <form onsubmit="return false">
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">First Name</label>
+            <input type="text" class="form-input" placeholder="Élise" />
+          </div>
+          <div class="form-group">
+            <label class="form-label">Last Name</label>
+            <input type="text" class="form-input" placeholder="Marchetti" />
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Email Address</label>
+            <input type="email" class="form-input" placeholder="your@email.com" />
+          </div>
+          <div class="form-group">
+            <label class="form-label">Telephone</label>
+            <input type="tel" class="form-input" placeholder="+62 21" />
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Preferred Date</label>
+            <input type="date" class="form-input" />
+          </div>
+          <div class="form-group">
+            <label class="form-label">Seating Time</label>
+            <select class="form-select form-input">
+              <option value="">Select seating</option>
+              <option>18:30 — First seating</option>
+              <option>21:00 — Second seating</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Number of Guests</label>
+            <select class="form-select form-input">
+              <option value="">Select party size</option>
+              <option>1 Guest</option>
+              <option>2 Guests</option>
+              <option>3 Guests</option>
+              <option>4 Guests</option>
+              <option>5–8 Guests</option>
+              <option>9–14 Guests (Private Dining)</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Occasion</label>
+            <select class="form-select form-input">
+              <option value="">Select (optional)</option>
+              <option>Anniversary</option>
+              <option>Birthday</option>
+              <option>Business Dinner</option>
+              <option>Proposal</option>
+              <option>Other</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Dietary Requirements or Special Notes</label>
+          <textarea class="form-textarea form-input" placeholder="Please inform us of any allergies, dietary restrictions, or special requests..."></textarea>
+        </div>
+        <button type="submit" class="btn-box btn-box-gold" style="width:100%;justify-content:center">Submit Reservation Request</button>
+        <p class="form-note">Reservations are confirmed via email within 24 hours. A credit card is required to hold your table. Cancellations made less than 48 hours before service are subject to a cancellation fee of IDR 350,000 per person.</p>
+      </form>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ VISIT ════════════════════════════════════════════════ -->
+<section class="visit" id="visit">
+  <div class="container">
+    <div class="visit-inner">
+      <div class="visit-col reveal">
+        <div class="eyebrow">Hours of Service</div>
+        <h3 style="margin-top:20px">When to <em>visit us.</em></h3>
+        <div class="visit-info-list">
+          <div class="vi-item">
+            <div class="vi-day">Tuesday – Thursday</div>
+            <div class="vi-time">18:30 & 21:00</div>
+          </div>
+          <div class="vi-item">
+            <div class="vi-day">Friday – Saturday</div>
+            <div class="vi-time">18:30 & 21:00</div>
+          </div>
+          <div class="vi-item">
+            <div class="vi-day">Sunday</div>
+            <div class="vi-time">18:30 only</div>
+          </div>
+          <div class="vi-item">
+            <div class="vi-day">Monday</div>
+            <div class="vi-time">Closed</div>
+          </div>
+        </div>
+        <div class="visit-divider"></div>
+        <p class="visit-note">The kitchen closes promptly. We ask all guests to arrive within 15 minutes of their reserved time. Late arrivals may receive an abbreviated experience.</p>
+      </div>
+
+      <div class="visit-col reveal">
+        <div class="eyebrow">Location</div>
+        <h3 style="margin-top:20px">Find <em>Aurum.</em></h3>
+        <div class="visit-address">
+          Gedung Prestige Tower,<br />
+          Lantai 32<br />
+          Jl. Jenderal Sudirman, Kav. 48<br />
+          Jakarta Selatan, 12930
+        </div>
+        <div class="visit-phone">+62 21 2988 4400</div>
+        <div class="visit-divider"></div>
+        <p class="visit-note">Valet parking available. We are located above The Prestige Hotel Jakarta — guests arriving by taxi or ride-hailing should use the tower's main drop-off on Jl. Sudirman.</p>
+        <a href="#reservation" class="btn btn-dark" style="margin-top:24px">Reserve a Table</a>
+      </div>
+
+      <div class="visit-col reveal">
+        <div class="eyebrow">Dress Code & Etiquette</div>
+        <h3 style="margin-top:20px">Dress as the <em>evening deserves.</em></h3>
+        <div class="dress-items">
+          <div class="dress-item"><div class="dress-line"></div><div class="dress-text">Smart formal attire for gentlemen</div></div>
+          <div class="dress-item"><div class="dress-line"></div><div class="dress-text">Cocktail or evening dress for ladies</div></div>
+          <div class="dress-item"><div class="dress-line"></div><div class="dress-text">Business casual considered at management's discretion</div></div>
+          <div class="dress-item"><div class="dress-line"></div><div class="dress-text">Casual wear, sportswear, and open-toed footwear for gentlemen are not permitted</div></div>
+        </div>
+        <p class="visit-note" style="margin-top:8px">Aurum is an adults-only environment. We welcome guests aged 12 and above for our standard seatings; private dining has no age restriction.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ FOOTER ═══════════════════════════════════════════════ -->
+<footer>
+  <div class="container-wide">
+    <div class="footer-top">
+      <div class="footer-brand">
+        <span class="footer-logo-name">Aurum</span>
+        <span class="footer-logo-sub">Fine Dining · Jakarta</span>
+        <div class="footer-rule"></div>
+        <p class="footer-bio">A singular dining experience where classical precision meets the finest produce of each season. Two Michelin Stars, 2024.</p>
+      </div>
+
+      <div class="footer-links-grid">
+        <div class="footer-col">
+          <h4>Dining</h4>
+          <ul>
+            <li><a href="#">Tasting Menu</a></li>
+            <li><a href="#">À La Carte</a></li>
+            <li><a href="#">Wine List</a></li>
+            <li><a href="#">Cheese Selection</a></li>
+            <li><a href="#">Private Dining</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4>Reservations</h4>
+          <ul>
+            <li><a href="#">Book a Table</a></li>
+            <li><a href="#">Private Events</a></li>
+            <li><a href="#">Gift Vouchers</a></li>
+            <li><a href="#">Special Occasions</a></li>
+            <li><a href="#">Cancellations</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4>About</h4>
+          <ul>
+            <li><a href="#">Chef Marchetti</a></li>
+            <li><a href="#">Our Philosophy</a></li>
+            <li><a href="#">Accolades</a></li>
+            <li><a href="#">Press Room</a></li>
+            <li><a href="#">Careers</a></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="footer-social">
+        <div class="footer-social-label">Follow Aurum</div>
+        <div class="social-links">
+          <a href="#" class="s-link">Instagram</a>
+          <a href="#" class="s-link">Facebook</a>
+        </div>
+        <div style="margin-top:32px">
+          <div class="footer-social-label">Contact</div>
+          <div style="font-size:11px;color:rgba(201,162,90,.62);line-height:2;margin-top:8px;font-weight:300">
+            reserve@aurum-jakarta.com<br />
+            +62 21 2988 4400
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="footer-bottom">
+      <p class="footer-copy">© 2026 Aurum Restaurant. All rights reserved.</p>
+      <div class="footer-legal">
+        <a href="#">Privacy Policy</a>
+        <a href="#">Terms & Conditions</a>
+        <a href="#">Accessibility</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script>
+  (function(){
+    const hb=document.getElementById('hamburger'), mm=document.getElementById('mobileMenu');
+    if(hb&&mm){
+      const toggle=(open)=>{const w=open??!mm.classList.contains('open');mm.classList.toggle('open',w);hb.classList.toggle('open',w);hb.setAttribute('aria-expanded',w);};
+      hb.addEventListener('click',()=>toggle());
+      mm.querySelectorAll('a').forEach(a=>a.addEventListener('click',()=>toggle(false)));
+    }
+  })();
+  // Nav
+  const nav = document.getElementById('navbar');
+  window.addEventListener('scroll', () => nav.classList.toggle('scrolled', window.scrollY > 40), { passive: true });
+
+  // Scroll reveal
+  const ro = new IntersectionObserver(entries => {
+    entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); ro.unobserve(e.target); } });
+  }, { threshold: 0.06, rootMargin: '0px 0px -40px 0px' });
+  document.querySelectorAll('.reveal, .reveal-left, .reveal-right').forEach((el, i) => {
+    el.style.transitionDelay = `${(i % 3) * 100}ms`;
+    ro.observe(el);
+  });
+
+  // Testimonial carousel
+  const slides = document.querySelectorAll('.testi-slide');
+  const dots   = document.querySelectorAll('.t-dot');
+  let current  = 0;
+  let timer;
+
+  function goTo(idx) {
+    slides[current].classList.remove('active');
+    dots[current].classList.remove('active');
+    current = idx;
+    slides[current].classList.add('active');
+    dots[current].classList.add('active');
+  }
+
+  dots.forEach(d => d.addEventListener('click', () => { clearInterval(timer); goTo(+d.dataset.i); startTimer(); }));
+
+  function startTimer() {
+    timer = setInterval(() => goTo((current + 1) % slides.length), 6000);
+  }
+  startTimer();
+</script>
+</body>
+</html>
