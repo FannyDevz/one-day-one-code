@@ -1,0 +1,215 @@
+<svg width="1200" height="630" viewBox="0 0 1200 630" xmlns="http://www.w3.org/2000/svg" font-family="'Segoe UI',system-ui,sans-serif">
+<defs>
+  <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+    <stop offset="0%"   stop-color="#052e16"/>
+    <stop offset="50%"  stop-color="#14532d"/>
+    <stop offset="100%" stop-color="#15803d"/>
+  </linearGradient>
+  <linearGradient id="cardGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+    <stop offset="0%"   stop-color="rgba(255,255,255,0.13)"/>
+    <stop offset="100%" stop-color="rgba(255,255,255,0.04)"/>
+  </linearGradient>
+  <radialGradient id="rimGold" cx="38%" cy="28%" r="72%">
+    <stop offset="0%"   stop-color="#F7E070"/>
+    <stop offset="45%"  stop-color="#C9A84C"/>
+    <stop offset="100%" stop-color="#7A5C00"/>
+  </radialGradient>
+  <radialGradient id="rimCream" cx="40%" cy="35%" r="65%">
+    <stop offset="0%"   stop-color="#FFFEF8"/>
+    <stop offset="100%" stop-color="#FFF3C4"/>
+  </radialGradient>
+  <clipPath id="pc"><circle cx="250" cy="220" r="176"/></clipPath>
+  <filter id="glow"><feGaussianBlur stdDeviation="4" result="b"/><feComposite in="SourceGraphic" in2="b" operator="over"/></filter>
+  <filter id="dropshadow"><feDropShadow dx="0" dy="8" stdDeviation="14" flood-color="rgba(0,0,0,0.45)"/></filter>
+  <filter id="softsh"><feDropShadow dx="0" dy="3" stdDeviation="5" flood-color="rgba(0,0,0,0.25)"/></filter>
+</defs>
+
+<!-- ─── BACKGROUND ─── -->
+<rect width="1200" height="630" fill="url(#bg)"/>
+
+<!-- Decorative blobs -->
+<circle cx="80"   cy="85"  r="210" fill="rgba(255,255,255,0.025)"/>
+<circle cx="0"    cy="400" r="290" fill="rgba(22,101,52,0.1)"/>
+<circle cx="1190" cy="590" r="230" fill="rgba(234,88,12,0.07)"/>
+<circle cx="940"  cy="25"  r="160" fill="rgba(255,255,255,0.035)"/>
+<circle cx="650"  cy="480" r="100" fill="rgba(34,197,94,0.05)"/>
+
+<!-- Dot grid top-right -->
+<g fill="rgba(255,255,255,0.07)">
+  <circle cx="630" cy="40"  r="3"/> <circle cx="660" cy="40"  r="3"/> <circle cx="690" cy="40"  r="3"/>
+  <circle cx="630" cy="70"  r="3"/> <circle cx="660" cy="70"  r="3"/> <circle cx="690" cy="70"  r="3"/>
+  <circle cx="630" cy="100" r="3"/> <circle cx="660" cy="100" r="3"/> <circle cx="690" cy="100" r="3"/>
+</g>
+
+<!-- ─── LEFT PANEL ─── -->
+
+<!-- Logo circle -->
+<circle cx="100" cy="105" r="62" fill="rgba(34,197,94,0.25)" filter="url(#glow)"/>
+<circle cx="100" cy="105" r="52" fill="rgba(255,255,255,0.12)"/>
+<text x="100" y="128" text-anchor="middle" font-size="52">🍽️</text>
+
+<!-- Title -->
+<text x="185" y="78"  font-size="46" font-weight="800" fill="white" letter-spacing="-1">Gim Literasi Kesehatan</text>
+
+<!-- "Gizi Seimbang" badge pill -->
+<rect x="185" y="91" width="228" height="36" rx="18" fill="rgba(34,197,94,0.40)" stroke="rgba(110,230,160,0.50)" stroke-width="1.5"/>
+<text x="299" y="114" text-anchor="middle" font-size="18" font-weight="700" fill="rgba(255,255,255,0.9)">✦ Gizi Seimbang ✦</text>
+
+<!-- Tagline -->
+<text x="185" y="157" font-size="16" fill="rgba(255,255,255,0.60)">Susun piring bergizi · Belanja cerdas · Hidup sehat</text>
+
+<!-- Category badge pills -->
+<g transform="translate(185,175)">
+  <rect            width="165" height="32" rx="16" fill="rgba(202,138,4,0.70)"  stroke="rgba(202,138,4,0.90)"  stroke-width="1.5"/>
+  <text x="82"  y="21" text-anchor="middle" font-size="13" font-weight="700" fill="white">🍚 Makanan Pokok</text>
+  <rect x="175"  width="128" height="32" rx="16" fill="rgba(22,163,74,0.70)"   stroke="rgba(22,163,74,0.90)"   stroke-width="1.5"/>
+  <text x="239" y="21" text-anchor="middle" font-size="13" font-weight="700" fill="white">🥬 Sayuran</text>
+</g>
+<g transform="translate(185,213)">
+  <rect            width="123" height="32" rx="16" fill="rgba(234,88,12,0.70)"  stroke="rgba(234,88,12,0.90)"  stroke-width="1.5"/>
+  <text x="61"  y="21" text-anchor="middle" font-size="13" font-weight="700" fill="white">🍗 Lauk-Pauk</text>
+  <rect x="133"  width="108" height="32" rx="16" fill="rgba(219,39,119,0.70)" stroke="rgba(219,39,119,0.90)" stroke-width="1.5"/>
+  <text x="187" y="21" text-anchor="middle" font-size="13" font-weight="700" fill="white">🍌 Buah</text>
+</g>
+
+<!-- Stats text -->
+<text x="185" y="272" font-size="14" fill="rgba(255,255,255,0.50)">5 level · 14 tantangan · 40+ bahan makanan</text>
+
+<!-- Divider -->
+<line x1="185" y1="290" x2="575" y2="290" stroke="rgba(255,255,255,0.10)" stroke-width="1.5"/>
+
+<!-- Mini Nutrition panel preview -->
+<rect x="185" y="303" width="388" height="170" rx="10" fill="rgba(0,0,0,0.25)" stroke="rgba(255,255,255,0.09)" stroke-width="1"/>
+<rect x="185" y="303" width="388" height="22"  rx="10" fill="rgba(255,255,255,0.07)"/>
+<!-- Window dots -->
+<circle cx="202" cy="314" r="4" fill="#EF4444" opacity="0.8"/>
+<circle cx="216" cy="314" r="4" fill="#FBBF24" opacity="0.8"/>
+<circle cx="230" cy="314" r="4" fill="#22C55E" opacity="0.8"/>
+<text x="379" y="317" text-anchor="middle" font-size="10" fill="rgba(255,255,255,0.4)">📊 Kandungan Gizi</text>
+
+<!-- Skor box -->
+<rect x="200" y="331" width="358" height="34" rx="8" fill="rgba(34,197,94,0.18)" stroke="rgba(34,197,94,0.30)" stroke-width="1"/>
+<text x="379" y="353" text-anchor="middle" font-size="14" font-weight="700" fill="rgba(255,255,255,0.90)">Skor Gizi: 88/100 ✅</text>
+
+<!-- Nutrient bars -->
+<text x="200" y="382" font-size="11" fill="rgba(255,255,255,0.60)">🔥 Kalori</text>
+<rect x="262" y="370" width="265" height="10" rx="5" fill="rgba(255,255,255,0.10)"/>
+<rect x="262" y="370" width="218" height="10" rx="5" fill="#F59E0B" opacity="0.85"/>
+<text x="532" y="380" font-size="10" fill="rgba(255,255,255,0.45)">82%</text>
+
+<text x="200" y="403" font-size="11" fill="rgba(255,255,255,0.60)">💪 Protein</text>
+<rect x="262" y="391" width="265" height="10" rx="5" fill="rgba(255,255,255,0.10)"/>
+<rect x="262" y="391" width="238" height="10" rx="5" fill="#22C55E" opacity="0.85"/>
+<text x="532" y="401" font-size="10" fill="rgba(255,255,255,0.45)">90%</text>
+
+<text x="200" y="424" font-size="11" fill="rgba(255,255,255,0.60)">🌱 Serat</text>
+<rect x="262" y="412" width="265" height="10" rx="5" fill="rgba(255,255,255,0.10)"/>
+<rect x="262" y="412" width="186" height="10" rx="5" fill="#34D399" opacity="0.85"/>
+<text x="532" y="422" font-size="10" fill="rgba(255,255,255,0.45)">70%</text>
+
+<text x="200" y="445" font-size="11" fill="rgba(255,255,255,0.60)">⚡ Karbo</text>
+<rect x="262" y="433" width="265" height="10" rx="5" fill="rgba(255,255,255,0.10)"/>
+<rect x="262" y="433" width="252" height="10" rx="5" fill="#60A5FA" opacity="0.85"/>
+<text x="532" y="443" font-size="10" fill="rgba(255,255,255,0.45)">95%</text>
+
+<!-- ─── RIGHT PANEL: PLATE ILLUSTRATION ─── -->
+
+<!-- Right panel bg -->
+<rect x="620" y="30" width="545" height="452" rx="16" fill="rgba(255,255,255,0.04)" stroke="rgba(255,255,255,0.08)" stroke-width="1"/>
+<line x1="620" y1="30" x2="620" y2="482" stroke="rgba(255,255,255,0.09)" stroke-width="1"/>
+
+<!-- Plate group: centered in right panel (group origin → center at 890, 252) -->
+<g transform="translate(640,32)" filter="url(#dropshadow)">
+  <!-- Gold rim -->
+  <circle cx="250" cy="220" r="200" fill="url(#rimGold)"/>
+  <!-- Cream inner ring -->
+  <circle cx="250" cy="220" r="190" fill="url(#rimCream)"/>
+  <!-- Thin white highlight ring -->
+  <circle cx="250" cy="220" r="182" fill="rgba(255,255,255,0.08)" stroke="rgba(255,255,255,0.20)" stroke-width="2"/>
+
+  <!-- Food sections (clipped to circle) -->
+  <!-- Plate food area: from (74,44) to (426,396) → 352×352px, centered at (250,220) -->
+  <!-- Sayuran top-left: 2/3 width, 1/2 height = 234×176 -->
+  <!-- Lauk bottom-left: 1/2 of left half width, 1/2 height = 117×176 -->
+  <!-- Buah bottom-center: 1/2 of left half width, 1/2 height = 117×176 -->
+  <!-- Pokok right: 1/3 width, full height = 117×352 -->
+  <g clip-path="url(#pc)">
+    <rect x="74"  y="44"  width="235" height="176" fill="#BBFAD0"/>  <!-- Sayuran -->
+    <rect x="74"  y="220" width="117" height="176" fill="#FDBA74"/>  <!-- Lauk -->
+    <rect x="191" y="220" width="118" height="176" fill="#F9A8D4"/>  <!-- Buah -->
+    <rect x="309" y="44"  width="117" height="352" fill="#FDE68A"/>  <!-- Pokok -->
+  </g>
+
+  <!-- White dividers (clipped) -->
+  <g clip-path="url(#pc)" stroke="rgba(255,255,255,0.82)" fill="none">
+    <line x1="309" y1="44"  x2="309" y2="396" stroke-width="4"/>
+    <line x1="74"  y1="220" x2="309" y2="220" stroke-width="3.5"/>
+    <line x1="191" y1="220" x2="191" y2="396" stroke-width="3"/>
+  </g>
+
+  <!-- Rim shine -->
+  <circle cx="250" cy="220" r="190" fill="none" stroke="rgba(255,255,255,0.15)" stroke-width="3"/>
+
+  <!-- Food emojis -->
+  <text x="192" y="155" text-anchor="middle" font-size="44">🥬</text>
+  <text x="148" y="200" text-anchor="middle" font-size="30">🥕</text>
+  <text x="235" y="200" text-anchor="middle" font-size="30">🍅</text>
+  <text x="133" y="320" text-anchor="middle" font-size="44">🍗</text>
+  <text x="248" y="320" text-anchor="middle" font-size="44">🍌</text>
+  <text x="368" y="200" text-anchor="middle" font-size="44">🍚</text>
+  <text x="368" y="270" text-anchor="middle" font-size="32">🍞</text>
+
+  <!-- Section labels -->
+  <text x="191" y="74"  text-anchor="middle" font-size="14" font-weight="800" fill="rgba(0,0,0,0.45)" font-family="sans-serif">SAYURAN</text>
+  <text x="191" y="89"  text-anchor="middle" font-size="12" fill="rgba(0,0,0,0.30)" font-family="sans-serif">⅓ piring</text>
+  <text x="133" y="252" text-anchor="middle" font-size="14" font-weight="800" fill="rgba(0,0,0,0.45)" font-family="sans-serif">LAUK</text>
+  <text x="133" y="266" text-anchor="middle" font-size="11" fill="rgba(0,0,0,0.30)" font-family="sans-serif">⅙ piring</text>
+  <text x="248" y="252" text-anchor="middle" font-size="14" font-weight="800" fill="rgba(0,0,0,0.45)" font-family="sans-serif">BUAH</text>
+  <text x="248" y="266" text-anchor="middle" font-size="11" fill="rgba(0,0,0,0.30)" font-family="sans-serif">⅙ piring</text>
+  <text x="368" y="148" text-anchor="middle" font-size="13" font-weight="800" fill="rgba(0,0,0,0.45)" font-family="sans-serif">MAKANAN</text>
+  <text x="368" y="163" text-anchor="middle" font-size="13" font-weight="800" fill="rgba(0,0,0,0.45)" font-family="sans-serif">POKOK</text>
+  <text x="368" y="178" text-anchor="middle" font-size="11" fill="rgba(0,0,0,0.30)" font-family="sans-serif">⅓ piring</text>
+</g>
+
+<!-- Plate caption -->
+<text x="890" y="478" text-anchor="middle" font-size="12" fill="rgba(255,255,255,0.45)">Pedoman Isi Piringku · Kemenkes RI 2014</text>
+
+<!-- ─── BOTTOM STRIP ─── -->
+<rect x="0" y="490" width="1200" height="140" fill="rgba(0,0,0,0.30)"/>
+<line x1="0" y1="490" x2="1200" y2="490" stroke="rgba(255,255,255,0.10)" stroke-width="1"/>
+
+<!-- Level cards -->
+<g transform="translate(50,505)">
+  <rect width="190" height="108" rx="12" fill="url(#cardGrad)" stroke="rgba(255,255,255,0.15)" stroke-width="1.5"/>
+  <text x="95" y="52" text-anchor="middle" font-size="36">🍳</text>
+  <text x="95" y="78" text-anchor="middle" font-size="14" font-weight="800" fill="white">Level 1</text>
+  <text x="95" y="97" text-anchor="middle" font-size="11" fill="rgba(255,255,255,0.55)">Sarapan Keluarga Rani</text>
+</g>
+<g transform="translate(268,505)">
+  <rect width="190" height="108" rx="12" fill="url(#cardGrad)" stroke="rgba(255,255,255,0.15)" stroke-width="1.5"/>
+  <text x="95" y="52" text-anchor="middle" font-size="36">🛒</text>
+  <text x="95" y="78" text-anchor="middle" font-size="14" font-weight="800" fill="white">Level 2</text>
+  <text x="95" y="97" text-anchor="middle" font-size="11" fill="rgba(255,255,255,0.55)">Belanja di Pasar Pagi</text>
+</g>
+<g transform="translate(486,505)">
+  <rect width="190" height="108" rx="12" fill="url(#cardGrad)" stroke="rgba(255,255,255,0.15)" stroke-width="1.5"/>
+  <text x="95" y="52" text-anchor="middle" font-size="36">📅</text>
+  <text x="95" y="78" text-anchor="middle" font-size="14" font-weight="800" fill="white">Level 3</text>
+  <text x="95" y="97" text-anchor="middle" font-size="11" fill="rgba(255,255,255,0.55)">Menu 7 Hari</text>
+</g>
+<g transform="translate(704,505)">
+  <rect width="190" height="108" rx="12" fill="url(#cardGrad)" stroke="rgba(255,255,255,0.15)" stroke-width="1.5"/>
+  <text x="95" y="52" text-anchor="middle" font-size="36">💊</text>
+  <text x="95" y="78" text-anchor="middle" font-size="14" font-weight="800" fill="white">Level 4</text>
+  <text x="95" y="97" text-anchor="middle" font-size="11" fill="rgba(255,255,255,0.55)">Gizi Kondisi Khusus</text>
+</g>
+<g transform="translate(922,505)">
+  <rect width="190" height="108" rx="12" fill="url(#cardGrad)" stroke="rgba(255,255,255,0.15)" stroke-width="1.5"/>
+  <text x="95" y="52" text-anchor="middle" font-size="36">🏆</text>
+  <text x="95" y="78" text-anchor="middle" font-size="14" font-weight="800" fill="white">Level 5</text>
+  <text x="95" y="97" text-anchor="middle" font-size="11" fill="rgba(255,255,255,0.55)">Ahli Gizi Keluargaku</text>
+</g>
+
+<!-- Branding -->
+<text x="1185" y="482" text-anchor="end" font-size="13" fill="rgba(255,255,255,0.38)">Ruang Murid · SPNF 2026</text>
+</svg>

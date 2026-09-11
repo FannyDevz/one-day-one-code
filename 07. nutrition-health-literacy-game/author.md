@@ -1,0 +1,1 @@
+Nama : Tryas Sukmaning Sakti

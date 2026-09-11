@@ -1,0 +1,607 @@
+<!doctype html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Gim Literasi Kesehatan: Gizi Seimbang | Ruang Murid</title>
+    <link rel="stylesheet" href="style.css" />
+  <link rel="icon" type="image/svg+xml" href="favicon.svg" />
+</head>
+  <body>
+    <!-- ══════════════════════════════════
+  SPLASH SCREEN — halaman pembuka
+══════════════════════════════════ -->
+    <div id="screen-splash" class="screen screen-splash">
+      <div class="splash-stage">
+        <img
+          class="splash-art"
+          src="gizi-seimbang.png"
+          width="1536"
+          height="1024"
+          alt="Poster Gim Literasi Kesehatan: Gizi Seimbang — piring dibagi empat bagian: sayuran sepertiga, makanan pokok sepertiga, lauk-pauk seperenam, buah seperenam."
+        />
+
+        <!-- Tombol diletakkan di panel kosong pada poster -->
+        <div class="splash-panel">
+          <button class="splash-btn splash-btn-main" id="btn-splash-start">
+            ▶ Mulai Bermain
+          </button>
+          <div class="splash-btn-row">
+            <button class="splash-btn splash-btn-sub" id="btn-splash-goals">
+              🎯 Tujuan Pembelajaran
+            </button>
+            <button class="splash-btn splash-btn-sub" id="btn-splash-author">
+              © Author
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════
+  HOME SCREEN
+══════════════════════════════════ -->
+    <div id="screen-home" class="screen" style="display: none">
+      <header class="home-header">
+        <div class="home-topbar">
+          <button class="btn-ghost-sm" id="btn-to-splash">← Sampul</button>
+          <div class="home-stats-bar">
+            <div class="stat-pill">
+              🏅 Skor: <strong id="total-score">0</strong>
+            </div>
+            <div class="stat-pill">
+              🎖️ Lencana: <strong id="badge-count">0</strong>
+            </div>
+            <button class="btn-ghost-sm" id="btn-howto">📖 Cara Bermain</button>
+            <button class="btn-ghost-sm" id="btn-reset-data">
+              🔄 Mulai dari Awal
+            </button>
+          </div>
+        </div>
+
+        <div class="home-hero">
+          <div class="hero-icon">🗺️</div>
+          <h1>Peta Petualangan Gizi</h1>
+          <p class="hero-tagline">
+            Ada 5 petualangan seru. Selesaikan tantangannya, kumpulkan
+            bintangnya, dan jadilah <strong>Ahli Gizi Keluarga</strong>!
+          </p>
+        </div>
+      </header>
+
+      <!-- Satu tombol utama: lanjut ke tantangan berikutnya -->
+      <div class="cta-continue" id="cta-continue">
+        <div class="cta-mascot" id="cta-mascot">👧</div>
+        <div class="cta-text">
+          <div class="cta-label" id="cta-label">Mulai dari sini</div>
+          <div class="cta-detail" id="cta-detail"></div>
+        </div>
+        <button class="btn btn-submit cta-btn" id="btn-continue">
+          ▶ Mulai Bermain
+        </button>
+      </div>
+
+      <h2 class="levels-heading">
+        <span>🚩 Pilih Petualanganmu</span>
+        <small id="levels-progress-note"></small>
+      </h2>
+      <div class="levels-grid" id="levels-grid"></div>
+
+      <div class="piringku-reminder">
+        <div class="pk-reminder-title">🍽️ Ingat selalu: Isi Piringku</div>
+        <div class="piringku-banner">
+          <div class="pk-zone pk-sayur">
+            <span class="pk-emoji">🥬</span><span>Sayuran</span><small>1/3 piring</small>
+          </div>
+          <div class="pk-zone pk-pokok">
+            <span class="pk-emoji">🍚</span><span>Makanan Pokok</span><small>1/3 piring</small>
+          </div>
+          <div class="pk-zone pk-lauk">
+            <span class="pk-emoji">🍗</span><span>Lauk-Pauk</span><small>1/6 piring</small>
+          </div>
+          <div class="pk-zone pk-buah">
+            <span class="pk-emoji">🍌</span><span>Buah-Buahan</span><small>1/6 piring</small>
+          </div>
+        </div>
+      </div>
+
+      <footer class="home-footer">
+        <p class="disclaimer">
+          ⚕️ Gim ini adalah media belajar. Saran gizi di dalamnya
+          <strong>bukan pengganti konsultasi</strong> dengan dokter atau tenaga
+          gizi.
+        </p>
+        Mengacu <strong>Pedoman Gizi Seimbang Kemenkes RI 2014</strong> · Data
+        TKPI Kemenkes RI · Copyright By Tryas Sukmaning Sakti
+      </footer>
+    </div>
+
+    <!-- ══════════════════════════════════
+  GAME SCREEN
+══════════════════════════════════ -->
+    <div id="screen-game" class="screen" style="display: none">
+      <!-- Header -->
+      <div class="game-header">
+        <button class="btn-back" id="btn-back">← Kembali</button>
+        <div class="game-header-info">
+          <span class="game-level-badge" id="game-level-badge"></span>
+          <span class="game-title" id="game-title"></span>
+        </div>
+        <div class="game-header-right">
+          <div class="budget-pill" id="budget-pill" style="display: none">
+            💰 <span id="budget-display">Rp 0</span>
+          </div>
+          <div class="score-pill">⭐ <strong id="score-display">0</strong></div>
+        </div>
+      </div>
+
+      <!-- Penunjuk langkah: tantangan ke berapa, mana yang terkunci -->
+      <div class="stepper-wrap">
+        <div class="stepper" id="stepper"></div>
+        <div class="challenge-caption" id="challenge-caption"></div>
+      </div>
+
+      <!-- Story + Mission -->
+      <div class="mission-strip">
+        <div class="mission-character" id="mission-character"></div>
+        <div class="mission-text-wrap">
+          <div class="mission-context" id="mission-context"></div>
+          <div class="mission-text" id="mission-text"></div>
+          <div class="mission-chips" id="mission-chips"></div>
+        </div>
+      </div>
+
+      <!-- Mobile panel tabs -->
+      <div class="mobile-panel-tabs" id="mobile-panel-tabs">
+        <button class="mpanel-btn active" data-panel="rack" id="mpanel-rack">
+          🛒 Bahan
+        </button>
+        <button class="mpanel-btn" data-panel="plate" id="mpanel-plate">
+          🍽️ Piring <span class="mtab-count" id="mtab-count">0</span>
+        </button>
+        <button class="mpanel-btn" data-panel="nutri" id="mpanel-nutri">
+          📊 Gizi
+        </button>
+      </div>
+
+      <!-- 3-column game area -->
+      <div class="game-body">
+        <!-- Col 1: Food Rack -->
+        <div class="panel panel-rack mobile-active" id="panel-rack">
+          <div class="panel-title">🛒 Pilih Bahan Makanan</div>
+          <div class="food-rack" id="food-rack"></div>
+        </div>
+
+        <!-- Col 2: Plate -->
+        <div class="panel panel-plate" id="panel-plate">
+          <div class="panel-title">🍽️ Piring Isi Piringku</div>
+          <div class="plate-area">
+            <!-- ① Piring dekoratif — referensi visual Isi Piringku, tidak interaktif -->
+            <div class="plate-display">
+              <svg
+                class="plate-svg"
+                viewBox="0 0 220 220"
+                xmlns="http://www.w3.org/2000/svg"
+                role="img"
+                aria-label="Diagram Isi Piringku Kemenkes RI: sayuran sepertiga piring, makanan pokok sepertiga piring, lauk seperenam, buah seperenam"
+              >
+                <defs>
+                  <clipPath id="plate-clip">
+                    <circle cx="110" cy="110" r="95" />
+                  </clipPath>
+                  <radialGradient id="rim-grad" cx="38%" cy="28%" r="72%">
+                    <stop offset="0%" stop-color="#F7E070" />
+                    <stop offset="45%" stop-color="#C9A84C" />
+                    <stop offset="100%" stop-color="#7A5C00" />
+                  </radialGradient>
+                  <radialGradient id="cream-grad" cx="40%" cy="35%" r="65%">
+                    <stop offset="0%" stop-color="#FFFEF8" />
+                    <stop offset="100%" stop-color="#FFF3C4" />
+                  </radialGradient>
+                </defs>
+
+                <!-- Rim emas -->
+                <circle cx="110" cy="110" r="109" fill="url(#rim-grad)" />
+                <!-- Ring krem dalam -->
+                <circle cx="110" cy="110" r="101" fill="url(#cream-grad)" />
+                <!-- Bagian makanan (di-clip ke lingkaran) -->
+                <g clip-path="url(#plate-clip)">
+                  <!-- Sayuran: kiri-atas 1/3 -->
+                  <rect x="15" y="15" width="128" height="95" fill="#BBFAD0" />
+                  <!-- Lauk: kiri-bawah 1/6 -->
+                  <rect x="15" y="110" width="64" height="95" fill="#FDBA74" />
+                  <!-- Buah: tengah-bawah 1/6 -->
+                  <rect x="79" y="110" width="64" height="95" fill="#F9A8D4" />
+                  <!-- Pokok: kanan 1/3 -->
+                  <rect x="143" y="15" width="62" height="190" fill="#FDE68A" />
+                </g>
+                <!-- Pembatas putih -->
+                <g
+                  clip-path="url(#plate-clip)"
+                  stroke="rgba(255,255,255,0.85)"
+                  fill="none"
+                >
+                  <line x1="143" y1="15" x2="143" y2="205" stroke-width="3.5" />
+                  <line x1="15" y1="110" x2="143" y2="110" stroke-width="3" />
+                  <line x1="79" y1="110" x2="79" y2="205" stroke-width="3" />
+                </g>
+                <!-- Label bagian -->
+                <g
+                  font-family="system-ui, sans-serif"
+                  text-anchor="middle"
+                  fill="rgba(0,0,0,0.68)"
+                >
+                  <text x="79" y="56" font-size="14" font-weight="700">
+                    SAYURAN
+                  </text>
+                  <text
+                    x="79"
+                    y="71"
+                    font-size="12"
+                    fill="rgba(0,0,0,0.5)"
+                    font-weight="600"
+                  >
+                    ⅓ piring
+                  </text>
+
+                  <text x="47" y="152" font-size="12" font-weight="700">
+                    LAUK
+                  </text>
+                  <text
+                    x="47"
+                    y="166"
+                    font-size="11"
+                    fill="rgba(0,0,0,0.5)"
+                    font-weight="600"
+                  >
+                    ⅙
+                  </text>
+
+                  <text x="111" y="152" font-size="12" font-weight="700">
+                    BUAH
+                  </text>
+                  <text
+                    x="111"
+                    y="166"
+                    font-size="11"
+                    fill="rgba(0,0,0,0.5)"
+                    font-weight="600"
+                  >
+                    ⅙
+                  </text>
+
+                  <text x="174" y="103" font-size="12" font-weight="700">
+                    MAKANAN
+                  </text>
+                  <text x="174" y="117" font-size="12" font-weight="700">
+                    POKOK
+                  </text>
+                  <text
+                    x="174"
+                    y="132"
+                    font-size="11"
+                    fill="rgba(0,0,0,0.5)"
+                    font-weight="600"
+                  >
+                    ⅓ piring
+                  </text>
+                </g>
+                <!-- Kilap rim -->
+                <circle
+                  cx="110"
+                  cy="110"
+                  r="101"
+                  fill="none"
+                  stroke="rgba(255,255,255,0.25)"
+                  stroke-width="2"
+                />
+              </svg>
+
+              <div class="plate-caption">
+                Pedoman Isi Piringku · Kemenkes RI 2014
+              </div>
+            </div>
+
+            <!-- ② Zona drop interaktif — taruh makanan di kartu ini -->
+            <div class="drop-zones-label">
+              ⬇ Taruh makanan ke bagian yang sesuai
+            </div>
+            <div class="drop-zones-row">
+              <!-- Sayuran — 1/3 -->
+              <div class="zone-card zc-sayur" id="zone-sayur" data-zone="sayur">
+                <div class="zc-header">
+                  <span class="zc-icon">🥬</span
+                  ><span class="zc-name">Sayuran</span
+                  ><span class="zc-frac">1/3 piring</span>
+                </div>
+                <div class="zc-body" id="items-sayur"></div>
+                <div class="zc-placeholder" id="ph-sayur">
+                  Taruh sayuran di sini
+                </div>
+              </div>
+              <!-- Makanan Pokok — 1/3 -->
+              <div class="zone-card zc-pokok" id="zone-pokok" data-zone="pokok">
+                <div class="zc-header">
+                  <span class="zc-icon">🍚</span
+                  ><span class="zc-name">Makanan Pokok</span
+                  ><span class="zc-frac">1/3 piring</span>
+                </div>
+                <div class="zc-body" id="items-pokok"></div>
+                <div class="zc-placeholder" id="ph-pokok">
+                  Taruh nasi atau roti di sini
+                </div>
+              </div>
+              <!-- Lauk-Pauk — 1/6 -->
+              <div class="zone-card zc-lauk" id="zone-lauk" data-zone="lauk">
+                <div class="zc-header">
+                  <span class="zc-icon">🍗</span
+                  ><span class="zc-name">Lauk-Pauk</span
+                  ><span class="zc-frac">1/6 piring</span>
+                </div>
+                <div class="zc-body" id="items-lauk"></div>
+                <div class="zc-placeholder" id="ph-lauk">
+                  Taruh lauk di sini
+                </div>
+              </div>
+              <!-- Buah — 1/6 -->
+              <div class="zone-card zc-buah" id="zone-buah" data-zone="buah">
+                <div class="zc-header">
+                  <span class="zc-icon">🍌</span
+                  ><span class="zc-name">Buah-Buahan</span
+                  ><span class="zc-frac">1/6 piring</span>
+                </div>
+                <div class="zc-body" id="items-buah"></div>
+                <div class="zc-placeholder" id="ph-buah">
+                  Taruh buah di sini
+                </div>
+              </div>
+            </div>
+
+            <!-- Daftar syarat tantangan — terisi otomatis dari app.js -->
+            <div class="requirements" id="requirements">
+              <div class="req-title">Syarat tantangan ini</div>
+              <div class="req-list" id="req-list"></div>
+            </div>
+
+            <div class="water-reminder">
+              💧 1 gelas air putih &nbsp;·&nbsp; 🏃 30 menit aktivitas
+              fisik/hari
+            </div>
+          </div>
+          <!-- /plate-area -->
+        </div>
+
+        <!-- Col 3: Nutrition -->
+        <div class="panel panel-nutri" id="panel-nutri">
+          <div class="panel-title">📊 Kandungan Gizi</div>
+          <div class="nutri-wrap" id="nutri-wrap">
+            <div class="nutri-empty">
+              Piringmu masih kosong. Pilih makanan dari daftar bahan, ya!
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- /game-body -->
+
+      <!-- Bar bawah: selalu terlihat di semua tab -->
+      <div class="bottom-stack">
+        <div class="mobile-pickup-bar" id="mobile-pickup-bar">
+          <span id="mobile-pickup-label">🥕 Bahan dipilih</span>
+          <button class="mobile-pickup-cancel" id="btn-cancel-pickup">
+            ✕ Batal
+          </button>
+        </div>
+
+        <div class="game-footer">
+          <div
+            class="nutri-tip"
+            id="nutri-tip"
+            role="status"
+            aria-live="polite"
+          ></div>
+          <div class="plate-controls">
+            <button class="btn btn-submit" id="btn-submit">✅ Sajikan!</button>
+            <button class="btn btn-reset-plate" id="btn-reset-plate">
+              🔄 Kosongkan
+            </button>
+            <button class="btn btn-hint-game" id="btn-hint-game">
+              💡 Petunjuk
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- /screen-game -->
+
+    <!-- ══════════════════════════════════
+  MODAL: CARA BERMAIN
+══════════════════════════════════ -->
+    <div id="modal-howto" class="modal-overlay" data-dismissable>
+      <div class="modal-box">
+        <div class="howto-slide" id="howto-slide"></div>
+        <div class="howto-dots" id="howto-dots"></div>
+        <div class="modal-actions modal-actions-row">
+          <button class="btn btn-ghost" id="btn-howto-prev">← Sebelumnya</button>
+          <button class="btn btn-submit" id="btn-howto-next">Lanjut →</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════
+  MODAL: RESULT
+══════════════════════════════════ -->
+    <div id="modal-result" class="modal-overlay">
+      <div class="modal-box">
+        <div class="modal-char" id="result-char"></div>
+        <div class="modal-icon" id="result-icon"></div>
+        <h2 id="result-title"></h2>
+        <p id="result-message"></p>
+        <div class="result-score-row" id="result-score-row"></div>
+        <div class="result-nutri-summary" id="result-nutri-summary"></div>
+        <div class="modal-actions">
+          <button class="btn btn-submit" id="btn-next">
+            Tantangan Berikutnya →
+          </button>
+          <button class="btn btn-outline" id="btn-retry">🔄 Coba Lagi</button>
+          <button class="btn btn-ghost" id="btn-home-result">
+            ← Menu Utama
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════
+  MODAL: HINT
+══════════════════════════════════ -->
+    <div id="modal-hint" class="modal-overlay" data-dismissable>
+      <div class="modal-box">
+        <div class="modal-icon">💡</div>
+        <h2>Petunjuk</h2>
+        <div class="hint-content" id="hint-content"></div>
+        <div class="modal-actions">
+          <button class="btn btn-submit" id="btn-close-hint">Mengerti!</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════
+  MODAL: REFLECTION
+══════════════════════════════════ -->
+    <div id="modal-reflection" class="modal-overlay">
+      <div class="modal-box">
+        <div class="modal-icon">📓</div>
+        <h2>Jurnal Refleksi Gizi</h2>
+        <p id="reflection-intro">
+          Selamat, kamu menyelesaikan level ini! Yuk refleksikan apa yang kamu
+          pelajari.
+        </p>
+        <div class="reflection-q">
+          <label for="reflection-1"
+            >1. Makanan apa yang sering kamu makan tapi ternyata kurang
+            gizinya?</label
+          >
+          <textarea
+            id="reflection-1"
+            rows="3"
+            placeholder="Contoh: saya sering makan mie instan tanpa sayuran..."
+          ></textarea>
+        </div>
+        <div class="reflection-q">
+          <label for="reflection-2"
+            >2. Satu perubahan kecil apa yang akan kamu coba minggu ini?</label
+          >
+          <textarea
+            id="reflection-2"
+            rows="3"
+            placeholder="Contoh: saya akan menambahkan bayam di menu sarapan..."
+          ></textarea>
+        </div>
+        <div class="modal-actions">
+          <button class="btn btn-submit" id="btn-save-reflection">
+            💾 Simpan &amp; Lanjut
+          </button>
+          <button class="btn btn-ghost" id="btn-skip-reflection">
+            Lewati dulu
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════
+  MODAL: KONFIRMASI
+══════════════════════════════════ -->
+    <div id="modal-confirm" class="modal-overlay">
+      <div class="modal-box">
+        <div class="modal-icon">🔄</div>
+        <h2>Mulai dari Awal?</h2>
+        <p>
+          Semua skor, lencana, dan jurnal refleksimu akan dihapus. Tindakan ini
+          tidak bisa dibatalkan.
+        </p>
+        <div class="modal-actions">
+          <button class="btn btn-danger" id="btn-confirm-reset">
+            Ya, hapus semua
+          </button>
+          <button class="btn btn-ghost" id="btn-cancel-reset">Batal</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════
+  MODAL: TUJUAN PEMBELAJARAN
+══════════════════════════════════ -->
+    <div id="modal-goals" class="modal-overlay" data-dismissable>
+      <div class="modal-box">
+        <div class="modal-icon">🎯</div>
+        <h2>Tujuan Pembelajaran</h2>
+        <p>
+          Setelah bermain, kamu diharapkan mampu melakukan empat hal berikut.
+        </p>
+        <ol class="goals-list">
+          <li>
+            <strong>Memahami pedoman Isi Piringku</strong> — menjelaskan empat
+            komponen piring sehat beserta proporsinya.
+          </li>
+          <li>
+            <strong>Membaca informasi nilai gizi</strong> — mengenali kandungan
+            kalori, protein, karbohidrat, lemak, dan serat pada bahan makanan
+            sehari-hari.
+          </li>
+          <li>
+            <strong>Merencanakan menu seimbang</strong> — menyusun menu bergizi
+            dalam keterbatasan anggaran dan ketersediaan bahan lokal.
+          </li>
+          <li>
+            <strong>Menghubungkan gizi dengan kondisi khusus</strong> —
+            menyesuaikan pilihan makanan untuk ibu hamil, lansia, dan remaja
+            aktif.
+          </li>
+        </ol>
+        <div class="goals-meta">
+          <div>📚 Pendidikan Kesetaraan Paket B (setara SMP)</div>
+          <div>🧭 Tema: Keterampilan Hidup &amp; Kesehatan</div>
+          <div>⏱️ 25–40 menit per sesi · 5 level · 14 tantangan</div>
+        </div>
+        <div class="modal-actions">
+          <button class="btn btn-submit" id="btn-close-goals">Mengerti!</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════
+  MODAL: AUTHOR / HAK CIPTA
+══════════════════════════════════ -->
+    <div id="modal-author" class="modal-overlay" data-dismissable>
+      <div class="modal-box">
+        <div class="modal-icon">👩‍🏫</div>
+        <h2>Author</h2>
+        <p class="author-name">Tryas Sukmaning Sakti</p>
+        <p class="author-copy">
+          © 2026 Tryas Sukmaning Sakti. Hak cipta dilindungi.<br />
+          Gim Literasi Kesehatan: Gizi Seimbang — konten pembelajaran untuk
+          Ruang Murid, Rumah Pendidikan.
+        </p>
+        <div class="author-refs">
+          <div class="author-refs-title">Rujukan materi</div>
+          <ul>
+            <li>Pedoman Gizi Seimbang — Kemenkes RI 2014</li>
+            <li>Tabel Komposisi Pangan Indonesia (TKPI) — Kemenkes RI</li>
+            <li>Angka Kecukupan Gizi — Permenkes No. 28 Tahun 2019</li>
+          </ul>
+        </div>
+        <p class="disclaimer author-disclaimer">
+          ⚕️ Gim ini adalah media belajar. Saran gizi di dalamnya
+          <strong>bukan pengganti konsultasi</strong> dengan dokter atau tenaga
+          gizi.
+        </p>
+        <div class="modal-actions">
+          <button class="btn btn-submit" id="btn-close-author">Tutup</button>
+        </div>
+      </div>
+    </div>
+
+    <script src="data.js"></script>
+    <script src="levels.js"></script>
+    <script src="app.js"></script>
+  </body>
+</html>
