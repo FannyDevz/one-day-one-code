@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 380" width="720" height="380" preserveAspectRatio="none">
+<defs><linearGradient id="s" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#b9cee0"/><stop offset="1" stop-color="#eef1f4"/></linearGradient></defs>
+<rect width="720" height="380" fill="url(#s)"/>
+<!-- perbukitan -->
+<path d="M0,274 Q200,236 460,266 T720,262 L720,274 Z" fill="#8bb37a"/>
+<rect y="274" width="720" height="106" fill="#cfe3b0"/>
+<line x1="0" y1="274" x2="720" y2="274" stroke="#a9c78a" stroke-width="2"/>
+</svg>

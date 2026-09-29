@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="id"><head><meta charset="UTF-8"><title>Panduan — Jelajah Nusantara</title>
+<style>
+  @page{ size:A4; margin:18mm 16mm; }
+  *{box-sizing:border-box}
+  body{font-family:"Segoe UI",system-ui,Arial,sans-serif; color:#12233A; line-height:1.55; max-width:760px; margin:24px auto; padding:0 18px}
+  h1{color:#154C86; font-size:26px; margin:0 0 4px}
+  h2{color:#1B5FA8; font-size:18px; margin:22px 0 6px; border-bottom:2px solid #E7F1FB; padding-bottom:4px}
+  h3{color:#154C86; font-size:15px; margin:14px 0 4px}
+  .sub{color:#5B6B7F; margin:0 0 12px}
+  table{border-collapse:collapse; width:100%; margin:8px 0; font-size:14px}
+  th,td{border:1px solid #DCE5F0; padding:7px 10px; text-align:left; vertical-align:top}
+  th{background:#E7F1FB; color:#154C86}
+  ul,ol{margin:6px 0 6px 2px; padding-left:20px} li{margin:3px 0}
+  code{background:#eef2f8; padding:1px 6px; border-radius:5px; font-size:13px}
+  .note{background:#fff8df; border:1px solid #f0d488; border-radius:8px; padding:10px 12px; font-size:13.5px; margin:10px 0}
+  .foot{margin-top:26px; border-top:1px solid #DCE5F0; padding-top:10px; font-size:12px; color:#5B6B7F}
+  @media print{ body{margin:0} a{color:inherit;text-decoration:none} }
+</style></head><body>
+
+<h1>Panduan Penggunaan — Jelajah Nusantara</h1>
+<p class="sub">Gim Edukasi · IPS (Geografi) · Fase D · Kelas VII · Festival Biru Putih 2026</p>
+
+<h2>A. Identitas Karya</h2>
+<table>
+<tr><th>Judul</th><td>Jelajah Nusantara</td></tr>
+<tr><th>Kategori</th><td>Gim Edukasi</td></tr>
+<tr><th>Mata Pelajaran</th><td>Ilmu Pengetahuan Sosial (IPS) — Geografi</td></tr>
+<tr><th>Fase / Kelas</th><td>Fase D / Kelas VII</td></tr>
+<tr><th>Unit</th><td>Keberagaman kondisi geografis Indonesia</td></tr>
+<tr><th>Kreator</th><td>Tryas Sukmaning Sakti — Guru IPS SMPN 1 Karangbinangun, Lamongan</td></tr>
+</table>
+
+<h2>B. Deskripsi &amp; Tujuan Pembelajaran</h2>
+<p>Jelajah Nusantara adalah gim edukasi peta interaktif yang mengajak murid mengenal keberagaman kondisi geografis Indonesia sambil bermain. Setelah bermain, murid dapat:</p>
+<ul>
+<li>Mengenal letak pulau &amp; wilayah utama Indonesia.</li>
+<li>Menyebutkan kekhasan geografis &amp; sumber daya alam tiap wilayah.</li>
+<li>Menjelaskan keberagaman kondisi geografis Indonesia.</li>
+</ul>
+<h3>Kaitan Kurikulum (ATP IPS Fase D)</h3>
+<p><b>CP (Pemahaman Konsep):</b> menjelaskan keberagaman kondisi geografis Indonesia, konektivitas antarruang terhadap pemanfaatan &amp; pelestarian potensi sumber daya alam. <b>TP:</b> <i>Menjelaskan keberagaman kondisi geografis Indonesia.</i></p>
+
+<h2>C. Cara Menjalankan</h2>
+<ol>
+<li>Ekstrak berkas <code>.zip</code>. Pastikan folder <code>assets/</code> berada di samping <code>index.html</code>.</li>
+<li>Buka <code>index.html</code> di browser modern (Chrome/Firefox/Safari/Edge) — klik dua kali.</li>
+<li>Untuk <b>Mode Multiplayer</b> yang memakai kamera, jalankan lewat server lokal agar izin kamera aktif: buka Terminal di folder karya, jalankan <code>python3 -m http.server</code>, lalu buka <code>http://localhost:8000</code>. (Mode Single Player tidak butuh kamera.)</li>
+</ol>
+
+<h2>D. Cara Menggunakan</h2>
+<p>Di halaman depan tersedia <b>2 mode</b>:</p>
+<h3>🧭 Single Player</h3>
+<ol>
+<li><b>Misi 1 — Susun Peta:</b> seret nama pulau (Sumatra, Kalimantan, Jawa, Sulawesi, Papua) ke lokasinya di peta.</li>
+<li><b>Misi 2 — Kuis (10 soal acak dari bank 30 soal, komposisi seimbang):</b> Tebak Lokasi (klik pulau dari petunjuk), Pilihan Ganda, dan Benar/Salah — dengan timer &amp; kombo. Jawaban cepat &amp; beruntun memberi bonus poin.</li>
+<li><b>Hasil:</b> skor, akurasi, kombo terbaik, dan gelar.</li>
+</ol>
+<h3>⚔️ Multiplayer Elimination (permainan kelas dengan kamera)</h3>
+<ol>
+<li>Murid berbaris menghadap kamera (layar penuh di proyektor).</li>
+<li>Muncul pernyataan Benar/Salah. Dalam <b>10 detik</b> murid memilih sisi: <b>KIRI = BENAR</b> atau <b>KANAN = SALAH</b>.</li>
+<li>Setelah waktu habis, sisi benar menyala <b>hijau</b>, sisi salah <b>merah</b>. Murid di sisi salah tereliminasi.</li>
+<li>Lanjut hingga tersisa <b>1 pemenang</b>. Soal diambil acak dari bank 40 pernyataan.</li>
+</ol>
+
+<h2>E. Spesifikasi Teknis</h2>
+<table>
+<tr><th>Format</th><td>HTML5 (SPA), berjalan di browser modern, tanpa plugin pihak ketiga</td></tr>
+<tr><th>Berkas</th><td><code>index.html</code> (root) + folder <code>assets/</code></td></tr>
+<tr><th>Rasio / tampilan</th><td>Responsif; berjalan di laptop, tablet, dan smartphone</td></tr>
+<tr><th>Koneksi</th><td>Offline — tidak menaut URL eksternal (kamera memerlukan konteks aman: localhost/HTTPS)</td></tr>
+</table>
+
+<h2>F. Sumber &amp; Lisensi Aset</h2>
+<ul>
+<li><b>Peta Indonesia</b> (<code>assets/peta-indonesia.png</code>): dirender dari "Indonesia location map" — Wikimedia Commons (lisensi bebas). Lihat <code>assets/SUMBER-PETA.txt</code>.</li>
+<li><b>Gambar cover depan</b> (<code>assets/cover-depan.jpg</code>): <b>ilustrasi yang dibuat menggunakan AI</b>. Keterangan &amp; prompt disertakan pada dokumen <i>Keterangan Aset &amp; Prompting AI</i>.</li>
+<li>Elemen antarmuka (ikon, warna, efek) dibuat secara terprogram (kode) tanpa aset berhak cipta pihak ketiga.</li>
+</ul>
+<div class="note">Catatan: seluruh aset gambar telah dicantumkan sumber &amp; keterangannya sesuai ketentuan hak cipta Festival Biru Putih (termasuk keterangan "dibuat oleh AI").</div>
+
+<div class="foot">Dibuat oleh Tryas Sukmaning Sakti — Guru IPS SMPN 1 Karangbinangun, Lamongan · Festival Biru Putih 2026.</div>
+</body></html>

@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 380" width="720" height="380" preserveAspectRatio="none">
+<defs><linearGradient id="s" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#9fb3c4"/><stop offset="1" stop-color="#dbe6ef"/></linearGradient></defs>
+<rect width="720" height="380" fill="url(#s)"/>
+<g fill="#8a9aac" opacity=".8"><ellipse cx="180" cy="70" rx="70" ry="22"/><ellipse cx="250" cy="62" rx="50" ry="18"/><ellipse cx="520" cy="66" rx="60" ry="20"/></g>
+<!-- rumah tetangga -->
+<g><rect x="70" y="236" width="46" height="38" fill="#c9a48a"/><path d="M64,236 L93,212 L122,236 Z" fill="#6b4b2a"/></g>
+<g><rect x="600" y="240" width="46" height="34" fill="#b7a58f"/><path d="M594,240 L623,216 L652,240 Z" fill="#6b4b2a"/></g>
+<rect y="274" width="720" height="106" fill="#cbb884"/>
+<line x1="0" y1="274" x2="720" y2="274" stroke="#a9975e" stroke-width="2"/>
+</svg>

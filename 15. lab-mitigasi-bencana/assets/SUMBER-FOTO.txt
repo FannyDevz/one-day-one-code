@@ -1,0 +1,7 @@
+Foto thumbnail bencana (Wikimedia Commons, lisensi bebas — cantumkan atribusi di panduan.pdf):
+- gempa   : "Damage from the 2009 Padang earthquake. Indonesia 2009. Photo: AusAID"
+- tsunami : "Bencana Tsunami Palu.jpg"
+- gunung  : "Mount Merapi Eruption (5134675344).jpg"
+- banjir  : "Banjir Jakarta Perumahan di Tanjung Duren 1 Januari 2020.jpg"
+- kebakaran: "Central - South Kalimantan Rainforest & Fires, Indonesia (34680238435).jpg"
+Sumber: commons.wikimedia.org/wiki/Special:FilePath/<nama berkas>

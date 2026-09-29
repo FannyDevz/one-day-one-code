@@ -1,0 +1,702 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>Lab Mitigasi Bencana — Simulasi Multi-Bencana</title>
+<meta name="description" content="Laboratorium maya: simulasikan gempa, tsunami, gunung meletus, banjir, dan kebakaran hutan. Atur intensitas, terapkan mitigasi, dan bandingkan dampaknya. IPS Geografi Fase D Kelas VIII — Ring of Fire & SDGs." />
+<style>
+  :root{
+    --biru:#1B5FA8; --biru-tua:#154C86; --biru-muda:#E7F1FB;
+    --kuning:#FDC500; --putih:#fff; --tinta:#12233A; --abu:#5B6B7F; --garis:#DCE5F0;
+    --hijau:#2E9E5B; --hijau-muda:#e7f7ed; --oranye:#E8912A; --merah:#E0533D; --merah-muda:#fce9e5;
+    --r:16px; --shadow:0 6px 20px -8px rgba(18,35,58,.35);
+    --font:"Segoe UI",system-ui,-apple-system,Roboto,Arial,sans-serif;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;height:100%}
+  body{font-family:var(--font); color:var(--tinta); background:var(--putih); -webkit-font-smoothing:antialiased}
+  /* Full page: panggung memenuhi seluruh jendela */
+  #stage{width:100%; height:100dvh; background:var(--putih); overflow:hidden; display:flex; flex-direction:column; position:relative}
+  header{display:flex; align-items:center; gap:10px; padding:10px 16px; background:var(--biru); color:#fff; flex:none}
+  header .logo{font-weight:800; font-size:15px; display:flex; align-items:center; gap:8px}
+  header .logo .dot{width:22px;height:22px;border-radius:7px;background:var(--kuning);display:flex;align-items:center;justify-content:center}
+  header .spacer{flex:1}
+  .tag{font-size:12px;font-weight:600;background:rgba(255,255,255,.15);padding:5px 11px;border-radius:999px}
+  #btn-ganti{display:none;font:inherit;font-weight:700;font-size:12.5px;background:rgba(255,255,255,.15);color:#fff;border:none;border-radius:999px;padding:6px 12px;cursor:pointer}
+  .iconbtn{font-size:15px;line-height:1;cursor:pointer;color:#fff;background:rgba(255,255,255,.15);border:0;width:32px;height:32px;border-radius:999px;display:inline-flex;align-items:center;justify-content:center;transition:background .15s,transform .1s}
+  .iconbtn:hover{background:rgba(255,255,255,.28)} .iconbtn:active{transform:scale(.92)} .iconbtn.off{opacity:.6}
+  .pill-quit{display:none;font:inherit;font-weight:700;font-size:12.5px;background:#e23b2e;color:#fff;border:none;border-radius:999px;padding:6px 12px;cursor:pointer;transition:background .15s,transform .1s}
+  .pill-quit:hover{background:#c8261a} .pill-quit:active{transform:scale(.94)}
+  main{flex:1; min-height:0; overflow:auto; position:relative}
+  .view{display:none; padding:clamp(16px,3vw,30px)} .view.active{display:block}
+  h1{font-size:clamp(24px,4.2vw,42px); margin:0 0 8px; color:var(--biru-tua); line-height:1.05}
+  h2{font-size:clamp(18px,2.5vw,24px); margin:0 0 6px; color:var(--biru-tua)}
+  h3{font-size:15px; margin:0 0 8px; color:var(--biru-tua)}
+  p.lead{color:var(--abu); font-size:clamp(14px,1.7vw,16px); max-width:66ch; margin:0 0 14px}
+  .muted{color:var(--abu)} .kbd{font-size:12px;color:var(--abu)}
+  .btn{font:inherit; font-weight:700; cursor:pointer; border:none; border-radius:12px; padding:12px 20px; font-size:15px; min-height:44px; transition:transform .1s,filter .15s}
+  .btn:active{transform:translateY(1px)} .btn[disabled]{opacity:.5;cursor:not-allowed}
+  .btn.primary{background:var(--kuning); color:#3a2e00} .btn.primary:hover{filter:brightness(1.05)}
+  .btn.ghost{background:var(--biru-muda); color:var(--biru-tua)}
+  .btn.danger{background:var(--merah); color:#fff}
+  .row{display:flex; gap:10px; flex-wrap:wrap; align-items:center}
+  .home-hero{display:grid; grid-template-columns:1.05fr .95fr; gap:24px; align-items:center} @media (max-width:760px){ .home-hero{grid-template-columns:1fr} }
+  .card{background:#fff; border:1px solid var(--garis); border-radius:14px; padding:16px; box-shadow:var(--shadow)}
+  .center{text-align:center}
+  /* pemilih bencana */
+  .dis-grid{display:grid; grid-template-columns:repeat(auto-fit,minmax(180px,1fr)); gap:14px; margin-top:8px}
+  .dis-card{border:2px solid var(--garis); border-radius:16px; padding:18px; cursor:pointer; text-align:center; transition:.12s; background:#fff}
+  .dis-card:hover{border-color:var(--biru); transform:translateY(-3px); box-shadow:var(--shadow)}
+  .dis-card{padding:12px}
+  .dis-card .thumb{height:96px;border-radius:12px;overflow:hidden;margin-bottom:8px;background:#dbe9f6}
+  .dis-card .thumb img{width:100%;height:100%;object-fit:cover;display:block}
+  .dis-card b{display:block;color:var(--biru-tua);font-size:16px}
+  .dis-card .d{font-size:12.5px;color:var(--abu);margin-top:4px}
+  /* cover landing */
+  /* Beranda: background gambar full page */
+  #v-home{padding:0}
+  #v-home.active{display:flex; flex-direction:column; height:100%}
+  .lab-cover{flex:1; min-height:0; width:100%; background:#2b6fbc url('assets/cover-depan.jpg') center/cover no-repeat; display:flex; align-items:flex-end; justify-content:center; position:relative}
+  .lab-cover::before{content:""; position:absolute; inset:0; background:linear-gradient(transparent 58%, rgba(9,22,40,.62)); pointer-events:none}
+  .lab-cover-actions{position:relative; z-index:1; display:flex; gap:12px; flex-wrap:wrap; justify-content:center; padding:0 16px clamp(24px,5vh,48px)}
+  .btn.big{font-size:16px; padding:15px 26px; border-radius:14px; box-shadow:0 8px 22px -6px rgba(0,0,0,.55)}
+  .btn.ghost.big{background:rgba(255,255,255,.92)}
+  /* progres langkah */
+  .stepbar{display:flex; gap:8px; margin-bottom:14px; flex-wrap:wrap}
+  .stepbar .s{flex:1; min-width:120px; background:var(--biru-muda); border-radius:10px; padding:8px 12px; font-size:13px; font-weight:700; color:var(--abu); display:flex; align-items:center; gap:8px; cursor:pointer}
+  .stepbar .s .n{width:24px;height:24px;border-radius:50%;background:#cdd9e8;color:#fff;display:flex;align-items:center;justify-content:center;font-size:12px;flex:none}
+  .stepbar .s.active{background:var(--biru); color:#fff} .stepbar .s.active .n{background:var(--kuning); color:#3a2e00}
+  .stepbar .s.done .n{background:var(--hijau)}
+  .lab{display:grid; grid-template-columns:400px 1fr; gap:18px} @media (max-width:820px){ .lab{grid-template-columns:1fr} }
+  .field{margin-bottom:14px}
+  .field label{display:flex; justify-content:space-between; font-size:13px; font-weight:700; margin-bottom:6px}
+  .field label .val{color:var(--biru)}
+  input[type=range]{width:100%; height:36px; accent-color:var(--merah)}
+  .choices{display:grid; grid-template-columns:1fr; gap:8px}
+  .choice{display:flex; gap:10px; align-items:center; border:2px solid var(--garis); border-radius:11px; padding:10px 12px; cursor:pointer; font-size:14px; font-weight:600; min-height:44px}
+  .choice:hover{border-color:var(--biru)} .choice.sel{border-color:var(--biru); background:var(--biru-muda)}
+  .choice .ic{font-size:20px}
+  .stage-wrap{position:relative}
+  canvas#sim-cv{width:100%; aspect-ratio:720/380; height:auto; display:block; background:#eaf6ff; border:1px solid var(--garis); border-radius:12px}
+  /* Desktop: Lab mengisi tinggi layar, kanvas menyusut agar tombol Lanjut selalu terlihat (tanpa scroll) */
+  @media (min-width:821px){
+    #v-lab.active{display:flex; flex-direction:column; height:100%; overflow:hidden; padding:clamp(12px,2vw,22px)}
+    #v-lab .stepbar{flex:none; margin-bottom:10px}
+    #v-lab .lab{flex:1; min-height:0}
+    #v-lab #panel{overflow:auto}
+    #v-lab .stage-wrap{display:flex; flex-direction:column; min-height:0}
+    #v-lab canvas#sim-cv{flex:1; min-height:0; aspect-ratio:auto; height:auto}
+    #v-lab .badgebar, #v-lab .status{flex:none}
+    #v-lab .foot{flex:none; margin-top:12px}
+  }
+  .badgebar{display:flex; gap:10px; flex-wrap:wrap; margin-top:12px}
+  .stat{background:var(--biru-muda); border-radius:12px; padding:10px 14px; flex:1; min-width:130px}
+  .stat .k{font-size:12px;color:var(--abu);font-weight:700} .stat .v{font-size:20px;font-weight:800}
+  .status{padding:12px 14px; border-radius:12px; font-weight:700; margin-top:12px; display:none}
+  .status.show{display:block}
+  .s-aman{background:var(--hijau-muda); color:#1c6b3a} .s-ringan{background:#fff5e0; color:#8a5a00}
+  .s-berat{background:var(--merah-muda); color:#9c2f1c} .s-roboh{background:#f6d5cf; color:#7a1c0c}
+  .mitigasi{display:grid; grid-template-columns:1fr; gap:8px; margin-top:6px}
+  .mit{display:flex; gap:10px; align-items:flex-start; border:2px solid var(--garis); border-radius:11px; padding:10px 12px; cursor:pointer; font-size:13.5px}
+  .mit:hover{border-color:var(--hijau)} .mit.on{border-color:var(--hijau); background:var(--hijau-muda)}
+  .mit input{margin-top:3px; width:18px; height:18px; accent-color:var(--hijau)}
+  .compare{display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-top:12px} @media (max-width:600px){.compare{grid-template-columns:1fr}}
+  .cmp{border-radius:12px; padding:12px 14px} .cmp.before{background:var(--merah-muda)} .cmp.after{background:var(--hijau-muda)}
+  .cmp .lbl{font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:.4px} .cmp .big{font-size:26px;font-weight:800}
+  .qbox{max-width:760px} .opts{display:grid; gap:10px; margin-top:10px}
+  .opt{text-align:left; background:#fff; border:2px solid var(--garis); border-radius:12px; padding:12px 14px; font:inherit; font-size:15px; cursor:pointer; min-height:44px}
+  .opt:hover{border-color:var(--biru); background:var(--biru-muda)} .opt.correct{border-color:var(--hijau); background:var(--hijau-muda)} .opt.wrong{border-color:var(--merah); background:var(--merah-muda)}
+  .feedback{margin-top:12px;padding:12px 14px;border-radius:12px;font-size:14px;display:none} .feedback.show{display:block}
+  .feedback.ok{background:var(--hijau-muda);color:#1c6b3a} .feedback.no{background:var(--merah-muda);color:#9c2f1c}
+  .foot{display:flex;justify-content:space-between;gap:10px;margin-top:16px;flex-wrap:wrap}
+  .about{font-size:12px;color:var(--abu);border-top:1px solid var(--garis);margin-top:20px;padding-top:12px;line-height:1.6}
+  /* modal tujuan pembelajaran */
+  .modal-ov{position:absolute; inset:0; background:rgba(18,35,58,.55); display:none; align-items:center; justify-content:center; padding:20px; z-index:100}
+  .modal-ov.show{display:flex}
+  .modal{background:#fff; border-radius:16px; max-width:480px; width:100%; padding:24px; box-shadow:var(--shadow); position:relative; animation:pop .18s ease-out}
+  @keyframes pop{from{transform:scale(.96); opacity:.4}to{transform:scale(1); opacity:1}}
+  .modal h3{font-size:19px; margin:0 0 10px}
+  .modal ul{margin:8px 0 16px; padding-left:20px} .modal li{margin:6px 0; font-size:14.5px}
+  .modal-x{position:absolute; top:12px; right:12px; width:34px; height:34px; border:none; background:var(--biru-muda); color:var(--biru-tua); border-radius:9px; font-size:16px; font-weight:800; cursor:pointer}
+  .modal-x:hover{background:#d9e8fa}
+  .credit{flex:none; text-align:center; font-size:12px; color:var(--abu); padding:7px 12px; border-top:1px solid var(--garis); background:var(--biru-muda)}
+  .credit b{color:var(--biru-tua)}
+  @media (prefers-reduced-motion:reduce){*{transition:none!important; animation:none!important}}
+</style>
+</head>
+<body>
+<div id="stage">
+  <header>
+    <span class="logo"><span class="dot">🌐</span> Lab Mitigasi Bencana</span>
+    <span class="spacer"></span>
+    <button id="btn-ganti">↺ Ganti Bencana</button>
+    <button id="btn-bgm" class="iconbtn" title="Musik latar (nyala/mati)">🎵</button>
+    <button id="btn-keluar" class="pill-quit" title="Keluar ke beranda">✕ Keluar</button>
+    <span class="tag">IPS</span>
+  </header>
+  <main>
+    <!-- BERANDA: background gambar full-page -->
+    <section class="view active" id="v-home">
+      <div class="lab-cover">
+        <div class="lab-cover-actions">
+          <button class="btn primary big" id="btn-mulai">🌐 Mulai — Pilih Bencana</button>
+          <button class="btn primary big" id="btn-tujuan">🎯 Tujuan Pembelajaran</button>
+          <button class="btn ghost big" id="btn-cara">📖 Cara Bermain</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- PILIH JENIS BENCANA -->
+    <section class="view" id="v-pick">
+      <div class="row" style="justify-content:space-between;align-items:baseline">
+        <h2 style="margin:0">Pilih Jenis Bencana</h2>
+        <span class="kbd">IPS · Fase D · Kelas VIII</span>
+      </div>
+      <p class="lead">Uji dampak berbagai bencana, terapkan mitigasi, lalu bandingkan hasilnya.</p>
+      <div class="dis-grid" id="dis-grid"></div>
+      <div class="row" style="margin-top:8px"><button class="btn ghost" id="pick-back">◀ Kembali</button></div>
+    </section>
+
+    <!-- LAB -->
+    <section class="view" id="v-lab">
+      <div class="stepbar" id="stepbar">
+        <div class="s active" data-step="0"><span class="n">1</span> Pilih objek &amp; kondisi</div>
+        <div class="s" data-step="1"><span class="n">2</span> Atur intensitas &amp; jalankan</div>
+        <div class="s" data-step="2"><span class="n">3</span> Terapkan mitigasi</div>
+        <div class="s" data-step="3"><span class="n">4</span> Penerapan &amp; ringkasan</div>
+      </div>
+      <div class="lab">
+        <div class="card" id="panel"></div>
+        <div class="stage-wrap">
+          <canvas id="sim-cv" width="720" height="380"></canvas>
+          <div class="badgebar">
+            <div class="stat"><div class="k" id="int-k">Intensitas</div><div class="v" id="st-int">–</div></div>
+            <div class="stat"><div class="k">Dampak</div><div class="v" id="st-dmg">–</div></div>
+          </div>
+          <div class="status" id="status"></div>
+        </div>
+      </div>
+      <div class="foot">
+        <button class="btn ghost" id="btn-back">◀ Kembali</button>
+        <button class="btn primary" id="btn-fwd" disabled>Lanjut ▶</button>
+      </div>
+    </section>
+  </main>
+
+  <!-- Modal Tujuan Pembelajaran -->
+  <div class="modal-ov" id="modal" aria-hidden="true">
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+      <button class="modal-x" id="modal-x" aria-label="Tutup">✕</button>
+      <h3 id="modal-title">🎯 Tujuan Pembelajaran</h3>
+      <p class="muted" style="font-size:14px;margin:0 0 6px">Setelah menggunakan Lab Mitigasi Bencana, murid dapat:</p>
+      <ul>
+        <li>Menjelaskan potensi berbagai bencana di Indonesia dan penyebabnya.</li>
+        <li>Memprediksi dampak bencana terhadap bangunan dan masyarakat.</li>
+        <li>Mengevaluasi efektivitas upaya mitigasi melalui perbandingan.</li>
+        <li>Merefleksikan langkah mitigasi untuk lingkungan yang aman &amp; berkelanjutan (SDGs 11 &amp; 13).</li>
+      </ul>
+      <button class="btn primary" id="modal-ok">Mengerti</button>
+    </div>
+  </div>
+
+  <!-- Modal Cara Bermain -->
+  <div class="modal-ov" id="modal-cara" aria-hidden="true">
+    <div class="modal" role="dialog" aria-modal="true">
+      <button class="modal-x" id="cara-x" aria-label="Tutup">✕</button>
+      <h3>📖 Cara Bermain</h3>
+      <ul>
+        <li><b>Pilih bencana</b> di halaman depan (gempa, tsunami, gunung meletus, banjir, kebakaran).</li>
+        <li><b>Langkah 1</b> — pilih objek &amp; kondisi (mis. jenis bangunan &amp; tanah).</li>
+        <li><b>Langkah 2</b> — atur intensitas lalu tekan <b>Jalankan Simulasi</b> dan amati dampaknya.</li>
+        <li><b>Langkah 3</b> — centang upaya <b>mitigasi</b>, uji ulang, dan bandingkan hasilnya.</li>
+        <li><b>Langkah 4</b> — jawab pertanyaan penerapan &amp; refleksi.</li>
+      </ul>
+      <button class="btn primary" id="cara-ok">Siap</button>
+    </div>
+  </div>
+
+  <footer class="credit">Dibuat oleh <b>Tryas Sukmaning Sakti</b> — Guru IPS SMPN 1 Karangbinangun, Lamongan</footer>
+</div>
+<script src="assets/soal.js"></script>
+
+<script>
+"use strict";
+(function(){
+  var $=function(id){return document.getElementById(id);};
+
+  // ---------- Audio (efek suara + musik latar) — nuansa berbeda dari Jelajah ----------
+  var actx=null;
+  function ac(){ if(!actx) actx=new (window.AudioContext||window.webkitAudioContext)(); return actx; }
+  // nada tunggal dengan envelope
+  function tone(freq,dur,vol,type,dest){ try{ var a=ac(); var o=a.createOscillator(),g=a.createGain(); o.type=type||"sine"; o.frequency.value=freq; o.connect(g); g.connect(dest||a.destination); var t=a.currentTime; g.gain.setValueAtTime(.0001,t); g.gain.exponentialRampToValueAtTime(vol,t+.02); g.gain.exponentialRampToValueAtTime(.0001,t+dur); o.start(t); o.stop(t+dur+.02);}catch(e){} }
+  // derau tersaring untuk gemuruh/getaran bencana
+  function rumble(dur,vol,cut){ try{ var a=ac(); var n=a.createBufferSource(); var buf=a.createBuffer(1,a.sampleRate*dur,a.sampleRate); var d=buf.getChannelData(0); for(var i=0;i<d.length;i++) d[i]=(Math.random()*2-1); n.buffer=buf; var f=a.createBiquadFilter(); f.type="lowpass"; f.frequency.value=cut||220; var g=a.createGain(); n.connect(f); f.connect(g); g.connect(a.destination); var t=a.currentTime; g.gain.setValueAtTime(.0001,t); g.gain.exponentialRampToValueAtTime(vol,t+.05); g.gain.exponentialRampToValueAtTime(.0001,t+dur); n.start(t); n.stop(t+dur);}catch(e){} }
+  // efek suara laboratorium
+  var sfxClick =function(){ tone(320,.06,.14,"square"); };
+  var sfxStep  =function(){ tone(440,.08,.12,"triangle"); setTimeout(function(){tone(587,.1,.12,"triangle");},70); };
+  var sfxRun   =function(){ rumble(1.1,.28,180); tone(70,.9,.14,"sawtooth"); };          // jalankan simulasi: gemuruh
+  var sfxOk    =function(){ tone(523,.12,.16,"sine"); setTimeout(function(){tone(784,.16,.16,"sine");},110); };
+  var sfxNo    =function(){ tone(196,.22,.16,"sawtooth"); };
+  var sfxDone  =function(){ tone(523,.12,.16,"sine"); setTimeout(function(){tone(659,.12,.16,"sine");},120); setTimeout(function(){tone(880,.22,.16,"sine");},240); };
+
+  // Musik latar: pad minor rendah & tenang (Am–F–Dm–E) — atmosfer lab/siaga, beda dari Jelajah
+  var bgm={ on:false, timer:null, step:0, master:null, enabled:true };
+  function bgmChord(freqs,dur,vol){ try{ var a=ac(); if(!bgm.master){ bgm.master=a.createGain(); bgm.master.gain.value=.5; var lp=a.createBiquadFilter(); lp.type="lowpass"; lp.frequency.value=900; bgm.master.connect(lp); lp.connect(a.destination); } freqs.forEach(function(f){ tone(f,dur,vol,"sine",bgm.master); }); }catch(e){} }
+  var BGM_PAD=[ [220.00,261.63,329.63],  // Am
+                [174.61,220.00,349.23],  // F
+                [146.83,220.00,349.23],  // Dm
+                [164.81,207.65,329.63] ];// E
+  function bgmTick(){ var c=BGM_PAD[bgm.step%BGM_PAD.length]; bgmChord(c,2.6,.05); bgmChord([c[0]/2],2.8,.045); bgm.step++; }
+  function bgmUpdateBtn(){ var b=$("btn-bgm"); if(!b)return; b.textContent=bgm.on?"🎵":"🔇"; b.classList.toggle("off",!bgm.on); b.title=bgm.on?"Musik latar: nyala (klik untuk mematikan)":"Musik latar: mati (klik untuk menyalakan)"; }
+  function bgmStart(){ if(bgm.on||!bgm.enabled)return; try{ var a=ac(); if(a.resume) a.resume(); }catch(e){} bgm.on=true; bgmTick(); bgm.timer=setInterval(bgmTick,2600); bgmUpdateBtn(); }
+  function bgmStop(){ bgm.on=false; if(bgm.timer){ clearInterval(bgm.timer); bgm.timer=null; } bgmUpdateBtn(); }
+  function bgmToggle(){ if(bgm.on){ bgm.enabled=false; bgmStop(); } else { bgm.enabled=true; bgmStart(); } }
+  var bgmKick=function(){ bgmStart(); document.removeEventListener("pointerdown",bgmKick); };
+  document.addEventListener("pointerdown",bgmKick);
+
+  function fontF(){ return getComputedStyle(document.body).fontFamily; }
+  function clamp01(x){ return Math.max(0,Math.min(1,x)); }
+  function roundRect(g,x,y,w,h,r){ if(w<0)w=0; r=Math.min(r,w/2,h/2); g.beginPath(); g.moveTo(x+r,y); g.arcTo(x+w,y,x+w,y+h,r); g.arcTo(x+w,y+h,x,y+h,r); g.arcTo(x,y+h,x,y,r); g.arcTo(x,y,x+w,y,r); g.closePath(); }
+  function emoji(g,ch,x,y,px){ g.save(); g.textAlign="center"; g.textBaseline="alphabetic"; g.font=px+"px "+fontF(); g.fillText(ch,x,y); g.restore(); }
+  function rnd(seed){ var x=Math.sin(seed*99.13)*43758.5; return x-Math.floor(x); }
+
+  // ===================== KONFIG BENCANA =====================
+  // Tiap bencana: obj (ketahanan/res), env (amplifikasi/amp), intensity{...},
+  // p (kelengkungan), mits[], tiers[4]{k,t}, draw(), q[]
+  var TIER_C=["s-aman","s-ringan","s-berat","s-roboh"];
+  var DIS={
+    gempa:{ nama:"Gempa Bumi", em:"🌍",
+      objLabel:"Jenis bangunan", envLabel:"Jenis tanah",
+      obj:{ kayu:{n:"Rumah Kayu",ic:"🛖",res:.55}, bata:{n:"Rumah Bata (tanpa tulangan)",ic:"🧱",res:.75}, beton:{n:"Beton Bertulang",ic:"🏢",res:1.15} },
+      env:{ keras:{n:"Tanah Keras (batuan)",ic:"⛰️",amp:.85}, sedang:{n:"Tanah Sedang",ic:"🌾",amp:1.0}, lunak:{n:"Tanah Lunak (aluvial)",ic:"💧",amp:1.35} },
+      intensity:{label:"Magnitudo",min:4,max:9,step:.1,def:6,unit:" M"}, p:1.15,
+      mits:[{id:"struktur",n:"Struktur tahan gempa (tulangan/ikatan)",eff:.30,ic:"🏗️"},{id:"fondasi",n:"Fondasi kuat & sesuai tanah",eff:.18,ic:"🧰"},{id:"ringan",n:"Atap & material ringan",eff:.12,ic:"🪶"},{id:"evakuasi",n:"Jalur evakuasi & rambu",eff:0,ic:"🚸",jiwa:true}],
+      tiers:[{k:"Aman",t:"Bangunan bertahan baik, kerusakan minimal."},{k:"Rusak Ringan",t:"Retak kecil, masih dapat dihuni setelah perbaikan."},{k:"Rusak Berat",t:"Kerusakan struktur signifikan, berbahaya dihuni."},{k:"Roboh",t:"Bangunan runtuh, risiko korban jiwa tinggi."}],
+      q:[]
+    },
+    tsunami:{ nama:"Tsunami", em:"🌊",
+      objLabel:"Jarak dari pantai", envLabel:"Pelindung pantai",
+      obj:{ jauh:{n:"Jauh dari pantai (>2 km)",ic:"🏙️",res:1.4}, sedang:{n:"Agak dekat (±1 km)",ic:"🏠",res:.95}, dekat:{n:"Tepat di tepi pantai",ic:"🏖️",res:.5} },
+      env:{ bukit:{n:"Ada bukit pelindung",ic:"⛰️",amp:.8}, terbuka:{n:"Pantai terbuka",ic:"🌊",amp:1.2}, mangrove:{n:"Hutan mangrove alami",ic:"🌿",amp:.7} },
+      intensity:{label:"Tinggi gelombang",min:1,max:20,step:.5,def:6,unit:" m"}, p:1.05,
+      mits:[{id:"tembok",n:"Tembok laut / pemecah ombak",eff:.22,ic:"🧱"},{id:"mangrove",n:"Tanam hutan mangrove",eff:.20,ic:"🌿"},{id:"evakuasi",n:"Jalur & bukit evakuasi",eff:0,ic:"🚸",jiwa:true},{id:"ews",n:"Sistem peringatan dini (EWS)",eff:.05,ic:"📡",jiwa:true}],
+      tiers:[{k:"Aman",t:"Air tidak mencapai pemukiman."},{k:"Terdampak",t:"Genangan air laut, kerusakan ringan."},{k:"Rusak",t:"Bangunan rusak berat oleh gelombang."},{k:"Tersapu",t:"Bangunan hancur tersapu tsunami."}],
+      q:[]
+    },
+    gunung:{ nama:"Gunung Meletus", em:"🌋",
+      objLabel:"Jarak dari puncak (KRB)", envLabel:"Arah angin (abu)",
+      obj:{ krb1:{n:"KRB I (jauh)",ic:"🏙️",res:1.4}, krb2:{n:"KRB II (sedang)",ic:"🏠",res:.9}, krb3:{n:"KRB III (dekat puncak)",ic:"⛺",res:.5} },
+      env:{ menjauh:{n:"Angin menjauh dari pemukiman",ic:"💨",amp:.8}, netral:{n:"Angin tenang",ic:"🍃",amp:1.0}, kearah:{n:"Angin ke arah pemukiman",ic:"🌬️",amp:1.25} },
+      intensity:{label:"Skala letusan (VEI)",min:1,max:8,step:1,def:4,unit:""}, p:1.2,
+      mits:[{id:"evakuasi",n:"Jalur & posko evakuasi",eff:0,ic:"🚸",jiwa:true},{id:"tahanabu",n:"Rumah tahan abu (atap miring/kuat)",eff:.18,ic:"🏠"},{id:"ews",n:"Pemantauan & peringatan dini",eff:.05,ic:"📡",jiwa:true},{id:"bunker",n:"Bunker perlindungan",eff:.12,ic:"🛡️"}],
+      tiers:[{k:"Aman",t:"Hanya sedikit terdampak abu."},{k:"Hujan Abu",t:"Abu vulkanik menutup area, ganggu pernapasan & atap."},{k:"Terdampak",t:"Terkena material vulkanik, kerusakan berat."},{k:"Zona Bahaya",t:"Terjangan awan panas/lava, sangat mematikan."}],
+      q:[]
+    },
+    banjir:{ nama:"Banjir", em:"💧",
+      objLabel:"Jenis hunian", envLabel:"Lokasi & drainase",
+      obj:{ panggung:{n:"Rumah panggung",ic:"🛖",res:1.4}, tembok:{n:"Rumah tembok biasa",ic:"🏠",res:.9}, sederhana:{n:"Rumah sederhana rendah",ic:"🏚️",res:.6} },
+      env:{ tinggi:{n:"Dataran tinggi, drainase baik",ic:"⛰️",amp:.6}, sedang:{n:"Dataran sedang",ic:"🌾",amp:1.0}, rendah:{n:"Dataran rendah, drainase buruk",ic:"🏞️",amp:1.4} },
+      intensity:{label:"Curah hujan / tinggi air",min:0,max:100,step:5,def:50,unit:" cm"}, p:1.0,
+      mits:[{id:"tanggul",n:"Tanggul & normalisasi sungai",eff:.25,ic:"🧱"},{id:"biopori",n:"Drainase, biopori & sumur resapan",eff:.18,ic:"🕳️"},{id:"panggung",n:"Rumah panggung / tinggikan lantai",eff:.15,ic:"🏗️"},{id:"evakuasi",n:"Peringatan dini & jalur evakuasi",eff:0,ic:"🚸",jiwa:true}],
+      tiers:[{k:"Aman",t:"Air tidak masuk rumah."},{k:"Tergenang",t:"Genangan rendah, aktivitas terganggu."},{k:"Banjir",t:"Air masuk rumah, kerusakan & mengungsi."},{k:"Banjir Besar",t:"Air tinggi, rumah terendam, bahaya jiwa."}],
+      q:[]
+    },
+    kebakaran:{ nama:"Kebakaran Hutan", em:"🔥",
+      objLabel:"Jenis lahan", envLabel:"Musim & angin",
+      obj:{ basah:{n:"Hutan basah / rapat",ic:"🌳",res:1.3}, kering:{n:"Hutan kering",ic:"🌲",res:.7}, gambut:{n:"Lahan gambut",ic:"🟫",res:.5} },
+      env:{ hujan:{n:"Musim hujan, lembap",ic:"🌧️",amp:.6}, sedang:{n:"Peralihan",ic:"⛅",amp:1.0}, kemarau:{n:"Kemarau & angin kencang",ic:"🌬️",amp:1.4} },
+      intensity:{label:"Tingkat kekeringan & pemicu",min:0,max:100,step:5,def:50,unit:"%"}, p:1.1,
+      mits:[{id:"sekat",n:"Sekat bakar (fire break)",eff:.25,ic:"🚧"},{id:"patroli",n:"Patroli & pemadaman dini",eff:.20,ic:"🚒"},{id:"larangan",n:"Larangan buka lahan dengan bakar",eff:.18,ic:"🚫"},{id:"menara",n:"Menara pantau & deteksi dini",eff:.05,ic:"🗼",jiwa:true}],
+      tiers:[{k:"Aman",t:"Tidak ada api berarti."},{k:"Titik Api",t:"Muncul titik api kecil, bisa dipadamkan."},{k:"Kebakaran",t:"Api menyebar, asap pekat mengganggu."},{k:"Kebakaran Besar",t:"Api meluas tak terkendali, kabut asap parah."}],
+      q:[]
+    }
+  };
+  var DIS_ORDER=["gempa","tsunami","gunung","banjir","kebakaran"];
+  // latar ilustrasi (bundled lokal di assets/)
+  DIS.gempa.bg="bg-gempa.svg"; DIS.tsunami.bg="bg-tsunami.svg"; DIS.gunung.bg="bg-gunung.svg"; DIS.banjir.bg="bg-banjir.svg"; DIS.kebakaran.bg="bg-kebakaran.svg";
+  // thumbnail foto asli (Wikimedia Commons) untuk kartu pemilih
+  DIS.gempa.thumb="thumb-gempa.jpg"; DIS.tsunami.thumb="thumb-tsunami.jpg"; DIS.gunung.thumb="thumb-gunung.jpg"; DIS.banjir.thumb="thumb-banjir.jpg"; DIS.kebakaran.thumb="thumb-kebakaran.jpg";
+  // Muat soal penerapan dari assets/soal.js (window.SOAL_LAB) ke tiap bencana
+  DIS_ORDER.forEach(function(id){ var S=window.SOAL_LAB && window.SOAL_LAB[id]; if(S){ DIS[id].q = S.map(function(x){ var a=(x.opsi||[]).indexOf(x.jawaban); return {q:x.pertanyaan, opt:x.opsi||[], a:a<0?0:a, e:x.penjelasan||""}; }); } });
+  var BG={};
+  function preloadBG(){ DIS_ORDER.forEach(function(id){ var im=new Image(); im.onload=function(){ if(state.dis===id && $("v-lab").classList.contains("active")) draw(state.dmgAfter!=null?state.dmgAfter:(state.dmgBefore||0),1); }; im.src="assets/"+DIS[id].bg; BG[id]=im; }); }
+  function drawBg(g,w,h){ var im=BG[state.dis]; if(im && im.complete && im.naturalWidth){ g.drawImage(im,0,0,w,h); } else { sky(g,w,h,"#bfe3fb","#eaf6ff"); ground(g,w,h,"#cfe3b0","#a9c78a"); } }
+
+  // ===================== STATE =====================
+  var state={ dis:null, obj:null, env:null, intensity:0, step:0, dmgBefore:null, dmgAfter:null, mits:{} };
+
+  function damageOf(mitEff){
+    var c=DIS[state.dis]; var n=(state.intensity-c.intensity.min)/(c.intensity.max-c.intensity.min);
+    // dampak dasar (tanpa mitigasi) dibatasi 0..1 dulu, baru mitigasi diterapkan
+    // sebagai pengurang — sehingga mitigasi SELALU terlihat menurunkan dampak,
+    // bahkan pada kejadian parah (pesan pembelajaran: mitigasi tetap bermanfaat).
+    var base=clamp01(Math.pow(Math.max(0,n),c.p) * c.env[state.env].amp / c.obj[state.obj].res);
+    return clamp01(base*(1-mitEff));
+  }
+  function mitEffTotal(){ var c=DIS[state.dis], e=0; c.mits.forEach(function(m){ if(state.mits[m.id]) e+=m.eff; }); return Math.min(.6,e); }
+  function tierOf(d){ var c=DIS[state.dis]; var i = d<.2?0 : d<.45?1 : d<.75?2 : 3; return {k:c.tiers[i].k, t:c.tiers[i].t, c:TIER_C[i]}; }
+
+  // ===================== CANVAS =====================
+  var cv=$("sim-cv"), ctx=cv.getContext("2d"), anim=null;
+  function fit(){ var ratio=window.devicePixelRatio||1, w=cv.clientWidth||720, h=cv.clientHeight||Math.round(w*380/720); cv.width=Math.round(w*ratio); cv.height=Math.round(h*ratio); var g=cv.getContext("2d"); g.setTransform(ratio,0,0,ratio,0,0); return {g:g,w:w,h:h}; }
+  function draw(dmg,prog){
+    var f=fit(), g=f.g, w=f.w, h=f.h; g.clearRect(0,0,w,h);
+    if(!state.dis || !state.obj || !state.env){ drawBg(g,w,h); g.fillStyle="rgba(255,255,255,.85)"; roundRect(g,w/2-170,h/2-22,340,44,10); g.fill(); g.fillStyle="#5b6b82"; g.textAlign="center"; g.font="14px "+fontF(); g.fillText("Pilih objek & kondisi untuk memulai",w/2,h/2+5); g.textAlign="left"; return; }
+    drawBg(g,w,h);
+    DRAW[state.dis](g,w,h,dmg,prog==null?1:prog);
+  }
+  var DRAW={
+    gempa:function(g,w,h,dmg,prog){
+      var gy=h*0.72;
+      // lapisan tanah sesuai jenis
+      var soil = state.env==="keras"?"#b7ad9b" : state.env==="lunak"?"#b6c2cf" : "#cbb489";
+      g.fillStyle=soil; g.fillRect(0,gy,w,10);
+      if(state.env==="keras"){ g.fillStyle="#9c917d"; for(var rr=0;rr<9;rr++){ g.fillRect((rr*84)%w,gy+2,10,5);} }
+      if(state.env==="lunak"){ g.fillStyle="rgba(110,150,185,.45)"; g.fillRect(0,gy,w,10);} 
+      var sh=Math.sin(prog*40)*(1-prog)*(4+state.intensity)*dmg*0.6;
+      var b=state.obj;
+      var bw = b==="beton"?Math.min(120,w*.2):Math.min(130,w*.24);
+      var bh = b==="beton"?Math.min(180,h*.5):Math.min(120,h*.34);
+      var bx=w/2-bw/2+sh, by=gy-bh, tilt=dmg>=.75?Math.sin(prog*20)*.12*(1-prog)+.08:0;
+      g.save(); g.translate(bx+bw/2,by+bh); g.rotate(tilt); g.translate(-(bx+bw/2),-(by+bh));
+      if(b==="kayu"){
+        g.fillStyle="#b07a3a"; roundRect(g,bx,by,bw,bh,5); g.fill();
+        g.strokeStyle="rgba(90,60,25,.5)"; g.lineWidth=1.5; for(var i=1;i<5;i++){ g.beginPath(); g.moveTo(bx,by+bh*i/5); g.lineTo(bx+bw,by+bh*i/5); g.stroke(); }
+        g.fillStyle="#7a4f22"; g.beginPath(); g.moveTo(bx-8,by); g.lineTo(bx+bw/2,by-26); g.lineTo(bx+bw+8,by); g.closePath(); g.fill();
+      } else if(b==="bata"){
+        g.fillStyle="#b5563f"; roundRect(g,bx,by,bw,bh,4); g.fill();
+        g.strokeStyle="rgba(255,255,255,.35)"; g.lineWidth=1;
+        for(var ry=0;ry<bh;ry+=10){ g.beginPath(); g.moveTo(bx,by+ry); g.lineTo(bx+bw,by+ry); g.stroke(); var off=((ry/10)%2)?bw*.5:0; for(var rx=off;rx<bw;rx+=bw*.25){ g.beginPath(); g.moveTo(bx+rx,by+ry); g.lineTo(bx+rx,by+ry+10); g.stroke(); } }
+        g.fillStyle="#7a3a2a"; g.beginPath(); g.moveTo(bx-6,by); g.lineTo(bx+bw/2,by-22); g.lineTo(bx+bw+6,by); g.closePath(); g.fill();
+      } else {
+        g.fillStyle="#9aa7b4"; roundRect(g,bx,by,bw,bh,4); g.fill();
+        g.fillStyle="#7f8b98"; g.fillRect(bx,by+bh*.5-2,bw,4);
+        g.fillStyle="rgba(255,255,255,.85)"; for(var fy=0;fy<2;fy++){ for(var fx=0;fx<2;fx++){ g.fillRect(bx+bw*(.18+fx*.42),by+bh*(.12+fy*.5),bw*.24,bh*.2);} }
+        g.fillStyle="#cfd6dd"; g.fillRect(bx,by-6,bw,6);
+      }
+      g.fillStyle="#3a2e1a"; g.fillRect(bx+bw*.42,by+bh-bh*.32,bw*.16,bh*.32);
+      if(dmg>.2){ g.save(); roundRect(g,bx,by,bw,bh,4); g.clip();
+        g.strokeStyle="rgba(35,28,24,.55)"; g.lineCap="round"; var cr=Math.round(2+dmg*5);
+        for(var c=0;c<cr;c++){ var xx=bx+bw*(.12+.76*rnd(c)), yy=by+bh*(.04+.18*rnd(c*3));
+          g.lineWidth=1+rnd(c*5)*1.4; g.beginPath(); g.moveTo(xx,yy);
+          var steps=6+Math.round(dmg*3);
+          for(var s=0;s<steps;s++){ yy+=bh*(0.72/steps); xx+=(rnd(c*11+s)-.5)*bw*0.16; g.lineTo(xx,yy);
+            if(s===2 && rnd(c*3)>.5){ var bxr=xx+(rnd(c)-.5)*bw*.22, byr=yy+bh*.13; g.lineTo(bxr,byr); g.moveTo(xx,yy); } }
+          g.stroke();
+        }
+        g.restore();
+      }
+      if(dmg>=.75){ g.fillStyle="rgba(90,90,90,.5)"; g.fillRect(bx-10,gy-14,bw+20,14); }
+      g.restore();
+      g.fillStyle="#5b5040"; g.font="12px "+fontF(); g.textAlign="right"; g.fillText(DIS.gempa.env[state.env].n,w-10,gy+22); g.textAlign="left";
+      if(state.mits.evakuasi){ g.fillStyle="#2E9E5B"; g.font="bold 13px "+fontF(); g.fillText("🚸 Jalur evakuasi",12,gy+22); }
+    },
+    tsunami:function(g,w,h,dmg,prog){
+      var gy=h*0.72, shoreX=w*0.30;
+      // bukit pelindung (env) di daratan kanan
+      if(state.env==="bukit"){ g.fillStyle="#7fbf7a"; g.beginPath(); g.moveTo(w*.62,gy); g.quadraticCurveTo(w*.84,gy-88,w,gy-34); g.lineTo(w,gy); g.closePath(); g.fill(); }
+      var pos=state.obj==="dekat"?.46:state.obj==="sedang"?.64:.83;
+      var bw=64,bh=58, hx=w*pos, by=gy-bh;
+      // LAUT dari KIRI; air maju ke kanan (inundasi). Jangkauan dikaitkan ke POSISI
+      // rumah: air baru mencapai/menerjang rumah bila rumah memang terdampak (dmg>0),
+      // dan berhenti tepat di depan rumah bila aman — agar air & dampak selalu selaras.
+      // pDist = seberapa jauh rumah dari pantai (0..1). Air mencapai rumah TEPAT saat
+      // dampak menembus ambang "Aman" (0.2): di bawah itu air berhenti sebelum rumah
+      // (Status: Aman — air tidak mencapai), di atasnya air menerjang/melewati rumah.
+      var pDist=(pos-0.30)/0.70;
+      var reach=Math.max(0, Math.min(1, pDist + (dmg-0.2)*1.25));
+      var front = shoreX + reach*prog*(w-shoreX);
+      var wg=g.createLinearGradient(0,gy-6,0,h); wg.addColorStop(0,"rgba(86,170,218,.92)"); wg.addColorStop(1,"rgba(40,110,170,.96)");
+      g.fillStyle=wg; g.beginPath(); g.moveTo(0,gy);
+      for(var xx=0;xx<=front;xx+=14){ g.lineTo(xx, gy+Math.sin(xx*.06+prog*9)*2.5); }
+      g.lineTo(front,h); g.lineTo(0,h); g.closePath(); g.fill();
+      // riak
+      g.strokeStyle="rgba(255,255,255,.15)"; for(var ry=gy+16;ry<h;ry+=22){ g.beginPath(); g.moveTo(0,ry); g.lineTo(front,ry); g.stroke(); }
+      // buih di garis air/front
+      g.strokeStyle="rgba(255,255,255,.75)"; g.lineWidth=2; g.beginPath(); for(var sx=0;sx<=front;sx+=12){ var sy=gy+Math.sin(sx*.06+prog*9)*2.5; if(sx===0)g.moveTo(sx,sy); else g.lineTo(sx,sy);} g.stroke();
+      // puing mengapung
+      if(dmg>=.6){ g.fillStyle="#8a6a44"; for(var d=0;d<4;d++){ var dxp=(d*150+prog*50)%Math.max(60,front); g.save(); g.translate(dxp,gy+8+d*3); g.rotate((d%2?1:-1)*.3); g.fillRect(0,0,20,6); g.restore(); } }
+      // GELOMBANG (bore) di depan air saat menyerbu
+      var waveAmt=Math.sin(Math.min(1,prog)*Math.PI);
+      if(waveAmt>0.05 && front>shoreX+2){ var wx=front, wh=(18+state.intensity*6)*waveAmt;
+        g.fillStyle="#2E7CC2"; g.beginPath(); g.moveTo(wx-72,gy); g.quadraticCurveTo(wx-40,gy-wh*1.5, wx,gy-wh*.3); g.quadraticCurveTo(wx+14,gy, wx+24,gy); g.closePath(); g.fill();
+        g.fillStyle="rgba(255,255,255,.92)"; g.beginPath(); g.arc(wx-8,gy-wh*.7,6,0,7); g.fill(); g.beginPath(); g.arc(wx-24,gy-wh*.45,5,0,7); g.fill(); g.beginPath(); g.arc(wx+2,gy-wh*.25,4,0,7); g.fill(); }
+      // RUMAH (utuh/rusak/roboh)
+      drawCoastHouse(g,hx,by,bw,bh,dmg);
+      // genangan di DEPAN bangunan: air terlihat merendam dasar rumah (kedalaman ∝ dampak)
+      if(front>hx-6){ var depth=8+dmg*prog*54, topF=gy-depth;
+        var fg=g.createLinearGradient(0,topF,0,h); fg.addColorStop(0,"rgba(96,175,220,.5)"); fg.addColorStop(1,"rgba(46,120,175,.55)");
+        g.fillStyle=fg; g.fillRect(0,topF,front,h-topF);
+        g.strokeStyle="rgba(255,255,255,.6)"; g.lineWidth=2; g.beginPath(); for(var fx2=0;fx2<=front;fx2+=12){ var fy2=topF+Math.sin(fx2*.06+prog*9)*2.2; if(fx2===0)g.moveTo(fx2,fy2); else g.lineTo(fx2,fy2);} g.stroke();
+      }
+      // mangrove di garis pantai (env)
+      if(state.env==="mangrove"){ for(var m=0;m<5;m++){ var mp=shoreX-16+m*22;
+          g.fillStyle="#256f3e"; g.beginPath(); g.arc(mp,gy-8,15,Math.PI,0); g.fill();
+          g.fillStyle="#2f8f4e"; g.beginPath(); g.arc(mp+6,gy-15,11,Math.PI,0); g.fill();
+          g.strokeStyle="#5a3f22"; g.lineWidth=2; g.beginPath(); g.moveTo(mp-5,gy); g.lineTo(mp,gy-8); g.moveTo(mp+7,gy); g.lineTo(mp+2,gy-8); g.stroke(); } }
+      if(state.mits.tembok){ g.fillStyle="#8a8f96"; g.fillRect(shoreX+4,gy-46,10,46); }
+      // label laut & jarak
+      g.fillStyle="#eef6ff"; g.font="bold 12px "+fontF(); g.textAlign="left"; g.fillText("🌊 Laut",10,gy+22);
+      g.fillStyle="#5b5040"; g.textAlign="right"; g.fillText(DIS.tsunami.obj[state.obj].n,w-10,gy+22); g.textAlign="left";
+    },
+    gunung:function(g,w,h,dmg,prog){
+      var gy=h*0.72, ashy=state.env==="kearah", away=state.env==="menjauh";
+      var mx=w*.25, mh=Math.min(196,h*.56), base=w*.22, craterY=gy-mh;
+      // GUNUNG
+      g.fillStyle="#6f6257"; g.beginPath(); g.moveTo(mx-base,gy); g.lineTo(mx,craterY); g.lineTo(mx+base,gy); g.closePath(); g.fill();
+      g.fillStyle="#5e5349"; g.beginPath(); g.moveTo(mx,craterY); g.lineTo(mx+base,gy); g.lineTo(mx+base*.35,gy); g.closePath(); g.fill();
+      g.fillStyle="#4a4038"; g.beginPath(); g.ellipse(mx,craterY+2,base*.10,6,0,0,7); g.fill();
+      // DESA (beberapa rumah) di zona KRB
+      var pos=state.obj==="krb3"?.52:state.obj==="krb2"?.70:.86, sz=state.obj==="krb1"?.82:state.obj==="krb2"?.92:1;
+      var bw=56*sz, bh=50*sz, gap=bw*1.55;
+      var houses=[w*pos-gap, w*pos, w*pos+gap];
+      var footX=mx+base*0.42, nearX=houses[0];
+      var pDistG=(nearX-footX)/(w-footX);
+      var reach=Math.max(0, Math.min(1, pDistG + (dmg-0.45)*1.4));
+      var frontX=footX + reach*Math.min(1,prog*1.15)*(w-footX);
+      // LAVA (lereng + merambat ke daratan) — muncul saat letusan (VEI>=2)
+      if(state.erupted && state.intensity>=2){
+        var pts=[[mx,craterY+6]], i2;
+        for(i2=1;i2<=5;i2++){ var t=i2/5; pts.push([mx+t*(footX-mx)+Math.sin(t*7+prog)*6, craterY+6+t*(gy-craterY-6)]); }
+        for(i2=1;i2<=6;i2++){ var t2=i2/6; pts.push([footX+t2*(frontX-footX), gy-2+Math.sin(t2*9+prog)*2]); }
+        function lavaStroke(col,wd,a){ g.save(); if(a)g.globalAlpha=a; g.strokeStyle=col; g.lineWidth=wd; g.lineCap="round"; g.lineJoin="round"; g.beginPath(); g.moveTo(pts[0][0],pts[0][1]); for(var q=1;q<pts.length;q++)g.lineTo(pts[q][0],pts[q][1]); g.stroke(); g.restore(); }
+        lavaStroke("#ff7a2a",24,0.35); lavaStroke("#8f2a15",15); lavaStroke("#e0491c",9); lavaStroke("#ffc35a",4);
+        var last=pts[pts.length-1]; g.fillStyle="#e0491c"; g.beginPath(); g.arc(last[0],last[1]-2,11,0,7); g.fill(); g.fillStyle="rgba(255,200,110,.95)"; g.beginPath(); g.arc(last[0],last[1]-2,5,0,7); g.fill();
+      }
+      // glow kawah
+      g.fillStyle="rgba(255,130,45,.85)"; g.beginPath(); g.ellipse(mx,craterY+1,13,6,0,0,7); g.fill();
+      // PLUME jamur
+      var reveal=Math.min(1,prog*1.25), H=(0.45+state.intensity/8*0.55)*mh*reveal, lean=ashy?1:away?-1:0.25, N=14;
+      for(var i=0;i<=N;i++){ var fr=i/N, py=craterY-8-fr*H, px=mx+fr*46*lean+Math.sin(fr*5+prog*2)*7, rad=9+fr*fr*34+state.intensity*0.6, al=0.5*(1-fr*0.5);
+        g.fillStyle="rgba(96,90,84,"+al.toFixed(3)+")"; g.beginPath(); g.arc(px,py,rad,0,7); g.fill(); }
+      var topY=craterY-8-H, topX=mx+46*lean;
+      for(var c=-2;c<=2;c++){ g.fillStyle="rgba(86,80,75,.4)"; g.beginPath(); g.arc(topX+c*22, topY+Math.abs(c)*7, 22,0,7); g.fill(); }
+      // hujan abu terbawa angin
+      if(prog>0.25 && !away){ var dir=ashy?1:0.3, count=Math.round(40+dmg*50); g.fillStyle="rgba(110,102,95,.55)";
+        for(var a=0;a<count;a++){ var sd=a*17.3, colw=(w-mx)/12, axp=mx+dir*(60+(a%12)*colw)+Math.sin(sd)*10, ayp=craterY+((sd*90+prog*260)%(gy-craterY+20)); if(axp>0&&axp<w) g.fillRect(axp,ayp,2,2); } }
+      // RUMAH-RUMAH DESA
+      houses.forEach(function(hx){ var by=gy-bh, engulf=(state.erupted&&state.intensity>=2&&frontX>=hx);
+        g.fillStyle=engulf?"rgba(90,80,74,.8)":"#c78f5a"; roundRect(g,hx-bw/2,by,bw,bh,5); g.fill();
+        g.fillStyle="#5a3f2a"; g.beginPath(); g.moveTo(hx-bw/2-4,by); g.lineTo(hx,by-14); g.lineTo(hx+bw/2+4,by); g.closePath(); g.fill();
+        if(!engulf){ g.fillStyle="rgba(255,255,255,.8)"; g.fillRect(hx-bw*.16,by+bh*.3,bw*.32,bh*.28); }
+        if(engulf){ g.fillStyle="rgba(224,73,28,.5)"; g.fillRect(hx-bw/2-4,gy-14,bw+8,14); g.fillStyle="rgba(255,150,60,.85)"; for(var eb=0;eb<4;eb++){ g.fillRect(hx-bw/3+eb*(bw/4), gy-16-((eb*11+prog*40)%20),3,3); } }
+        else if(prog>0.4 && !away){ var cover=dmg*(ashy?.7:.35); g.fillStyle="rgba(150,142,132,"+cover.toFixed(3)+")"; g.fillRect(hx-bw/2-4,by-4,bw+8,bh+8); }
+      });
+      g.fillStyle="#5b5040"; g.font="12px "+fontF(); g.textAlign="right"; g.fillText(DIS.gunung.obj[state.obj].n,w-10,gy+22); g.textAlign="left";
+      if(state.mits.evakuasi){ g.fillStyle="#2E9E5B"; g.font="bold 13px "+fontF(); g.textAlign="left"; g.fillText("🚸 Evakuasi",12,gy+22); }
+    },
+    banjir:function(g,w,h,dmg,prog){
+      var gy=h*0.72, rain=state.intensity>40, env=state.env;
+      // bentuk tanah sesuai lokasi
+      var mound=env==="tinggi"?30:0;
+      if(env==="tinggi"){ g.fillStyle="#bfa76e"; g.beginPath(); g.moveTo(w/2-95,gy); g.quadraticCurveTo(w/2,gy-mound-18,w/2+95,gy); g.closePath(); g.fill(); }
+      if(env==="rendah"){ // cekungan dangkal + genangan awal (drainase buruk)
+        g.fillStyle="rgba(80,62,36,.28)"; g.beginPath(); g.moveTo(w/2-160,gy); g.quadraticCurveTo(w/2,gy+20,w/2+160,gy); g.lineTo(w/2+160,gy+16); g.quadraticCurveTo(w/2,gy+34,w/2-160,gy+16); g.closePath(); g.fill();
+        g.fillStyle="rgba(46,124,194,.28)"; g.beginPath(); g.ellipse(w/2,gy+9,130,8,0,0,7); g.fill();
+      }
+      var baseY=gy-mound, panggung=state.obj==="panggung", small=state.obj==="sederhana";
+      var bw=small?70:90, bh=small?60:80, floorY=baseY-(panggung?36:0), bx=w/2-bw/2, by=floorY-bh;
+      if(panggung){ g.fillStyle="#7a5a34"; g.fillRect(bx+8,floorY,8,36); g.fillRect(bx+bw-16,floorY,8,36); }
+      g.fillStyle=small?"#b7a58f":"#c78f5a"; roundRect(g,bx,by,bw,bh,6); g.fill();
+      g.fillStyle="#6b4b2a"; g.beginPath(); g.moveTo(bx-6,by); g.lineTo(bx+bw/2,by-20); g.lineTo(bx+bw+6,by); g.closePath(); g.fill();
+      g.fillStyle="rgba(255,255,255,.85)"; g.fillRect(bx+bw*.2,by+bh*.25,bw*.2,bh*.2); g.fillRect(bx+bw*.6,by+bh*.25,bw*.2,bh*.2);
+      // selokan/drainase sebagai indikator kondisi (kiri bawah)
+      var dx=w*.07, dw=54;
+      if(env==="tinggi"){ g.fillStyle="#a98f63"; g.fillRect(dx,gy,dw,10); }
+      else if(env==="sedang"){ g.fillStyle="#8a7a55"; g.fillRect(dx,gy,dw,12); g.fillStyle="rgba(74,159,212,.75)"; g.fillRect(dx+3,gy+3,dw-6,5); }
+      else { g.fillStyle="#6f6047"; g.fillRect(dx,gy,dw,15); g.fillStyle="rgba(96,120,82,.85)"; g.fillRect(dx+3,gy+3,dw-6,9); g.fillStyle="#5a4a35"; g.fillRect(dx+dw*.35,gy-2,6,5); g.fillRect(dx+dw*.7,gy+1,5,4); }
+      // air naik (tinggi genangan sesuai dampak; rendah mulai dari genangan awal)
+      var startY = env==="rendah"? gy+9 : gy;
+      var maxRise=(startY-(by-8)), level=maxRise*dmg*prog, top=startY-level;
+      g.fillStyle="rgba(46,124,194,.55)"; g.fillRect(0,top,w,h-top);
+      g.strokeStyle="rgba(255,255,255,.6)"; g.beginPath(); g.moveTo(0,top); g.lineTo(w,top); g.stroke();
+      if(rain){ g.strokeStyle="rgba(120,150,180,.5)"; g.lineWidth=1; for(var i=0;i<40;i++){ var rx=(i*37+prog*60)%w; g.beginPath(); g.moveTo(rx,0); g.lineTo(rx-6,14); g.stroke(); } }
+      if(state.mits.tanggul){ g.fillStyle="#8a7f6a"; g.fillRect(w*.05,gy-46,10,46); g.fillRect(w-w*.05-10,gy-46,10,46); }
+      g.fillStyle="#5b5030"; g.font="12px "+fontF(); g.textAlign="right"; g.fillText(DIS.banjir.env[state.env].n,w-10,gy+22); g.textAlign="left";
+    },
+    kebakaran:function(g,w,h,dmg,prog){
+      var gy=h*0.72, env=state.env;
+      if(env==="hujan"){ g.fillStyle="rgba(70,95,130,.30)"; g.fillRect(0,0,w,h); }
+      else if(env==="kemarau"){ g.fillStyle="rgba(230,140,50,.16)"; g.fillRect(0,0,w,h); }
+      if(state.obj==="gambut"){ g.fillStyle="#5b4a35"; g.fillRect(0,gy,w,14); }
+      var trees=12, burning=Math.round(dmg*trees), by=gy-2;
+      var lean=env==="kemarau"?1.0:env==="hujan"?0.2:0.45;
+      // kabut asap menyeluruh (makin pekat bila api meluas)
+      var haze=Math.min(.42, (burning/trees)*prog*0.5);
+      if(haze>0){ var hg=g.createLinearGradient(0,0,0,gy); hg.addColorStop(0,"rgba(90,84,78,"+haze.toFixed(3)+")"); hg.addColorStop(1,"rgba(120,112,104,0)"); g.fillStyle=hg; g.fillRect(0,0,w,gy); }
+      // pohon / api + asap membumbung
+      for(var i=0;i<trees;i++){ var tx=w*(0.05+0.90*i/(trees-1));
+        if(i<burning){
+          // kolom asap: beberapa gumpalan naik, membesar & memudar, melayang searah angin
+          if(prog>.12){ for(var sp=0; sp<6; sp++){ var t=((prog*1.15 + sp/6 + i*0.13) % 1);
+              var yy=by-44 - t*150, xx=tx + t*90*lean + Math.sin(t*6+i)*7, rad=9 + t*30, al=0.34*(1-t);
+              if(al>0.02){ g.fillStyle="rgba(88,82,78,"+al.toFixed(3)+")"; g.beginPath(); g.arc(xx,yy,rad,0,7); g.fill(); } } }
+          var fs=46+Math.sin(prog*30+i)*7; emoji(g,"🔥",tx,by+4,fs);
+        } else { drawTree(g,tx,by,state.obj); }
+      }
+      if(env==="hujan"){ g.strokeStyle="rgba(205,224,245,.75)"; g.lineWidth=2; for(var r=0;r<80;r++){ var rx=(r*53+prog*160)%w, ry=(r*37+prog*280)%h; g.beginPath(); g.moveTo(rx,ry); g.lineTo(rx-8,ry+18); g.stroke(); } }
+      if(env==="kemarau"){ g.strokeStyle="rgba(255,255,255,.4)"; g.lineWidth=2; for(var a=0;a<5;a++){ var ay=h*.12+a*24, ax=(a*170+prog*280)%(w+120)-60; g.beginPath(); g.moveTo(ax,ay); g.quadraticCurveTo(ax+44,ay-7,ax+88,ay); g.stroke(); }
+        if(burning>0){ g.fillStyle="#E8912A"; for(var e=0;e<16;e++){ var ex=(e*61+prog*320)%w, ey=gy-18-((e*27+prog*180)%150); g.fillRect(ex,ey,3,3);} } }
+      if(env==="sedang"){ g.fillStyle="rgba(255,255,255,.6)"; g.beginPath(); g.ellipse(w*.3,h*.14,52,16,0,0,7); g.fill(); g.beginPath(); g.ellipse(w*.66,h*.1,46,14,0,0,7); g.fill(); }
+      if(state.mits.sekat){ g.fillStyle="#b89b6a"; g.fillRect(w*.5-8,gy-90,16,90); }
+      if(state.mits.patroli){ emoji(g,"🚒",w*.94,gy-2,32); }
+      g.fillStyle="#5b5040"; g.font="12px "+fontF(); g.textAlign="left"; g.fillText(DIS.kebakaran.obj[state.obj].n+" · "+DIS.kebakaran.env[state.env].n,12,gy+22);
+    }
+    };
+  function sky(g,w,h,c1,c2){ var gr=g.createLinearGradient(0,0,0,h); gr.addColorStop(0,c1); gr.addColorStop(1,c2); g.fillStyle=gr; g.fillRect(0,0,w,h); }
+  function ground(g,w,h,c,line){ var gy=h*.72; g.fillStyle=c; g.fillRect(0,gy,w,h-gy); g.strokeStyle=line; g.beginPath(); g.moveTo(0,gy); g.lineTo(w,gy); g.stroke(); return gy; }
+  function drawTree(g,x,by,obj){
+    // batang
+    g.fillStyle="#7a5433"; g.fillRect(x-5,by-26,10,26);
+    if(obj==="basah"){ // rimbun, hijau cerah, besar
+      g.fillStyle="#2f8f4e";
+      g.beginPath(); g.arc(x,by-40,30,0,7); g.fill();
+      g.beginPath(); g.arc(x-20,by-30,22,0,7); g.fill();
+      g.beginPath(); g.arc(x+20,by-30,22,0,7); g.fill();
+      g.beginPath(); g.arc(x,by-60,22,0,7); g.fill();
+      g.fillStyle="#3aa35f"; g.beginPath(); g.arc(x-8,by-46,16,0,7); g.fill();
+    } else if(obj==="gambut"){ // jarang, kurus, gelap
+      g.fillStyle="#4a6b33";
+      g.beginPath(); g.moveTo(x,by-64); g.lineTo(x-16,by-20); g.lineTo(x+16,by-20); g.closePath(); g.fill();
+      g.beginPath(); g.moveTo(x,by-78); g.lineTo(x-12,by-44); g.lineTo(x+12,by-44); g.closePath(); g.fill();
+    } else { // kering: pinus, hijau zaitun
+      g.fillStyle="#6f8a42";
+      g.beginPath(); g.moveTo(x,by-58); g.lineTo(x-22,by-14); g.lineTo(x+22,by-14); g.closePath(); g.fill();
+      g.beginPath(); g.moveTo(x,by-74); g.lineTo(x-16,by-38); g.lineTo(x+16,by-38); g.closePath(); g.fill();
+      g.fillStyle="#7d9a4e"; g.beginPath(); g.moveTo(x,by-88); g.lineTo(x-11,by-60); g.lineTo(x+11,by-60); g.closePath(); g.fill();
+    }
+  }
+  function drawCoastHouse(g,hx,by,bw,bh,dmg){
+    if(dmg>=.75){ // roboh: reruntuhan papan + gundukan
+      g.fillStyle="#8a6a44"; for(var k=0;k<5;k++){ g.save(); g.translate(hx+bw*(k/5), by+bh-6); g.rotate((k%2?1:-1)*0.5); g.fillRect(0,0,26,8); g.restore(); }
+      g.fillStyle="rgba(110,90,70,.6)"; g.beginPath(); g.moveTo(hx-8,by+bh); g.lineTo(hx+bw/2,by+bh-18); g.lineTo(hx+bw+8,by+bh); g.closePath(); g.fill();
+      return;
+    }
+    var tilt=dmg>=.45?0.12:0;
+    g.save(); g.translate(hx+bw/2,by+bh); g.rotate(tilt); g.translate(-(hx+bw/2),-(by+bh));
+    g.fillStyle="#c78f5a"; roundRect(g,hx,by,bw,bh,6); g.fill();
+    g.fillStyle="#6b4b2a"; g.beginPath(); g.moveTo(hx-5,by); g.lineTo(hx+bw/2,by-18); g.lineTo(hx+bw+5,by); g.closePath(); g.fill();
+    g.fillStyle="rgba(255,255,255,.85)"; g.fillRect(hx+bw*.2,by+bh*.28,bw*.24,bh*.24);
+    if(dmg>=.45){ g.strokeStyle="rgba(30,25,22,.55)"; g.lineWidth=2; g.beginPath(); g.moveTo(hx+bw*.52,by+4); g.lineTo(hx+bw*.4,by+bh*.5); g.lineTo(hx+bw*.56,by+bh); g.stroke(); }
+    g.restore();
+  }
+
+  function runSim(dmg,done){ if(anim)cancelAnimationFrame(anim); var t0=performance.now(), dur=1700;
+    (function loop(now){ var p=Math.min(1,(now-t0)/dur); draw(dmg,p); if(p>=1){ if(done)done(); return; } anim=requestAnimationFrame(loop); })(performance.now());
+  }
+
+  // ===================== PEMILIH BENCANA =====================
+  function buildPicker(){
+    var grid=$("dis-grid"); grid.innerHTML="";
+    DIS_ORDER.forEach(function(id){ var c=DIS[id]; var el=document.createElement("div"); el.className="dis-card";
+      el.innerHTML='<div class="thumb"><img src="assets/'+(c.thumb||c.bg)+'" alt="Foto '+c.nama+'" loading="lazy"></div><b>'+c.em+' '+c.nama+'</b><div class="d">'+c.objLabel+' · '+c.intensity.label+'</div>';
+      el.onclick=function(){ startDisaster(id); }; grid.appendChild(el); });
+  }
+
+  // ===================== LANGKAH =====================
+  function renderStep(){
+    document.querySelectorAll("#stepbar .s").forEach(function(s,i){ s.classList.toggle("active",i===state.step); s.classList.toggle("done",i<state.step); });
+    var c=DIS[state.dis], p=$("panel"), st=state.step;
+    $("int-k").textContent=c.intensity.label;
+    if(st===0){
+      p.innerHTML='<h3>'+c.em+' '+c.nama+' — Langkah 1 dari 4</h3>'+
+        '<div class="muted" style="font-size:13px;margin-bottom:8px">'+c.objLabel+'</div><div class="choices" id="c-obj"></div>'+
+        '<div class="muted" style="font-size:13px;margin:12px 0 8px">'+c.envLabel+'</div><div class="choices" id="c-env"></div>';
+      buildChoices("c-obj",c.obj,"obj"); buildChoices("c-env",c.env,"env");
+      $("st-int").textContent="–"; $("st-dmg").textContent="–"; hideStatus();
+      $("btn-fwd").disabled=!(state.obj&&state.env); draw(0,1);
+    } else if(st===1){
+      p.innerHTML='<h3>Langkah 2 dari 4 — Atur intensitas</h3>'+
+        '<div class="field"><label>'+c.intensity.label+' <span class="val" id="int-v">'+fmtInt()+'</span></label><input type="range" id="int" min="'+c.intensity.min+'" max="'+c.intensity.max+'" step="'+c.intensity.step+'" value="'+state.intensity+'"></div>'+
+        '<div class="muted" style="font-size:13px">Objek: <b>'+c.obj[state.obj].n+'</b> · <b>'+c.env[state.env].n+'</b></div>'+
+        '<button class="btn danger" id="btn-run" style="margin-top:14px;width:100%">⚡ Jalankan Simulasi</button>';
+      $("int").addEventListener("input",function(){ state.intensity=+this.value; $("int-v").textContent=fmtInt(); $("st-int").textContent=fmtInt(); });
+      $("btn-run").onclick=function(){ sfxRun(); state.erupted=true; var d=damageOf(0); state.dmgBefore=d; $("st-int").textContent=fmtInt(); runSim(d,function(){ showResult(d); $("btn-fwd").disabled=false; }); };
+      $("st-int").textContent=fmtInt(); $("btn-fwd").disabled=(state.dmgBefore===null); draw(state.dmgBefore||0,1);
+    } else if(st===2){
+      p.innerHTML='<h3>Langkah 3 dari 4 — Terapkan mitigasi</h3><div class="muted" style="font-size:13px;margin-bottom:6px">Centang upaya mitigasi, lalu uji ulang.</div><div class="mitigasi" id="mit-list"></div><button class="btn danger" id="btn-run2" style="margin-top:12px;width:100%">⚡ Uji Ulang dengan Mitigasi</button>';
+      var ml=$("mit-list");
+      c.mits.forEach(function(m){ var on=!!state.mits[m.id]; var el=document.createElement("label"); el.className="mit"+(on?" on":"");
+        el.innerHTML='<input type="checkbox" '+(on?"checked":"")+'> <div><b>'+m.ic+' '+m.n+'</b><div class="muted" style="font-size:12px">'+(m.jiwa?"Menyelamatkan jiwa"+(m.eff?" & kurangi dampak ±"+Math.round(m.eff*100)+"%":""):"Mengurangi dampak ±"+Math.round(m.eff*100)+"%")+'</div></div>';
+        el.querySelector("input").onchange=function(){ state.mits[m.id]=this.checked; el.classList.toggle("on",this.checked); };
+        ml.appendChild(el);
+      });
+      $("btn-run2").onclick=function(){ sfxRun(); state.erupted=true; var d2=damageOf(mitEffTotal()); state.dmgAfter=d2; runSim(d2,function(){ renderCompare(); $("btn-fwd").disabled=false; }); };
+      $("btn-fwd").disabled=(state.dmgAfter===null); draw(state.dmgAfter!==null?state.dmgAfter:(state.dmgBefore||0),1);
+    } else { renderPenerapan(); }
+    $("btn-back").disabled=(state.step===0);
+  }
+  function fmtInt(){ var c=DIS[state.dis]; return (c.intensity.step<1? state.intensity.toFixed(1): Math.round(state.intensity))+c.intensity.unit; }
+  function buildChoices(cid,map,key){ var c=$(cid); c.innerHTML="";
+    Object.keys(map).forEach(function(k){ var o=map[k]; var el=document.createElement("div"); el.className="choice"+(state[key]===k?" sel":""); el.innerHTML='<span class="ic">'+o.ic+'</span> '+o.n;
+      el.onclick=function(){ state[key]=k; c.querySelectorAll(".choice").forEach(function(x){x.classList.remove("sel");}); el.classList.add("sel"); $("btn-fwd").disabled=!(state.obj&&state.env); draw(0,1); }; c.appendChild(el);
+    });
+  }
+  function showResult(d){ $("st-dmg").textContent=Math.round(d*100)+"%"; var t=tierOf(d); var s=$("status"); s.className="status show "+t.c; s.innerHTML="<b>Status: "+t.k+"</b> — "+t.t; }
+  function hideStatus(){ $("status").className="status"; }
+  function renderCompare(){ showResult(state.dmgAfter); var b=tierOf(state.dmgBefore), a=tierOf(state.dmgAfter); var s=$("status"); s.className="status show "+a.c;
+    s.innerHTML='<div class="compare"><div class="cmp before"><div class="lbl">Sebelum mitigasi</div><div class="big">'+Math.round(state.dmgBefore*100)+'%</div>'+b.k+'</div><div class="cmp after"><div class="lbl">Sesudah mitigasi</div><div class="big">'+Math.round(state.dmgAfter*100)+'%</div>'+a.k+'</div></div><div style="margin-top:10px">Mitigasi menurunkan dampak <b>'+Math.max(0,Math.round((state.dmgBefore-state.dmgAfter)*100))+' poin</b>. Mitigasi yang tepat mendukung <b>SDGs 11 &amp; 13</b>.</div>';
+  }
+
+  // Langkah 4
+  var qi=0,qScore=0,qAns=false;
+  function renderPenerapan(){ var c=DIS[state.dis];
+    $("panel").innerHTML='<h3>Langkah 4 dari 4 — Penerapan &amp; Refleksi</h3><div class="muted" style="font-size:13px">Jawab pertanyaan penerapan berdasarkan eksperimenmu.</div><div id="q-holder" style="margin-top:10px"></div>';
+    qi=0; qScore=0; drawQ(); draw(state.dmgAfter!==null?state.dmgAfter:(state.dmgBefore||0),1);
+    var s=$("status"); s.className="status show s-aman"; s.innerHTML="🎯 <b>Refleksi:</b> Rekomendasikan langkah mitigasi "+c.nama.toLowerCase()+" untuk daerahmu. Mitigasi yang tepat membangun lingkungan yang aman &amp; berkelanjutan (SDGs).";
+    $("btn-fwd").disabled=true;
+  }
+  function drawQ(){ var c=DIS[state.dis], Q=c.q, h=$("q-holder");
+    if(qi>=Q.length){ var pct=Math.round(qScore/Q.length*100);
+      h.innerHTML='<div class="card" style="box-shadow:none;border:none;background:var(--biru-muda)"><b>Selesai!</b> Skor: '+qScore+'/'+Q.length+' ('+pct+'%).<div class="muted" style="margin-top:6px;font-size:13px">'+(pct>=75?"Pemahaman mitigasimu baik.":"Ulangi eksperimen & pelajari faktornya.")+'</div><div class="row" style="margin-top:12px"><button class="btn primary" id="q-again">Ulangi Bencana Ini 🔁</button><button class="btn ghost" id="q-pick">Pilih Bencana Lain</button></div></div>';
+      sfxDone(); $("q-again").onclick=function(){ startDisaster(state.dis); }; $("q-pick").onclick=function(){ sfxClick(); goPick(); }; return;
+    }
+    var q=Q[qi]; qAns=false;
+    var html='<div class="qbox"><div class="muted" style="font-size:12px;font-weight:800">Soal '+(qi+1)+'/'+Q.length+'</div><div style="font-weight:700;margin-top:4px">'+q.q+'</div><div class="opts">';
+    q.opt.forEach(function(o,i){ html+='<button class="opt" data-i="'+i+'">'+o+'</button>'; });
+    html+='</div><div class="feedback" id="q-fb"></div><div class="foot" style="margin-top:12px"><span class="muted" style="font-size:13px">Benar: '+qScore+'</span><button class="btn primary" id="q-next" disabled>Lanjut ▶</button></div></div>';
+    h.innerHTML=html;
+    h.querySelectorAll(".opt").forEach(function(btn){ btn.onclick=function(){ if(qAns)return; qAns=true; var i=+btn.getAttribute("data-i");
+      h.querySelectorAll(".opt").forEach(function(b){b.setAttribute("disabled","true");}); var fb=$("q-fb");
+      if(i===q.a){ sfxOk(); btn.classList.add("correct"); qScore++; fb.className="feedback show ok"; fb.innerHTML="✔ Benar! "+q.e; }
+      else { sfxNo(); btn.classList.add("wrong"); h.querySelectorAll(".opt")[q.a].classList.add("correct"); fb.className="feedback show no"; fb.innerHTML="✘ Kurang tepat. "+q.e; }
+      $("q-next").removeAttribute("disabled");
+    };});
+    $("q-next").onclick=function(){ qi++; drawQ(); };
+  }
+
+  // ===================== NAV =====================
+  function setStep(s){ state.step=Math.max(0,Math.min(3,s)); renderStep(); $("stage").querySelector("main").scrollTop=0; }
+  function maxReachable(){ if(!(state.obj&&state.env))return 0; if(state.dmgBefore===null)return 1; if(state.dmgAfter===null)return 2; return 3; }
+  $("btn-fwd").onclick=function(){ if(state.step<3){ sfxStep(); setStep(state.step+1); } };
+  $("btn-back").onclick=function(){ if(state.step>0){ sfxClick(); setStep(state.step-1); } };
+  document.querySelectorAll("#stepbar .s").forEach(function(s){ s.onclick=function(){ var t=+s.getAttribute("data-step"); if(t<=maxReachable()) setStep(t); }; });
+
+  function view(id){ document.querySelectorAll(".view").forEach(function(v){v.classList.toggle("active",v.id===id);}); $("stage").querySelector("main").scrollTop=0; }
+  function goHome(){ $("btn-ganti").style.display="none"; $("btn-keluar").style.display="none"; view("v-home"); }
+  function goPick(){ $("btn-ganti").style.display="none"; $("btn-keluar").style.display="inline-block"; view("v-pick"); }
+  $("btn-mulai").onclick=function(){ sfxClick(); goPick(); };
+  $("pick-back").onclick=function(){ sfxClick(); goHome(); };
+  $("btn-keluar").onclick=function(){ if(confirm("Keluar dari simulasi dan kembali ke beranda?")){ sfxClick(); goHome(); } };
+  $("btn-bgm").onclick=bgmToggle; bgmUpdateBtn();
+  function startDisaster(id){ sfxStep(); var c=DIS[id]; state={dis:id,obj:null,env:null,intensity:c.intensity.def,step:0,dmgBefore:null,dmgAfter:null,mits:{},erupted:false}; $("btn-ganti").style.display="inline-block"; $("btn-keluar").style.display="inline-block"; view("v-lab"); setStep(0); requestAnimationFrame(function(){ draw(0,1); }); }
+
+  // Modal (Tujuan Pembelajaran & Cara Bermain)
+  function openM(id){ var m=$(id); m.classList.add("show"); m.setAttribute("aria-hidden","false"); }
+  function closeModals(){ document.querySelectorAll(".modal-ov").forEach(function(m){ m.classList.remove("show"); m.setAttribute("aria-hidden","true"); }); }
+  $("btn-tujuan").onclick=function(){ openM("modal"); };
+  $("btn-cara").onclick=function(){ openM("modal-cara"); };
+  $("modal-x").onclick=closeModals; $("modal-ok").onclick=closeModals;
+  $("cara-x").onclick=closeModals; $("cara-ok").onclick=closeModals;
+  document.querySelectorAll(".modal-ov").forEach(function(m){ m.addEventListener("click",function(e){ if(e.target===m) closeModals(); }); });
+  document.addEventListener("keydown",function(e){ if(e.key==="Escape") closeModals(); });
+
+  $("btn-ganti").onclick=goPick;
+  buildPicker();
+  preloadBG();
+  window.addEventListener("resize",function(){ if($("v-lab").classList.contains("active")) draw(state.dmgAfter!==null?state.dmgAfter:(state.dmgBefore||0),1); });
+})();
+</script>
+</body>
+</html>

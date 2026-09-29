@@ -736,6 +736,107 @@ python3 -m http.server 8000
 A single `index.html` — inline CSS + Vanilla JS, no framework and no build step. The dashboard mockup is pure HTML/CSS (SVG charts, no images); interactive FAQ accordion and scroll reveals in plain JS; typography via Inter (Google Fonts).
 </script>
 
+<script type="text/markdown" data-readme="jelajah">
+# 🧭 Jelajah Nusantara
+
+An **interactive map game** for junior-high geography (IPS, Fase D, Grade VII). Drag each Indonesian island onto its place on the map, then take a quiz on what makes each region unique — its natural resources, climate, and landforms. A camera-based **Multiplayer Elimination** mode turns the whole classroom into a true/false game. Built for **Festival Biru Putih 2026** (Direktorat SMP, Kemendikdasmen).
+
+![Preview](preview.png)
+
+> Part of the **one-day-one-code** repo — see the full catalog in [`../index.html`](../index.html).
+
+## Play
+
+Open `index.html` directly in a browser — fully static and offline, no install needed.
+
+```bash
+# recommended for Multiplayer mode (camera needs http://localhost or HTTPS)
+python3 -m http.server 8000   # then open http://localhost:8000
+```
+
+## Features
+
+- **🧭 Single Player** — *Build the Map*: drag island names onto the map, then a **10-question quiz** drawn at random (and balanced) from a bank of 33: Guess the Location, Multiple Choice, and True/False — with a timer and combos.
+- **⚔️ Multiplayer Elimination** — students line up in front of the webcam; a statement appears and they move **LEFT = TRUE** or **RIGHT = FALSE** before time runs out. Wrong side is eliminated until one winner remains (40 statements, adjustable timer). Still playable without a camera.
+- **Instant feedback** with an explanation for every answer, plus score & island badges saved to `localStorage`.
+- **Editable question bank** — all questions live in `assets/soal.js` (JSON-like format), no need to touch `index.html`.
+- Learning objectives & how-to-play modals, background music & sound effects (Web Audio), 16:9 responsive layout.
+
+## Tech
+
+Single-page `index.html` — HTML + CSS + Vanilla JS, no framework, no build step, no external URLs. Question bank in `assets/soal.js`, map & cover art in `assets/`. `panduan.html` is the user guide.
+
+> By **Tryas Sukmaning Sakti** — IPS teacher, SMPN 1 Karangbinangun, Lamongan · Festival Biru Putih 2026
+</script>
+
+<script type="text/markdown" data-readme="mitigasi">
+# 🌋 Lab Mitigasi Bencana
+
+A **virtual disaster-mitigation lab** for junior-high geography (IPS, Fase D, Grade VIII). Pick a disaster — **earthquake, tsunami, volcanic eruption, flood, or wildfire** — set its intensity, watch the impact in real time, then apply mitigation measures and compare the before/after results. Ties Indonesia's position on the **Ring of Fire** to SDG 11 (sustainable cities & communities). Built for **Festival Biru Putih 2026** (Direktorat SMP, Kemendikdasmen).
+
+![Preview](preview.png)
+
+> Part of the **one-day-one-code** repo — see the full catalog in [`../index.html`](../index.html).
+
+## Play
+
+Open `index.html` directly in a browser — fully static and offline, no install needed.
+
+```bash
+# optional, via local server
+python3 -m http.server 8000   # then open http://localhost:8000
+```
+
+## Features
+
+- **5 disaster scenarios**, each a guided **4-step experiment**: set variables → adjust intensity & run the simulation → apply mitigation → application & reflection.
+- **Progress indicator** ("Step x of 4") with free navigation back to any step.
+- **Before vs. after mitigation** comparison of damage and impact.
+- **Application questions** per disaster with explanations — editable in `assets/soal.js`.
+- Learning objectives & how-to-play modals, 16:9 responsive layout, sound on/off.
+
+## Tech
+
+Single-page `index.html` — HTML + CSS + Vanilla JS, no framework, no build step, no external URLs. Scene backgrounds (SVG) and photos in `assets/`. `panduan.html` is the user guide.
+
+> By **Tryas Sukmaning Sakti** — IPS teacher, SMPN 1 Karangbinangun, Lamongan · Festival Biru Putih 2026
+</script>
+
+<script type="text/markdown" data-readme="bebekips">
+# 🦆 Bebek IPS
+
+A **pixel-art shooting game** inspired by *Duck Hunt*, for junior-high social studies (IPS, Fase D, Grade VIII). A question appears in the panel — shoot the **duck carrying the right answer**. Three levels of increasing difficulty covering learning objectives **TP 3.1–3.6** (natural resources, markets & prices, Indonesia's development potential, social interaction). Built for **Festival Biru Putih 2026** (Direktorat SMP, Kemendikdasmen).
+
+![Preview](preview.png)
+
+> Part of the **one-day-one-code** repo — see the full catalog in [`../index.html`](../index.html).
+
+## Play
+
+Open `index.html` directly in a browser — no install needed.
+
+```bash
+# optional, via local server
+python3 -m http.server 8000   # then open http://localhost:8000
+```
+
+> Fonts (*Press Start 2P*, *Pixelify Sans*) currently load from Google Fonts; offline, the game falls back to system fonts.
+
+## Controls & rules
+
+- **Shoot** the right duck: click/tap it, or press **A–E**.
+- **3 lives** — a wrong shot or timeout costs one life and reveals the correct answer.
+- **Score**: 100 pts + 10 pts per second left, **combo bonus** +25 per streak (max +250), level multiplier ×1 / ×1.5 / ×2.
+- **20 questions per game**; clear a level to **unlock** the next. High scores & unlocks are saved to `localStorage`.
+- Keys: **1–3** pick level · **P / Esc** pause · **M** sound on/off · **Enter** start.
+
+## Tech
+
+Single-file `index.html` — HTML + CSS + Vanilla JS + **HTML5 Canvas** (pixel-art graphics), no framework, no build step. `panduan.html` is the user guide.
+
+> By **Tryas Sukmaning Sakti** — Festival Biru Putih 2026
+</script>
+
 <script>
 const CATS = {
   game:    { label:"Game",         color:"#22c55e" },
@@ -846,6 +947,30 @@ const PROJECTS = [
     shot:"13. check-khodam/preview.png", folder:"13. check-khodam",
     desc:"A tongue-in-cheek 'cek khodam' generator: type a name, get a random guardian spirit — from serious spirits to fried chicken. Results are logged to a table.",
     tags:["Vanilla JS","fetch","localStorage","Meme"],
+    entry:"index.html", openable:true
+  },
+  {
+    n:"14", id:"jelajah", title:"Jelajah Nusantara",
+    jp:"Explore the Indonesian Archipelago", cat:"edu",
+    shot:"14. jelajah-nusantara/preview.png", folder:"14. jelajah-nusantara",
+    desc:"An interactive map game for junior-high geography: drag islands onto the map, then quiz on each region's resources & landforms. Plus a webcam Multiplayer Elimination true/false mode.",
+    tags:["Vanilla JS","Drag & drop","Webcam","localStorage"],
+    entry:"index.html", openable:true
+  },
+  {
+    n:"15", id:"mitigasi", title:"Lab Mitigasi Bencana",
+    jp:"Virtual Disaster-Mitigation Lab", cat:"edu",
+    shot:"15. lab-mitigasi-bencana/preview.png", folder:"15. lab-mitigasi-bencana",
+    desc:"A virtual lab: pick a disaster (earthquake, tsunami, eruption, flood, wildfire), set its intensity, watch the impact, apply mitigation and compare before vs. after. 4 guided steps.",
+    tags:["Vanilla JS","Simulation","SVG","Education"],
+    entry:"index.html", openable:true
+  },
+  {
+    n:"16", id:"bebekips", title:"Bebek IPS",
+    jp:"Duck Hunt-Style Social Studies Quiz", cat:"edu",
+    shot:"16. bebek-ips/preview.png", folder:"16. bebek-ips",
+    desc:"A pixel-art Duck Hunt-style quiz: shoot the duck carrying the right answer. 3 levels × 20 questions, score–combo–lives, level unlocks & high scores.",
+    tags:["Vanilla JS","Canvas","Pixel art","localStorage"],
     entry:"index.html", openable:true
   },
 ];

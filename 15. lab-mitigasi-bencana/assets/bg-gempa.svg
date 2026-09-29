@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 380" width="720" height="380" preserveAspectRatio="none">
+<defs><linearGradient id="s" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#bfe3fb"/><stop offset="1" stop-color="#eaf6ff"/></linearGradient></defs>
+<rect width="720" height="380" fill="url(#s)"/>
+<circle cx="620" cy="70" r="34" fill="#FDC500" opacity=".9"/>
+<g fill="#fff" opacity=".85"><ellipse cx="150" cy="70" rx="52" ry="18"/><ellipse cx="200" cy="62" rx="38" ry="15"/></g>
+<path d="M0,274 Q180,210 380,264 T720,262 L720,274 Z" fill="#8bb37a"/>
+<rect y="274" width="720" height="106" fill="#cfe3b0"/>
+<line x1="0" y1="274" x2="720" y2="274" stroke="#a9c78a" stroke-width="2"/>
+<!-- rumah kejauhan -->
+<g><rect x="70" y="238" width="46" height="36" fill="#c9a48a"/><path d="M64,238 L93,214 L122,238 Z" fill="#6b4b2a"/></g>
+<g><rect x="600" y="242" width="44" height="32" fill="#b9c2cb"/><path d="M595,242 L622,220 L649,242 Z" fill="#6b4b2a"/></g>
+</svg>

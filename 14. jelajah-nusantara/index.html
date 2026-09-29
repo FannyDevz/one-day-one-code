@@ -1,0 +1,749 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>Jelajah Nusantara — Gim Edukasi IPS</title>
+<meta name="description" content="Gim edukasi peta interaktif: susun pulau di peta asli, lalu Kuis Petualangan (tunjuk di peta, tebak ikon khas daerah, benar/salah) dengan timer & kombo. IPS Fase D Kelas VII." />
+<style>
+  :root{
+    --biru:#1B5FA8; --biru-tua:#154C86; --biru-muda:#E7F1FB;
+    --kuning:#FDC500; --kuning-tua:#E0AE00;
+    --putih:#FFFFFF; --tinta:#12233A; --abu:#5B6B7F; --garis:#D8E3F0;
+    --hijau:#2E9E5B; --merah:#E0533D; --laut:#AFD8F0;
+    --r:16px; --shadow:0 6px 20px -8px rgba(18,35,58,.35);
+    --font:"Segoe UI",system-ui,-apple-system,Roboto,Arial,sans-serif;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;height:100%}
+  body{font-family:var(--font); color:var(--tinta); background:var(--putih); -webkit-font-smoothing:antialiased}
+  /* Full page: mengisi seluruh jendela */
+  #stage{width:100%; height:100dvh; background:var(--putih); overflow:hidden; display:flex; flex-direction:column; position:relative}
+  /* Layar main memusatkan konten agar rapi di layar lebar */
+  #s-play, #s-result, #s-guide{max-width:1160px; margin:0 auto; width:100%}
+  /* Desktop: layar bermain mengisi tinggi & muat tanpa scroll; peta dibatasi tingginya */
+  @media (min-width:861px){
+    #s-play.active{height:100%; justify-content:flex-start}
+    #s-play .clue, #s-play .tray, #s-play .tf, #s-play .feedback, #s-play .play-foot{flex:none}
+    #map-wrap{width:auto; max-width:100%; margin:0 auto; flex:none}
+    #map-img{height:min(54vh,520px); width:auto; max-width:100%}
+    #s-play .play-foot{margin-top:auto}
+  }
+  header{display:flex; align-items:center; gap:10px; padding:10px 16px; background:var(--biru); color:#fff; flex:none}
+  header .logo{font-weight:800; font-size:15px; display:flex; align-items:center; gap:8px}
+  header .logo .dot{width:20px;height:20px;border-radius:6px;background:var(--kuning)}
+  header .spacer{flex:1}
+  .tag{font-size:12px;font-weight:600;color:#fff;background:rgba(255,255,255,.15);padding:5px 11px;border-radius:999px}
+  .iconbtn{font-size:16px;line-height:1;cursor:pointer;color:#fff;background:rgba(255,255,255,.15);border:0;width:34px;height:34px;border-radius:999px;display:inline-flex;align-items:center;justify-content:center;transition:background .15s,transform .1s}
+  .iconbtn:hover{background:rgba(255,255,255,.28)}
+  .iconbtn:active{transform:scale(.92)}
+  .iconbtn.off{opacity:.6}
+  .hud{display:flex; align-items:center; gap:10px; font-size:13px; font-weight:600}
+  .hud .pill{background:rgba(255,255,255,.15); padding:5px 11px; border-radius:999px; display:flex; gap:6px; align-items:center; transition:transform .12s}
+  .hud .pill.bump{transform:scale(1.18)}
+  .hud .pill.quit{cursor:pointer;border:0;color:#fff;background:#e23b2e;font-weight:700}
+  .hud .pill.quit:hover{background:#c8261a}
+  .hud .pill.quit:active{transform:scale(.94)}
+  .progress{height:6px; background:var(--biru-tua); flex:none}
+  .progress > i{display:block; height:100%; width:0; background:var(--kuning); transition:width .4s ease}
+  main{flex:1; min-height:0; overflow:auto; position:relative}
+  .screen{padding:20px clamp(14px,3.5vw,36px); min-height:100%; display:none; flex-direction:column}
+  .screen.active{display:flex}
+  h1{font-size:clamp(26px,4.4vw,44px); margin:0 0 6px; line-height:1.05; color:var(--biru-tua)}
+  h2{font-size:clamp(18px,2.5vw,25px); margin:0 0 4px; color:var(--biru-tua)}
+  p.lead{color:var(--abu); font-size:clamp(14px,1.7vw,16px); margin:0 0 12px; max-width:64ch}
+  .muted{color:var(--abu)} .kbd{font-size:12px;color:var(--abu)}
+  .btn{font:inherit; font-weight:700; cursor:pointer; border:none; border-radius:12px; padding:12px 20px; font-size:15px; transition:transform .1s, filter .15s}
+  .btn:active{transform:translateY(1px)}
+  .btn.primary{background:var(--kuning); color:#3a2e00}
+  .btn.primary:hover{filter:brightness(1.05)}
+  .btn.ghost{background:var(--biru-muda); color:var(--biru-tua)}
+  .btn.ghost:hover{background:#d9e8fa}
+  .btn[disabled]{opacity:.45; cursor:not-allowed}
+  .row{display:flex; gap:10px; flex-wrap:wrap; align-items:center}
+  .center{align-items:center; justify-content:center; text-align:center}
+  .home-wrap{display:grid; grid-template-columns:1.1fr .9fr; gap:24px; align-items:center; flex:1}
+  @media (max-width:760px){ .home-wrap{grid-template-columns:1fr} }
+  .goal{background:var(--biru-muda); border-radius:14px; padding:14px 16px; margin:6px 0 16px}
+  .goal ul{margin:8px 0 0; padding-left:18px} .goal li{margin:4px 0}
+  .hero-art{display:flex;align-items:center;justify-content:center}
+  .hero-art img{max-width:100%; border-radius:14px; border:1px solid var(--garis)}
+  /* Laman muka: background gambar penuh + tombol */
+  #s-home{padding:0}
+  .jn-cover{flex:1; min-height:0; width:100%; background:#2b6fbc url('assets/cover-depan.jpg') center/cover no-repeat; display:flex; align-items:flex-end; justify-content:center; position:relative}
+  .jn-cover::before{content:""; position:absolute; inset:0; background:linear-gradient(transparent 58%, rgba(9,22,40,.62)); pointer-events:none}
+  .jn-cover-actions{position:relative; z-index:1; display:flex; gap:12px; flex-wrap:wrap; justify-content:center; padding:0 16px clamp(24px,5vh,48px)}
+  .btn.big{font-size:16px; padding:15px 26px; border-radius:14px; box-shadow:0 8px 22px -6px rgba(0,0,0,.55)}
+  .btn.ghost.big{background:rgba(255,255,255,.92)}
+  /* Hero laman muka (lama, tidak dipakai) */
+  .jn-hero{display:grid; grid-template-columns:1.12fr .88fr; gap:22px; align-items:center; background:linear-gradient(135deg,#2b6fbc,#154C86); color:#fff; border-radius:20px; padding:26px clamp(18px,3.4vw,34px); box-shadow:var(--shadow); position:relative; overflow:hidden}
+  .jn-hero::after{content:""; position:absolute; right:-60px; top:-60px; width:220px; height:220px; border-radius:50%; background:rgba(253,197,0,.18)}
+  @media (max-width:760px){ .jn-hero{grid-template-columns:1fr} .jn-hero-art{display:none} }
+  .jn-hero-body{position:relative; z-index:1}
+  .jn-eyebrow{display:inline-block; font-size:12px; font-weight:800; letter-spacing:.4px; background:rgba(255,255,255,.2); padding:6px 13px; border-radius:999px}
+  .jn-hero h1{color:#fff; margin:12px 0 8px; text-shadow:0 2px 10px rgba(0,0,0,.25)}
+  .jn-tag{color:#eaf2fb; font-size:clamp(14px,1.9vw,17px); line-height:1.5; margin:0 0 14px; max-width:52ch}
+  .jn-badges{display:flex; gap:8px; flex-wrap:wrap}
+  .jn-badges span{font-size:12.5px; font-weight:700; background:rgba(255,255,255,.15); border:1px solid rgba(255,255,255,.25); padding:6px 12px; border-radius:999px}
+  .jn-hero-art{position:relative; z-index:1}
+  .jn-hero-art img{width:100%; border-radius:14px; border:2px solid rgba(255,255,255,.3); box-shadow:0 8px 24px -10px rgba(0,0,0,.5)}
+  .jn-choose{margin:18px 0 8px; color:var(--biru-tua)}
+  .mode-card{position:relative}
+  .mode-card .mode-go{display:inline-block; margin-top:12px; font-size:13px; font-weight:800; color:var(--biru-tua); background:var(--biru-muda); padding:6px 14px; border-radius:999px}
+  .mode-card:hover .mode-go{background:var(--kuning); color:#3a2e00}
+  .steps{display:grid; grid-template-columns:repeat(auto-fit,minmax(210px,1fr)); gap:14px; margin:6px 0 18px}
+  .step{background:#fff; border:1px solid var(--garis); border-radius:14px; padding:14px}
+  .step .n{width:30px;height:30px;border-radius:9px;background:var(--biru);color:#fff;font-weight:800;display:flex;align-items:center;justify-content:center;margin-bottom:8px}
+
+  /* ---- Panggung ---- */
+  .clue{background:var(--biru-muda); border-left:5px solid var(--biru); border-radius:12px; padding:12px 14px; margin-bottom:10px}
+  .clue .top{display:flex; align-items:center; gap:12px}
+  .clue .qmeta{font-size:11px;font-weight:800;letter-spacing:.5px;text-transform:uppercase;color:var(--biru)}
+  .clue .txt{font-size:clamp(15px,2vw,18px); font-weight:700; color:var(--tinta); margin-top:3px}
+  .clue .ficon{font-size:40px; line-height:1; flex:none; filter:drop-shadow(0 2px 3px rgba(0,0,0,.15))}
+  .timer{height:8px; background:#cfe0f2; border-radius:999px; margin-top:10px; overflow:hidden}
+  .timer > i{display:block; height:100%; width:100%; background:linear-gradient(90deg,var(--hijau),var(--kuning)); border-radius:999px}
+  .timer.low > i{background:var(--merah)}
+
+  .map-wrap{position:relative; width:100%; border-radius:14px; overflow:hidden; background:var(--laut); box-shadow:inset 0 0 0 1px var(--garis); touch-action:none}
+  .map-wrap img{display:block; width:100%; height:auto; user-select:none; -webkit-user-drag:none; pointer-events:none}
+  .zone{position:absolute; transform:translate(-50%,-50%); width:64px; height:64px; border-radius:50%; display:flex; align-items:center; justify-content:center; cursor:pointer; border:2px dashed rgba(27,95,168,.7); background:rgba(27,95,168,.10); transition:.12s}
+  .zone .zlabel{position:absolute; top:100%; left:50%; transform:translateX(-50%); margin-top:2px; white-space:nowrap; font-size:11px; font-weight:800; color:#123; background:#fff; padding:1px 6px; border-radius:6px; box-shadow:var(--shadow); display:none}
+  .zone.show-label .zlabel{display:block}
+  .zone.over{background:rgba(253,197,0,.35); border-color:var(--kuning-tua); border-style:solid}
+  .zone.done{background:rgba(46,158,91,.28); border:2px solid var(--hijau)}
+  .zone.done::after{content:"✓"; font-weight:900; color:var(--hijau)}
+  .zone.pointmode{border-style:solid; border-color:rgba(27,95,168,.4)}
+  .zone.pointmode:hover{background:rgba(253,197,0,.35); border-color:var(--kuning-tua)}
+  .zone.wrong{animation:shake .35s}
+  .zone.reveal{background:rgba(46,158,91,.28); border:2px solid var(--hijau)}
+  @keyframes shake{0%,100%{transform:translate(-50%,-50%)}25%{transform:translate(-58%,-50%)}75%{transform:translate(-42%,-50%)}}
+
+  /* tray (susun peta) */
+  .tray{display:flex; gap:9px; flex-wrap:wrap; align-items:center; background:#fff; border:1px dashed var(--garis); border-radius:12px; padding:10px; min-height:56px; margin-top:12px}
+  .tray .tray-hint{font-size:13px;color:var(--abu);font-weight:600;margin-right:4px}
+  .chip{background:#fff; border:2px solid var(--biru); color:var(--biru-tua); border-radius:11px; padding:9px 12px; font-weight:700; font-size:14px; cursor:grab; user-select:none; touch-action:none; box-shadow:var(--shadow); display:flex; align-items:center; gap:7px}
+  .chip.placed{opacity:.35; pointer-events:none; border-style:dashed}
+  .chip.dragging{cursor:grabbing; position:fixed; z-index:80; margin:0; pointer-events:none}
+
+  /* tombol benar/salah */
+  .tf{display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-top:12px}
+  .tf button{font:inherit; font-weight:800; font-size:18px; padding:20px; border-radius:14px; cursor:pointer; border:2px solid transparent; transition:.12s}
+  .tf .yes{background:#e7f7ed; color:#1c6b3a; border-color:#bfe6cd}
+  .tf .no{background:#fce9e5; color:#9c2f1c; border-color:#f3c9c0}
+  .tf button:hover{filter:brightness(1.03); transform:translateY(-1px)}
+  .tf button[disabled]{opacity:.5; cursor:default; transform:none}
+  /* Pilihan Ganda */
+  .mc{display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-top:12px}
+  @media (max-width:600px){ .mc{grid-template-columns:1fr} }
+  .mcopt{font:inherit; font-weight:700; font-size:15px; text-align:left; padding:14px 16px; border-radius:12px; cursor:pointer; border:2px solid var(--garis); background:#fff; color:var(--tinta); min-height:44px; transition:.12s}
+  .mcopt:hover{border-color:var(--biru); background:var(--biru-muda)}
+  .mcopt.correct{border-color:var(--hijau); background:#e7f7ed; color:#1c6b3a}
+  .mcopt.wrong{border-color:var(--merah); background:#fce9e5; color:#9c2f1c}
+  .mcopt[disabled]{cursor:default}
+  /* Pilih Mode */
+  .mode-grid{display:grid; grid-template-columns:1fr 1fr; gap:16px; margin:6px 0 16px; max-width:820px}
+  @media (max-width:640px){ .mode-grid{grid-template-columns:1fr} }
+  .mode-card{font:inherit; text-align:left; cursor:pointer; background:#fff; border:2px solid var(--garis); border-radius:16px; padding:20px; transition:.14s}
+  .mode-card:hover{border-color:var(--biru); transform:translateY(-3px); box-shadow:var(--shadow)}
+  .mode-card .em{font-size:40px} .mode-card b{display:block; margin-top:8px; font-size:18px; color:var(--biru-tua)}
+  .mode-card .d{font-size:13.5px; color:var(--abu); margin-top:6px}
+  .mode-card.soon{opacity:.75} .mode-card .badge-soon{display:inline-block; margin-top:8px; font-size:11px; font-weight:800; letter-spacing:.4px; background:var(--kuning); color:#3a2e00; padding:3px 8px; border-radius:999px}
+  /* Multiplayer form */
+  .mp-form{display:grid; gap:12px; max-width:380px; margin:6px 0 16px}
+  .mp-form label{display:flex; justify-content:space-between; align-items:center; gap:10px; font-weight:600; font-size:14px}
+  .mp-form input[type=number]{width:100px; padding:9px 11px; border:2px solid var(--garis); border-radius:10px; font:inherit}
+  .mp-form select{padding:9px 11px; border:2px solid var(--garis); border-radius:10px; font:inherit; font-weight:700; background:#fff; cursor:pointer; min-width:120px}
+  .mp-form label.chk{justify-content:flex-start; gap:8px}
+  .mp-form label.chk input{width:18px;height:18px;accent-color:var(--biru)}
+  /* Multiplayer arena (full kamera) */
+  #s-mp{padding:0; max-width:none}
+  #s-mp.active{display:flex}
+  .mp-wrap{position:relative; flex:1; min-height:0; width:100%; background:#0b1522; overflow:hidden; display:flex}
+  #mp-cam{position:absolute; inset:0; width:100%; height:100%; object-fit:cover; background:#0b1522}
+  #mp-cam.mirror{transform:scaleX(-1)}
+  .mp-side{position:absolute; top:0; bottom:0; width:50%; transition:background .25s}
+  .mp-side.left{left:0} .mp-side.right{right:0}
+  .mp-side.correct{background:rgba(46,158,91,.5)}
+  .mp-side.wrong{background:rgba(224,83,61,.55)}
+  .mp-divider{position:absolute; left:50%; top:0; bottom:0; width:3px; background:rgba(255,255,255,.55); transform:translateX(-50%); z-index:3}
+  .mp-top{position:absolute; top:0; left:0; right:0; padding:14px; text-align:center; z-index:5}
+  .mp-q{display:inline-block; background:rgba(9,18,30,.82); color:#fff; font-weight:800; font-size:clamp(16px,2.6vw,27px); line-height:1.25; padding:12px 20px; border-radius:14px; max-width:92%}
+  .mp-timer{height:12px; background:rgba(255,255,255,.28); border-radius:999px; margin:12px auto 0; max-width:560px; overflow:hidden}
+  .mp-timer > i{display:block; height:100%; width:100%; background:linear-gradient(90deg,#2E9E5B,#FDC500); border-radius:999px}
+  .mp-timer.low > i{background:#E0533D}
+  .mp-labels{position:absolute; top:44%; left:0; right:0; display:flex; justify-content:space-between; padding:0 4%; z-index:4; pointer-events:none}
+  .mp-labels .lbl{font-weight:900; font-size:clamp(20px,4vw,46px); color:#fff; text-shadow:0 3px 12px rgba(0,0,0,.7); background:rgba(9,18,30,.32); padding:8px 18px; border-radius:14px}
+  .mp-verdict{position:absolute; inset:0; display:none; align-items:center; justify-content:center; z-index:6; pointer-events:none}
+  .mp-verdict.show{display:flex}
+  .mp-verdict .card{background:rgba(9,18,30,.88); color:#fff; padding:18px 26px; border-radius:16px; text-align:center; max-width:82%}
+  .mp-verdict .big{font-size:clamp(26px,5vw,46px); font-weight:900}
+  .mp-verdict .big.benar{color:#57e08a} .mp-verdict .big.salah{color:#ff8a75}
+  .mp-verdict .mp-penjelasan{margin-top:12px;font-size:clamp(15px,2.2vw,19px);line-height:1.5;background:rgba(255,255,255,.10);border-radius:12px;padding:12px 16px}
+  .mp-verdict .mp-penjelasan .lbl{display:block;font-size:12px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:#ffd479;margin-bottom:4px}
+  .mp-foot{position:absolute; bottom:0; left:0; right:0; padding:14px; display:flex; gap:10px; align-items:center; justify-content:center; flex-wrap:wrap; z-index:7; background:linear-gradient(transparent, rgba(9,18,30,.7))}
+  .mp-count{color:#fff; font-weight:800; background:rgba(9,18,30,.7); padding:8px 12px; border-radius:999px; display:flex; align-items:center; gap:8px}
+  .mp-count button{width:32px;height:32px;border:none;border-radius:8px;background:#fff;color:#12233A;font-weight:900;cursor:pointer;font-size:16px}
+
+  .feedback{margin-top:10px; padding:10px 13px; border-radius:11px; font-size:14px; display:none}
+  .feedback.show{display:block}
+  .feedback.ok{background:#e7f7ed;color:#1c6b3a}
+  .feedback.no{background:#fce9e5;color:#9c2f1c}
+  .float{position:absolute; font-weight:900; font-size:22px; color:var(--hijau); pointer-events:none; z-index:70; animation:floatup .9s ease-out forwards}
+  @keyframes floatup{from{opacity:1; transform:translateY(0)}to{opacity:0; transform:translateY(-46px)}}
+  .play-foot{display:flex; justify-content:space-between; align-items:center; gap:10px; margin-top:10px; flex-wrap:wrap}
+  .dots{display:flex; gap:6px; flex-wrap:wrap} .dot{width:9px;height:9px;border-radius:50%;background:var(--garis)}
+  .dot.on{background:var(--kuning)} .dot.ok{background:var(--hijau)} .dot.bad{background:var(--merah)}
+
+  .panel{background:#fff; border:1px solid var(--garis); border-radius:16px; padding:clamp(16px,3vw,28px); max-width:660px; margin:0 auto; width:100%}
+  .score-ring{font-size:56px;font-weight:800;color:var(--biru-tua)}
+  .gelar{font-size:22px;font-weight:800;color:var(--kuning-tua)}
+  .stat-row{display:flex; gap:14px; justify-content:center; flex-wrap:wrap; margin:6px 0}
+  .stat{background:var(--biru-muda); border-radius:12px; padding:8px 14px; font-weight:700; color:var(--biru-tua)}
+  .result-badges{display:flex;gap:10px;flex-wrap:wrap;margin:14px 0;justify-content:center}
+  .badge{background:var(--biru-muda);border-radius:12px;padding:9px 13px;font-weight:700;color:var(--biru-tua);display:flex;gap:8px;align-items:center}
+  #toast{position:absolute; top:14px; left:50%; transform:translateX(-50%) translateY(-160%); background:var(--tinta); color:#fff; padding:10px 18px; border-radius:999px; font-weight:700; font-size:14px; transition:transform .35s,opacity .25s; z-index:90; box-shadow:var(--shadow); opacity:0; visibility:hidden}
+  #toast.show{transform:translateX(-50%) translateY(0); opacity:1; visibility:visible}
+  .credit{flex:none; text-align:center; font-size:12px; color:var(--abu); padding:7px 12px; border-top:1px solid var(--garis); background:var(--biru-muda)}
+  .credit b{color:var(--biru-tua)}
+  /* modal */
+  .modal-ov{position:absolute; inset:0; background:rgba(9,22,40,.55); display:none; align-items:center; justify-content:center; padding:20px; z-index:100}
+  .modal-ov.show{display:flex}
+  .modal{background:#fff; border-radius:16px; max-width:460px; width:100%; padding:24px; box-shadow:var(--shadow); position:relative; animation:floatup .01s}
+  .modal h3{margin:0 0 10px; font-size:19px; color:var(--biru-tua)}
+  .modal ul{margin:8px 0 16px; padding-left:20px} .modal li{margin:6px 0; font-size:14.5px}
+  .modal-x{position:absolute; top:12px; right:12px; width:34px; height:34px; border:none; background:var(--biru-muda); color:var(--biru-tua); border-radius:9px; font-size:16px; font-weight:800; cursor:pointer}
+  @media (prefers-reduced-motion:reduce){ *{transition:none!important; animation:none!important} }
+</style>
+</head>
+<body>
+<div id="stage" aria-live="polite">
+  <header>
+    <span class="logo"><span class="dot"></span> Jelajah Nusantara</span>
+    <span class="spacer"></span>
+    <button id="btn-bgm" class="iconbtn" title="Musik latar (nyala/mati)">🎵</button>
+    <span class="tag">IPS</span>
+    <div class="hud">
+      <span class="pill" id="combo-pill" style="display:none">🔥 <span id="hud-combo">0</span></span>
+      <span class="pill" id="score-pill" title="Skor">⭐ <span id="hud-score">0</span></span>
+      <span class="pill" id="step-pill"><span id="hud-step">Mulai</span></span>
+      <button class="pill quit" id="btn-quit-single" title="Keluar ke menu">✕ Keluar</button>
+    </div>
+  </header>
+  <div class="progress"><i id="bar"></i></div>
+  <main>
+    <div id="toast"></div>
+
+    <!-- LAMAN MUKA (background gambar) -->
+    <section class="screen active" id="s-home">
+      <div class="jn-cover">
+        <div class="jn-cover-actions">
+          <button class="btn primary big" id="btn-single">🧭 Single Player</button>
+          <button class="btn primary big" id="btn-multi">⚔️ Multiplayer Elimination</button>
+          <button class="btn ghost big" id="btn-tujuan">🎯 Tujuan Pembelajaran</button>
+          <button class="btn ghost big" id="btn-guide">📖 Cara Bermain</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- PANDUAN -->
+    <section class="screen" id="s-guide">
+      <h2>Cara Bermain</h2>
+      <p class="lead">Tersedia <b>2 mode</b> permainan.</p>
+
+      <h3 style="margin:6px 0 6px;color:var(--biru-tua)">🧭 Single Player</h3>
+      <div class="steps">
+        <div class="step"><div class="n">1</div><b>Susun Peta</b><p class="muted" style="margin:6px 0 0;font-size:14px">Seret nama pulau ke lokasinya yang tepat di peta.</p></div>
+        <div class="step"><div class="n">2</div><b>Kuis (10 soal acak)</b><p class="muted" style="margin:6px 0 0;font-size:14px">Dari bank <b>30 soal</b>, muncul 10 acak &amp; seimbang: <b>Tebak Lokasi</b>, <b>Pilihan Ganda</b>, <b>Benar/Salah</b> — dengan timer &amp; kombo.</p></div>
+      </div>
+
+      <h3 style="margin:8px 0 6px;color:var(--biru-tua)">⚔️ Multiplayer Elimination</h3>
+      <div class="steps">
+        <div class="step"><div class="n">1</div><b>Berbaris di depan kamera</b><p class="muted" style="margin:6px 0 0;font-size:14px">Murid berdiri menghadap kamera (layar penuh).</p></div>
+        <div class="step"><div class="n">2</div><b>Pilih sisi</b><p class="muted" style="margin:6px 0 0;font-size:14px">Muncul pernyataan. Pindah ke <b>KIRI = BENAR</b> atau <b>KANAN = SALAH</b> sebelum waktu habis (durasi dapat diatur).</p></div>
+        <div class="step"><div class="n">3</div><b>Reveal &amp; eliminasi</b><p class="muted" style="margin:6px 0 0;font-size:14px">Sisi benar menyala <b style="color:var(--hijau)">hijau</b>, sisi salah <b style="color:var(--merah)">merah</b>. Yang salah tereliminasi hingga tersisa <b>1 pemenang</b>.</p></div>
+      </div>
+
+      <div class="row">
+        <button class="btn primary" id="btn-guide-single">🧭 Main Single Player ▶</button>
+        <button class="btn primary" id="btn-guide-multi">⚔️ Main Multiplayer ▶</button>
+        <button class="btn ghost" id="btn-guide-back">Kembali</button>
+      </div>
+    </section>
+
+    <!-- PILIH MODE -->
+    <section class="screen" id="s-mode">
+      <h2>Pilih Mode</h2>
+      <p class="lead">Pilih cara bermain Jelajah Nusantara.</p>
+      <div class="mode-grid">
+        <button class="mode-card" id="mode-single"><div class="em">🧭</div><b>Single Player</b><div class="d">Susun Peta + <b>10 kuis acak</b> dari 30 soal: Tebak Lokasi, Pilihan Ganda, &amp; Benar/Salah.</div></button>
+        <button class="mode-card" id="mode-multi"><div class="em">⚔️</div><b>Multiplayer Elimination</b><div class="d">Adu antar murid pakai kamera: pilih sisi Benar/Salah, yang salah tereliminasi hingga tersisa 1 pemenang.</div><span class="badge-soon" style="background:var(--hijau);color:#fff">SIAP DIMAINKAN</span></button>
+      </div>
+      <div class="row"><button class="btn ghost" id="mode-back">Kembali</button></div>
+    </section>
+
+    <!-- MULTIPLAYER: SETUP -->
+    <section class="screen" id="s-mp-setup">
+      <h2>⚔️ Multiplayer Elimination</h2>
+      <p class="lead">Murid berbaris menghadap kamera, lalu memilih sisi <b>KIRI = BENAR</b> atau <b>KANAN = SALAH</b> untuk tiap pernyataan. Saat waktu habis, sisi yang benar menyala <b style="color:#2E9E5B">hijau</b> dan yang salah <b style="color:#E0533D">merah</b>. Murid di sisi salah tereliminasi — bertahan hingga tersisa <b>1 pemenang</b>!</p>
+      <div class="mp-form">
+        <label class="fld">⏱️ Waktu tiap soal:
+          <select id="mp-time">
+            <option value="5000">5 detik</option>
+            <option value="8000">8 detik</option>
+            <option value="10000" selected>10 detik</option>
+            <option value="15000">15 detik</option>
+            <option value="20000">20 detik</option>
+            <option value="30000">30 detik</option>
+          </select>
+        </label>
+        <label class="chk"><input type="checkbox" id="mp-mirror" checked> Cerminkan kamera (mode selfie)</label>
+      </div>
+      <div class="row"><button class="btn primary" id="mp-start">📷 Aktifkan Kamera &amp; Mulai ▶</button><button class="btn ghost" id="mp-setup-back">Kembali</button></div>
+      <p class="kbd" style="margin-top:8px">Atur durasi tiap soal di atas. Yang menjawab salah tereliminasi hingga tersisa 1 pemenang.</p>
+      <p class="kbd" id="mp-note" style="margin-top:12px">Butuh izin kamera. Jika kamera tak muncul, buka lewat <b>http://localhost</b> (mis. <code>python3 -m http.server</code>) atau HTTPS — permainan tetap bisa jalan tanpa kamera.</p>
+    </section>
+
+    <!-- MULTIPLAYER: ARENA -->
+    <section class="screen" id="s-mp">
+      <div class="mp-wrap">
+        <video id="mp-cam" autoplay playsinline muted></video>
+        <div class="mp-side left" id="mp-left"></div>
+        <div class="mp-side right" id="mp-right"></div>
+        <div class="mp-divider"></div>
+        <div class="mp-top">
+          <div class="mp-q" id="mp-q">…</div>
+          <div class="mp-timer" id="mp-timer"><i id="mp-bar"></i></div>
+          <div style="margin-top:10px"><button class="btn ghost" id="mp-ungkap" style="padding:8px 16px">Ungkap Sekarang</button></div>
+        </div>
+        <div class="mp-labels"><div class="lbl">⬅ BENAR</div><div class="lbl">SALAH ➡</div></div>
+        <div class="mp-verdict" id="mp-verdict"></div>
+        <div class="mp-foot" id="mp-foot" style="display:none">
+          <button class="btn primary" id="mp-next">Soal Berikutnya ▶</button>
+          <button class="btn ghost" id="mp-winbtn">🏆 Pemenang</button>
+          <button class="btn ghost" id="mp-quit">Keluar</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- MULTIPLAYER: PEMENANG -->
+    <section class="screen" id="s-mp-win">
+      <div class="panel center" style="text-align:center">
+        <div class="score-ring">🏆</div>
+        <div class="gelar">Selamat, Pemenang!</div>
+        <p class="lead" style="margin:8px auto">Tersisa <b>1 murid</b> — dialah juaranya. Beri tepuk tangan meriah! 👏</p>
+        <div class="row center"><button class="btn primary" id="mp-again">Main Lagi 🔁</button><button class="btn ghost" id="mp-home">Ke Menu</button></div>
+      </div>
+    </section>
+
+    <!-- PANGGUNG -->
+    <section class="screen" id="s-play">
+      <div class="clue" id="clue">
+        <div class="top">
+          <div class="ficon" id="clue-icon" style="display:none"></div>
+          <div style="flex:1; min-width:0">
+            <div class="qmeta" id="clue-meta">Misi</div>
+            <div class="txt" id="clue-txt">…</div>
+          </div>
+        </div>
+        <div class="timer" id="timer" style="display:none"><i id="timer-bar"></i></div>
+      </div>
+
+      <div class="map-wrap" id="map-wrap">
+        <img id="map-img" src="assets/peta-indonesia.png" alt="Peta Indonesia" />
+        <div id="zones"></div>
+      </div>
+
+      <div class="tray" id="tray" style="display:none"></div>
+      <div class="tf" id="tf" style="display:none"></div>
+      <div class="mc" id="mc" style="display:none"></div>
+
+      <div class="feedback" id="fb"></div>
+      <div class="play-foot">
+        <div class="dots" id="dots"></div>
+        <button class="btn primary" id="btn-next" disabled>Lanjut ▶</button>
+      </div>
+    </section>
+
+    <!-- HASIL -->
+    <section class="screen" id="s-result">
+      <div class="panel center">
+        <div class="qmeta" style="font-size:12px;font-weight:800;letter-spacing:.5px;color:var(--biru)">PETUALANGAN SELESAI</div>
+        <div class="score-ring"><span id="final-score">0</span></div>
+        <div class="muted">total poin</div>
+        <div class="stat-row" id="stat-row"></div>
+        <div class="gelar" id="gelar">Penjelajah Nusantara</div>
+        <div class="result-badges" id="result-badges"></div>
+        <p class="lead" id="result-msg" style="margin:8px auto"></p>
+        <div class="row center"><button class="btn primary" id="btn-again">Main Lagi 🔁</button></div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Modal Tujuan Pembelajaran -->
+  <div class="modal-ov" id="modal-tujuan" aria-hidden="true">
+    <div class="modal" role="dialog" aria-modal="true">
+      <button class="modal-x" id="tujuan-x" aria-label="Tutup">✕</button>
+      <h3>🎯 Tujuan Pembelajaran</h3>
+      <p class="muted" style="font-size:14px;margin:0 0 6px">Setelah bermain Jelajah Nusantara, murid dapat:</p>
+      <ul>
+        <li>Mengenal letak pulau &amp; wilayah utama Indonesia.</li>
+        <li>Menyebutkan kekhasan geografis &amp; sumber daya alam tiap wilayah.</li>
+        <li>Menjelaskan keberagaman kondisi geografis Indonesia.</li>
+      </ul>
+      <button class="btn primary" id="tujuan-ok">Mengerti</button>
+    </div>
+  </div>
+
+  <footer class="credit">Dibuat oleh <b>Tryas Sukmaning Sakti</b> — Guru IPS SMPN 1 Karangbinangun, Lamongan</footer>
+</div>
+<script src="assets/soal.js"></script>
+<script>
+"use strict";
+(function(){
+  // ---------- Zona pulau (koordinat % pada peta 1200x460) ----------
+  var ZONES = {
+    sumatra:   { nama:"Sumatra",    x:15.5, y:45 },
+    kalimantan:{ nama:"Kalimantan", x:39.5, y:38 },
+    jawa:      { nama:"Jawa",       x:33.5, y:75 },
+    sulawesi:  { nama:"Sulawesi",   x:57.0, y:49 },
+    papua:     { nama:"Papua",      x:93.5, y:56 }
+  };
+  var ORDER = ["sumatra","kalimantan","jawa","sulawesi","papua"];
+
+  // ---------- Bank soal Kuis Petualangan (akurat, jenjang SMP) ----------
+  // type: point (klik dari petunjuk) | icon (tebak ikon->pulau) | tf (benar/salah)
+  var BANK = []; // semua soal dimuat dari assets/soal.js
+
+  // ---------- Audio ----------
+  var actx=null;
+  function beep(f,d,t){ try{ if(!actx)actx=new (window.AudioContext||window.webkitAudioContext)(); var o=actx.createOscillator(),g=actx.createGain(); o.type=t||"sine"; o.frequency.value=f; o.connect(g); g.connect(actx.destination); g.gain.setValueAtTime(.0001,actx.currentTime); g.gain.exponentialRampToValueAtTime(.18,actx.currentTime+.02); g.gain.exponentialRampToValueAtTime(.0001,actx.currentTime+d); o.start(); o.stop(actx.currentTime+d);}catch(e){} }
+  var sndOk=function(){beep(660,.12);setTimeout(function(){beep(880,.14)},80)};
+  var sndNo=function(){beep(200,.22,"square")};
+  var sndTick=function(){beep(440,.05)};
+  var sndWin=function(){beep(523,.12);setTimeout(function(){beep(659,.12)},110);setTimeout(function(){beep(784,.2)},220)};
+
+  // ---------- Musik latar (prosedural, offline) ----------
+  var bgm={ on:false, timer:null, step:0, master:null, enabled:true };
+  function bgmVoice(freq,dur,vol,type){
+    try{
+      if(!actx) actx=new (window.AudioContext||window.webkitAudioContext)();
+      if(!bgm.master){ bgm.master=actx.createGain(); bgm.master.gain.value=.5; bgm.master.connect(actx.destination); }
+      var o=actx.createOscillator(), g=actx.createGain();
+      o.type=type||"triangle"; o.frequency.value=freq; o.connect(g); g.connect(bgm.master);
+      var t=actx.currentTime;
+      g.gain.setValueAtTime(.0001,t);
+      g.gain.exponentialRampToValueAtTime(vol,t+.04);
+      g.gain.exponentialRampToValueAtTime(.0001,t+dur);
+      o.start(t); o.stop(t+dur+.02);
+    }catch(e){}
+  }
+  // Progresi lembut C – Am – F – G (nada dasar + arpeggio), suasana ceria/tenang.
+  var BGM_PROG=[ [261.63,329.63,392.00,523.25],  // C
+                 [220.00,261.63,329.63,440.00],  // Am
+                 [174.61,261.63,349.23,440.00],  // F
+                 [196.00,246.94,392.00,493.88] ];// G
+  function bgmTick(){
+    var chord=BGM_PROG[Math.floor(bgm.step/4)%BGM_PROG.length];
+    var note=chord[bgm.step%chord.length];
+    bgmVoice(note,.55,.05,"triangle");                 // melodi arpeggio
+    if(bgm.step%4===0) bgmVoice(chord[0]/2,1.0,.045,"sine"); // bass tiap ketukan pertama
+    bgm.step++;
+  }
+  function bgmUpdateBtn(){ var b=$("btn-bgm"); if(!b)return; b.textContent=bgm.on?"🎵":"🔇"; b.classList.toggle("off",!bgm.on); b.title=bgm.on?"Musik latar: nyala (klik untuk mematikan)":"Musik latar: mati (klik untuk menyalakan)"; }
+  function bgmStart(){ if(bgm.on||!bgm.enabled)return; try{ if(!actx) actx=new (window.AudioContext||window.webkitAudioContext)(); if(actx.resume) actx.resume(); }catch(e){} bgm.on=true; bgmTick(); bgm.timer=setInterval(bgmTick,360); bgmUpdateBtn(); }
+  function bgmStop(){ bgm.on=false; if(bgm.timer){ clearInterval(bgm.timer); bgm.timer=null; } bgmUpdateBtn(); }
+  function bgmToggle(){ if(bgm.on){ bgm.enabled=false; bgmStop(); } else { bgm.enabled=true; bgmStart(); } }
+  // Nyalakan otomatis pada interaksi pertama (memenuhi kebijakan autoplay browser).
+  var bgmKick=function(){ bgmStart(); document.removeEventListener("pointerdown",bgmKick); };
+  document.addEventListener("pointerdown",bgmKick);
+
+  // ---------- State ----------
+  var SAVE="jelajah-nusantara-v3";
+  var st={ score:0, badges:[], combo:0, maxCombo:0, correct:0, qi:0 };
+  var QN = 9;                 // jumlah soal kuis (campuran)
+  var TIME = 12000;          // waktu per soal (ms)
+  var P_PLACE=8;             // poin per pulau tersusun
+  var quiz=[];               // soal terpilih
+  var placedCount=0;
+
+  function $(id){return document.getElementById(id);}
+  function show(id){ var s=document.querySelectorAll(".screen"); for(var i=0;i<s.length;i++)s[i].classList.remove("active"); $(id).classList.add("active"); $("stage").querySelector("main").scrollTop=0;
+    // HUD (skor/kombo/langkah) hanya relevan saat Single Player
+    $("stage").querySelector(".hud").style.display = (id==="s-play")?"flex":"none";
+  }
+  function bumpPill(id){ var p=$(id); p.classList.add("bump"); setTimeout(function(){p.classList.remove("bump")},150); }
+  function setScore(n){ st.score+=n; $("hud-score").textContent=st.score; bumpPill("score-pill"); }
+  function setProgress(frac){ $("bar").style.width=Math.round(frac*100)+"%"; }
+  function toast(t){ var e=$("toast"); e.textContent=t; e.classList.add("show"); setTimeout(function(){e.classList.remove("show")},1400); }
+  function save(){ try{ localStorage.setItem(SAVE, JSON.stringify({score:st.score,badges:st.badges})); }catch(e){} }
+  function load(){ try{ return JSON.parse(localStorage.getItem(SAVE)||"null"); }catch(e){ return null; } }
+  function fb(ok,msg){ var e=$("fb"); e.className="feedback show "+(ok?"ok":"no"); e.innerHTML=(ok?"✔ ":"✘ ")+msg; }
+  function clearFb(){ $("fb").className="feedback"; }
+  function floatPoint(x,y,txt){ var f=document.createElement("div"); f.className="float"; f.textContent=txt; f.style.left=x+"px"; f.style.top=y+"px"; $("stage").appendChild(f); setTimeout(function(){f.remove()},900); }
+
+  // ---------- Zona ----------
+  function buildZones(mode){
+    var wrap=$("zones"); wrap.innerHTML="";
+    ORDER.forEach(function(id){ var z=ZONES[id]; var d=document.createElement("div");
+      d.className="zone"+(mode==="click"?" pointmode":""); d.style.left=z.x+"%"; d.style.top=z.y+"%";
+      d.setAttribute("data-id",id); d.innerHTML='<span class="zlabel">'+z.nama+'</span>'; wrap.appendChild(d); });
+  }
+  function nearestZone(cx,cy){ var best=null,bd=1e9; document.querySelectorAll(".zone").forEach(function(z){ var r=z.getBoundingClientRect(); var d=Math.hypot(cx-(r.left+r.width/2), cy-(r.top+r.height/2)); if(d<bd){bd=d;best=z;} }); var tol=$("map-img").getBoundingClientRect().width*0.11; return (best&&bd<=tol)?best:null; }
+
+  function buildDots(n){ var d=$("dots"); d.innerHTML=""; for(var i=0;i<n;i++){ var s=document.createElement("span"); s.className="dot"+(i===0?" on":""); d.appendChild(s);} }
+  function markDot(i,ok){ var k=$("dots").children; if(k[i]) k[i].className="dot "+(ok?"ok":"bad"); if(k[i+1]) k[i+1].className="dot on"; }
+
+  // ================= MISI 1: SUSUN PETA =================
+  function roundPlace(){
+    clearFb(); $("combo-pill").style.display="none";
+    $("clue-icon").style.display="none"; $("timer").style.display="none"; $("tf").style.display="none";
+    $("map-wrap").style.display="block";
+    $("clue-meta").textContent="Misi 1 dari 2 — Susun Peta";
+    $("clue-txt").textContent="Seret setiap nama pulau ke lokasinya di peta.";
+    $("hud-step").textContent="Susun Peta";
+    buildZones("place"); buildDots(ORDER.length); $("btn-next").disabled=true;
+    var tray=$("tray"); tray.style.display="flex"; tray.innerHTML='<span class="tray-hint">Seret ke peta:</span>';
+    placedCount=0;
+    ORDER.slice().sort(function(){return Math.random()-.5;}).forEach(function(id){
+      var c=document.createElement("div"); c.className="chip"; c.setAttribute("data-id",id);
+      c.innerHTML='<span>📍</span> '+ZONES[id].nama; tray.appendChild(c);
+      dragChip(c,function(chip,zone){
+        var cid=chip.getAttribute("data-id");
+        if(zone && zone.getAttribute("data-id")===cid){
+          zone.classList.add("done","show-label"); chip.classList.add("placed");
+          sndOk(); setScore(P_PLACE); placedCount++; markDot(placedCount-1,true); setProgress(placedCount/ORDER.length*0.34);
+          if(placedCount===ORDER.length){ fb(true,"Peta lengkap! Semua pulau tepat."); $("btn-next").disabled=false; if(st.badges.indexOf("Kartografer")<0)st.badges.push("Kartografer"); toast("Peta lengkap! 🎉"); }
+          return true;
+        } else { sndNo(); if(zone){zone.classList.add("wrong"); setTimeout(function(){zone.classList.remove("wrong")},350);} toast("Belum pas"); return false; }
+      });
+    });
+    $("btn-next").onclick=startQuiz;
+  }
+
+  // ================= MISI 2: KUIS PETUALANGAN (timer + kombo) =================
+  function pick(arr,type,n){ return arr.filter(function(q){return q.type===type;}).sort(function(){return Math.random()-.5;}).slice(0,n); }
+  function pickType(t,n){ return BANK.filter(function(q){return q.type===t;}).sort(function(){return Math.random()-.5;}).slice(0,n); }
+  function startQuiz(){
+    if(BANK.length<3){ alert("Soal belum termuat. Pastikan berkas assets/soal.js ada di samping index.html."); return; }
+    // komposisi seimbang: 3 tiap tipe + 1 ekstra ke tipe acak = 10 soal, lalu urutan diacak
+    var counts={point:3, mc:3, tf:3}, extra=["point","mc","tf"][Math.floor(Math.random()*3)]; counts[extra]++;
+    quiz = pickType("point",counts.point).concat(pickType("mc",counts.mc)).concat(pickType("tf",counts.tf)).sort(function(){return Math.random()-.5;});
+    QN=quiz.length; st.qi=0; st.combo=0; st.correct=0;
+    $("hud-step").textContent="Kuis"; $("combo-pill").style.display="flex"; $("hud-combo").textContent="0";
+    $("tray").style.display="none"; buildDots(QN); $("btn-next").disabled=true; $("btn-next").onclick=finish;
+    renderQ();
+  }
+
+  var timerRAF=null, tStart=0, answered=false;
+  function stopTimer(){ if(timerRAF){cancelAnimationFrame(timerRAF); timerRAF=null;} }
+  function startTimer(){
+    $("timer").style.display="block"; tStart=performance.now(); var lowBeeped=false;
+    (function loop(now){
+      var elapsed=now-tStart, left=Math.max(0, TIME-elapsed), frac=left/TIME;
+      $("timer-bar").style.width=(frac*100)+"%";
+      $("timer").classList.toggle("low", frac<0.3);
+      if(frac<0.3 && !lowBeeped){ lowBeeped=true; }
+      if(left<=0){ stopTimer(); onTimeout(); return; }
+      timerRAF=requestAnimationFrame(loop);
+    })(performance.now());
+  }
+  function remainingFrac(){ return Math.max(0,(TIME-(performance.now()-tStart))/TIME); }
+
+  function renderQ(){
+    answered=false; clearFb(); stopTimer();
+    $("btn-next").disabled=true; $("btn-next").textContent="Lanjut ▶";
+    var q=quiz[st.qi];
+    var label = q.type==="point"?"Tebak Lokasi":q.type==="mc"?"Pilihan Ganda":"Benar / Salah";
+    $("clue-meta").textContent="Kuis — "+label+" ("+(st.qi+1)+"/"+QN+")";
+    $("clue-icon").style.display="none";
+    $("clue-txt").textContent = q.type==="point" ? ("Klik pulau: "+q.txt) : (q.type==="mc"? q.q : q.txt);
+    $("tf").style.display="none"; $("mc").style.display="none"; $("map-wrap").style.display="none";
+    if(q.type==="tf"){ var tf=$("tf"); tf.style.display="grid"; tf.innerHTML='<button class="yes">✔ Benar</button><button class="no">✘ Salah</button>'; tf.querySelector(".yes").onclick=function(){answerTF(true,this);}; tf.querySelector(".no").onclick=function(){answerTF(false,this);}; }
+    else if(q.type==="mc"){ var mc=$("mc"); mc.style.display="grid"; mc.innerHTML=""; q.opt.forEach(function(o){ var btn=document.createElement("button"); btn.className="mcopt"; btn.textContent=o; btn.onclick=function(){ answerMC(btn, q.opt.indexOf(o)); }; mc.appendChild(btn); }); }
+    else { $("map-wrap").style.display="block"; buildZones("click"); document.querySelectorAll(".zone").forEach(function(z){ z.onclick=function(){ answerMap(z); }; }); }
+    startTimer();
+  }
+
+  function scoreFor(){ var base=8, timeBonus=Math.round(remainingFrac()*12), comboBonus=st.combo*3; return {total:base+timeBonus+comboBonus, timeBonus:timeBonus, comboBonus:comboBonus}; }
+  function correctFlow(pts,expl,anchorEl){
+    st.combo++; st.maxCombo=Math.max(st.maxCombo,st.combo); st.correct++;
+    $("hud-combo").textContent=st.combo; bumpPill("combo-pill");
+    setScore(pts.total); sndOk();
+    if(anchorEl){ var r=anchorEl.getBoundingClientRect(), sr=$("stage").getBoundingClientRect(); floatPoint(r.left-sr.left+r.width/2, r.top-sr.top, "+"+pts.total); }
+    var extra = pts.comboBonus>0? " (kombo +"+pts.comboBonus+")" : "";
+    fb(true,"Benar! +"+pts.total+extra+" — "+expl);
+    if(st.combo>=3 && st.badges.indexOf("Beruntun 🔥")<0) st.badges.push("Beruntun 🔥");
+  }
+  function wrongFlow(expl){ st.combo=0; $("hud-combo").textContent="0"; sndNo(); fb(false,"Kurang tepat. "+expl); }
+  function afterAnswer(ok){ markDot(st.qi,ok); setProgress(0.34 + (st.qi+1)/QN*0.66);
+    // Jangan auto-pindah: tunggu murid membaca penjelasan lalu menekan "Lanjut".
+    stopTimer(); $("timer").style.display="none";
+    var last=(st.qi>=QN-1);
+    var b=$("btn-next"); b.disabled=false; b.textContent=last?"Lihat Hasil ▶":"Lanjut ▶";
+    b.onclick=function(){
+      if(st.qi>=QN-1){ finish(); }
+      else { st.qi++; renderQ(); }
+    };
+  }
+
+  function answerMap(z){
+    if(answered) return; answered=true; stopTimer();
+    var q=quiz[st.qi], id=z.getAttribute("data-id");
+    // kunci klik
+    document.querySelectorAll(".zone").forEach(function(zz){ zz.onclick=null; });
+    if(id===q.ans){ z.classList.add("done","show-label"); correctFlow(scoreFor(), q.e, z); afterAnswer(true); }
+    else { z.classList.add("wrong"); setTimeout(function(){z.classList.remove("wrong")},350);
+      var zc=document.querySelector('.zone[data-id="'+q.ans+'"]'); if(zc){zc.classList.add("reveal","show-label");}
+      wrongFlow(q.e); afterAnswer(false); }
+  }
+  function answerTF(val,btn){
+    if(answered) return; answered=true; stopTimer();
+    var q=quiz[st.qi];
+    $("tf").querySelectorAll("button").forEach(function(b){ b.setAttribute("disabled","true"); });
+    if(val===q.val){ correctFlow(scoreFor(), q.e, btn); afterAnswer(true); }
+    else { wrongFlow(q.e); afterAnswer(false); }
+  }
+  function answerMC(btn,i){
+    if(answered) return; answered=true; stopTimer();
+    var q=quiz[st.qi], opts=$("mc").querySelectorAll(".mcopt");
+    opts.forEach(function(b){ b.setAttribute("disabled","true"); });
+    if(i===q.a){ btn.classList.add("correct"); correctFlow(scoreFor(), q.e, btn); afterAnswer(true); }
+    else { btn.classList.add("wrong"); if(opts[q.a])opts[q.a].classList.add("correct"); wrongFlow(q.e); afterAnswer(false); }
+  }
+  function onTimeout(){ if(answered) return; answered=true;
+    var q=quiz[st.qi];
+    if(q.type==="tf"){ $("tf").querySelectorAll("button").forEach(function(b){ b.setAttribute("disabled","true"); }); }
+    else if(q.type==="mc"){ var mo=$("mc").querySelectorAll(".mcopt"); mo.forEach(function(b){b.setAttribute("disabled","true");}); if(mo[q.a])mo[q.a].classList.add("correct"); }
+    else { document.querySelectorAll(".zone").forEach(function(zz){ zz.onclick=null; }); var zc=document.querySelector('.zone[data-id="'+q.ans+'"]'); if(zc){zc.classList.add("reveal","show-label");} }
+    st.combo=0; $("hud-combo").textContent="0"; sndNo(); fb(false,"Waktu habis! "+q.e); afterAnswer(false);
+  }
+
+  // ---------- Drag chip (Misi 1) ----------
+  function dragChip(chip,onDrop){
+    var ghost=null,ox=0,oy=0,dragging=false;
+    chip.addEventListener("pointerdown",function(e){ if(chip.classList.contains("placed"))return; e.preventDefault();
+      var r=chip.getBoundingClientRect(); ox=e.clientX-r.left; oy=e.clientY-r.top;
+      ghost=chip.cloneNode(true); ghost.classList.add("dragging"); ghost.style.width=r.width+"px"; ghost.style.left=(e.clientX-ox)+"px"; ghost.style.top=(e.clientY-oy)+"px";
+      document.body.appendChild(ghost); chip.style.visibility="hidden"; dragging=true;
+      window.addEventListener("pointermove",mv); window.addEventListener("pointerup",up); });
+    function mv(e){ if(!dragging)return; ghost.style.left=(e.clientX-ox)+"px"; ghost.style.top=(e.clientY-oy)+"px";
+      var cx=e.clientX-ox+ghost.offsetWidth/2, cy=e.clientY-oy+ghost.offsetHeight/2;
+      document.querySelectorAll(".zone").forEach(function(z){z.classList.remove("over")}); var z=nearestZone(cx,cy); if(z)z.classList.add("over"); }
+    function up(e){ if(!dragging)return; dragging=false; window.removeEventListener("pointermove",mv); window.removeEventListener("pointerup",up);
+      var cx=e.clientX-ox+ghost.offsetWidth/2, cy=e.clientY-oy+ghost.offsetHeight/2; var z=nearestZone(cx,cy);
+      document.querySelectorAll(".zone").forEach(function(zz){zz.classList.remove("over")});
+      if(ghost&&ghost.parentNode)ghost.parentNode.removeChild(ghost); ghost=null; onDrop(chip,z); chip.style.visibility="visible"; }
+  }
+
+  // ---------- Hasil ----------
+  function finish(){
+    stopTimer(); sndWin(); save(); show("s-result");
+    $("final-score").textContent=st.score;
+    var acc = QN? Math.round(st.correct/QN*100):0;
+    $("stat-row").innerHTML='<div class="stat">Benar '+st.correct+'/'+QN+'</div><div class="stat">Akurasi '+acc+'%</div><div class="stat">Kombo terbaik '+st.maxCombo+'🔥</div>';
+    $("gelar").textContent = acc>=90?"Penjelajah Nusantara Ulung 🏆" : acc>=70?"Penjelajah Nusantara 🎖" : acc>=50?"Penjelajah Muda 🌱" : "Calon Penjelajah";
+    var bw=$("result-badges"); bw.innerHTML=""; (st.badges.length?st.badges:["Peserta"]).forEach(function(b){ var d=document.createElement("div"); d.className="badge"; d.innerHTML="🏅 "+b; bw.appendChild(d); });
+    $("result-msg").textContent = acc>=70 ? "Hebat! Kamu memahami keberagaman kondisi geografis Indonesia." : "Bagus! Ulangi untuk mengenal lebih banyak kekhasan tiap pulau.";
+    $("hud-step").textContent="Selesai"; setProgress(1);
+  }
+
+  // ---------- Alur ----------
+  function startGame(){ if(actx&&actx.resume)actx.resume(); st={score:0,badges:[],combo:0,maxCombo:0,correct:0,qi:0}; $("hud-score").textContent="0"; setProgress(0); show("s-play"); roundPlace(); }
+  function startMulti(){ if(actx&&actx.resume)actx.resume(); show("s-mp-setup"); }
+  // Halaman depan (dua mode langsung)
+  $("btn-bgm").onclick=bgmToggle; bgmUpdateBtn();
+  $("btn-single").onclick=startGame;
+  $("btn-multi").onclick=startMulti;
+  $("btn-quit-single").onclick=function(){
+    if(confirm("Keluar dari permainan dan kembali ke menu? Skor sesi ini tidak disimpan.")){
+      stopTimer(); show("s-home");
+    }
+  };
+  $("btn-guide").onclick=function(){ show("s-guide"); };
+  // Modal Tujuan Pembelajaran
+  var mTujuan=$("modal-tujuan");
+  function closeTujuan(){ mTujuan.classList.remove("show"); mTujuan.setAttribute("aria-hidden","true"); }
+  $("btn-tujuan").onclick=function(){ mTujuan.classList.add("show"); mTujuan.setAttribute("aria-hidden","false"); };
+  $("tujuan-x").onclick=closeTujuan; $("tujuan-ok").onclick=closeTujuan;
+  mTujuan.addEventListener("click",function(e){ if(e.target===mTujuan) closeTujuan(); });
+  document.addEventListener("keydown",function(e){ if(e.key==="Escape") closeTujuan(); });
+  $("btn-guide-back").onclick=function(){ show("s-home"); };
+  $("btn-guide-single").onclick=startGame;
+  $("btn-guide-multi").onclick=startMulti;
+  // Layar Pilih Mode (cadangan, mis. dari "Main Lagi")
+  $("mode-single").onclick=startGame;
+  $("mode-multi").onclick=startMulti;
+  $("mode-back").onclick=function(){ show("s-home"); };
+  $("btn-again").onclick=function(){ show("s-home"); };
+  // ================= MULTIPLAYER ELIMINATION =================
+  var MPTF = []; // semua soal dimuat dari assets/soal.js
+  var mpStream=null, mpRAF=null, mpQueue=[], mpTime=10000, mpCur=null, mpRevealed=false;
+  function mpShuffle(a){ return a.slice().sort(function(){return Math.random()-.5;}); }
+  function mpStopCam(){ if(mpStream){ mpStream.getTracks().forEach(function(t){t.stop();}); mpStream=null; } }
+  function mpStopTimer(){ if(mpRAF){ cancelAnimationFrame(mpRAF); mpRAF=null; } }
+  function mpLeave(){ mpStopTimer(); mpStopCam(); }
+
+  $("mp-setup-back").onclick=function(){ show("s-home"); };
+  $("mp-start").onclick=function(){
+    mpTime=parseInt($("mp-time").value,10)||10000; // waktu tiap soal (dapat diatur)
+    var v=$("mp-cam"); v.classList.toggle("mirror", $("mp-mirror").checked);
+    if(actx&&actx.resume)actx.resume();
+    function begin(){ mpQueue=mpShuffle(MPTF); show("s-mp"); mpRound(); }
+    if(navigator.mediaDevices&&navigator.mediaDevices.getUserMedia){
+      navigator.mediaDevices.getUserMedia({video:{facingMode:"user"},audio:false})
+        .then(function(s){ mpStream=s; v.srcObject=s; begin(); })
+        .catch(function(){ begin(); }); // tanpa kamera pun jalan
+    } else { begin(); }
+  };
+  function mpRound(){
+    mpRevealed=false; mpStopTimer();
+    if(mpQueue.length===0) mpQueue=mpShuffle(MPTF);
+    mpCur=mpQueue.pop();
+    $("mp-q").textContent=mpCur.t;
+    $("mp-left").className="mp-side left"; $("mp-right").className="mp-side right";
+    $("mp-verdict").className="mp-verdict"; $("mp-verdict").innerHTML="";
+    $("mp-foot").style.display="none"; $("mp-ungkap").style.display="inline-block";
+    $("mp-timer").classList.remove("low");
+    var t0=performance.now();
+    (function loop(now){ var frac=Math.max(0,1-(now-t0)/mpTime); $("mp-bar").style.width=(frac*100)+"%"; $("mp-timer").classList.toggle("low",frac<0.3); if(frac<=0){ mpReveal(); return; } mpRAF=requestAnimationFrame(loop); })(performance.now());
+  }
+  function mpReveal(){
+    if(mpRevealed) return; mpRevealed=true; mpStopTimer(); $("mp-ungkap").style.display="none";
+    var leftCorrect = mpCur.v===true; // KIRI = BENAR
+    $("mp-left").className="mp-side left "+(leftCorrect?"correct":"wrong");
+    $("mp-right").className="mp-side right "+(leftCorrect?"wrong":"correct");
+    var ans=mpCur.v?"BENAR":"SALAH";
+    $("mp-verdict").className="mp-verdict show";
+    $("mp-verdict").innerHTML='<div class="card"><div class="big '+(mpCur.v?"benar":"salah")+'">Jawaban: '+ans+'</div><div class="mp-penjelasan"><span class="lbl">Penjelasan</span>'+(mpCur.e||"")+'</div><div style="margin-top:8px;font-size:13px;opacity:.8">Sisi '+(leftCorrect?"KIRI":"KANAN")+' aman · sisi lain tereliminasi</div></div>';
+    try{ beep(660,.12); setTimeout(function(){beep(880,.14)},90); }catch(e){}
+    $("mp-foot").style.display="flex";
+  }
+  $("mp-ungkap").onclick=mpReveal;
+  $("mp-next").onclick=function(){ mpRound(); };
+  $("mp-winbtn").onclick=mpWinner;
+  $("mp-quit").onclick=function(){ mpLeave(); show("s-home"); };
+  function mpWinner(){ mpLeave(); try{ beep(523,.12); setTimeout(function(){beep(659,.12)},110); setTimeout(function(){beep(784,.2)},220);}catch(e){} show("s-mp-win"); }
+  $("mp-again").onclick=function(){ show("s-mp-setup"); };
+  $("mp-home").onclick=function(){ show("s-home"); };
+
+  // ---- Tambah soal dari assets/soal.js (bila ada) ----
+  (function(){
+    var S = window.SOAL_JELAJAH; if(!S) return;
+    var pulau={sumatra:"sumatra",kalimantan:"kalimantan",jawa:"jawa",sulawesi:"sulawesi",papua:"papua",
+               "pulau sumatra":"sumatra","pulau kalimantan":"kalimantan","pulau jawa":"jawa","pulau sulawesi":"sulawesi","pulau papua":"papua"};
+    (S.single_player||[]).forEach(function(x){
+      try{
+        if(x.tipe==="tebak_lokasi"){ var id=pulau[String(x.jawaban||"").toLowerCase().trim()]; if(!id)return; BANK.push({type:"point",ans:id,txt:x.pertanyaan,e:x.penjelasan||""}); }
+        else if(x.tipe==="pilihan_ganda"){ var a=(x.opsi||[]).indexOf(x.jawaban); BANK.push({type:"mc",q:x.pertanyaan,opt:x.opsi||[],a:a<0?0:a,e:x.penjelasan||""}); }
+        else if(x.tipe==="benar_salah"){ BANK.push({type:"tf",val:/^b/i.test(String(x.jawaban||"")),txt:x.pernyataan,e:x.penjelasan||""}); }
+      }catch(e){}
+    });
+    (S.multiplayer_benar_salah||[]).forEach(function(x){ try{ MPTF.push({v:/^b/i.test(String(x.jawaban||"")),t:x.pernyataan,e:x.penjelasan||""}); }catch(e){} });
+  })();
+
+  show("s-home"); // terapkan tampilan awal (sembunyikan header/progress di cover)
+})();
+</script>
+</body>
+</html>

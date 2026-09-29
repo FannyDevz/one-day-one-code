@@ -1,0 +1,1334 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Bebek IPS</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Pixelify+Sans:wght@400;600;700&display=swap">
+<style>
+  :root {
+    --bg: #cfeeff;
+    --panel: #ffffff;
+    --ink: #1d3557;
+    --muted: #4f6b8f;
+    --yellow: #fcd000;
+    --green: #3c9a0f;
+    --red: #f83800;
+    --cyan: #3cbcfc;
+    --lv1: #3c9a0f;
+    --lv2: #d98a00;
+    --lv3: #e8471c;
+    --pixel: "Press Start 2P", "Courier New", monospace;
+    --body: "Pixelify Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+    color-scheme: light;
+  }
+  html, body { height: 100%; margin: 0; }
+  body { background: var(--bg); color: var(--ink); font-family: var(--body); }
+  * { box-sizing: border-box; }
+  [hidden] { display: none !important; }
+
+  .app {
+    height: 100%;
+    max-width: 1100px;
+    margin: 0 auto;
+    padding-inline: 16px;
+    padding-block: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .box { background: var(--panel); border: 3px solid var(--ink); border-radius: 8px; }
+
+  /* HUD */
+  .hud { display: flex; flex-wrap: wrap; align-items: stretch; gap: 8px; }
+  .brand {
+    font-family: var(--pixel); font-size: 14px; color: #e8471c;
+    text-shadow: 2px 2px 0 var(--yellow);
+    display: flex; align-items: center; padding: 8px 12px; margin-right: auto;
+    letter-spacing: 1px;
+  }
+  .stat { display: flex; flex-direction: column; justify-content: center; gap: 6px; padding: 6px 12px; min-width: 96px; }
+  .stat .lbl { font-family: var(--pixel); font-size: 8px; color: var(--green); letter-spacing: 1px; }
+  .stat .val { font-family: var(--pixel); font-size: 13px; font-variant-numeric: tabular-nums; }
+  #lives { color: var(--red); letter-spacing: 3px; }
+  #lives .lost { color: #c9d6e6; }
+  .tools { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
+  .tbtn {
+    font-family: var(--pixel); font-size: 8px; color: var(--ink); background: var(--panel);
+    border: 3px solid var(--ink); border-radius: 8px; padding: 10px 10px; cursor: pointer; letter-spacing: 1px;
+  }
+  .tbtn.give { color: var(--lv3); border-color: var(--lv3); }
+  .tbtn.give.armed { background: var(--lv3); color: #ffffff; }
+  .tbtn:hover { color: #e8471c; border-color: #e8471c; }
+
+  /* Question */
+  .qpanel { padding: 10px 14px 12px; display: flex; flex-direction: column; gap: 8px; }
+  .qmeta { display: flex; flex-wrap: wrap; gap: 8px 14px; align-items: center; font-family: var(--pixel); font-size: 9px; letter-spacing: 1px; }
+  #qnum { color: var(--ink); font-variant-numeric: tabular-nums; }
+  .cat { color: var(--ink); background: var(--cyan); padding: 4px 6px; border-radius: 3px; }
+  #combo { color: #e8471c; }
+  #qtext { margin: 0; font-size: clamp(17px, 2.3vw, 22px); font-weight: 600; line-height: 1.3; text-wrap: balance; max-width: 70ch; }
+  #feedback { margin: 0; font-size: 16px; font-weight: 600; }
+  #feedback.good { color: var(--green); }
+  #feedback.bad { color: #d8360f; }
+  .timer { height: 8px; background: #d9e8f5; border-radius: 2px; overflow: hidden; }
+  #timerbar { height: 100%; width: 100%; background: var(--green); transition: background-color .2s; }
+  #timerbar.low { background: var(--red); }
+
+  /* Stage */
+  .stage { position: relative; flex: 1; min-height: 300px; overflow: hidden; touch-action: none; user-select: none; -webkit-user-select: none; }
+  #cv { display: block; position: absolute; inset: 0; }
+  .stage.aim #cv { cursor: none; }
+
+  .overlay {
+    position: absolute; inset: 0; background: rgba(29, 53, 87, .35);
+    display: grid; place-items: center; overflow: auto; padding: 16px; z-index: 2;
+  }
+  .card { max-width: 640px; width: 100%; padding: 22px 22px 24px; display: flex; flex-direction: column; gap: 14px; }
+  .card h1, .card h2, .modal h2 {
+    margin: 0; font-family: var(--pixel); font-weight: 400; line-height: 1.3; text-wrap: balance;
+    color: #e8471c; text-shadow: 3px 3px 0 var(--yellow);
+  }
+  .card h1 { font-size: clamp(24px, 5vw, 40px); }
+  .card h2, .modal h2 { font-size: clamp(18px, 3.6vw, 26px); }
+
+  /* Modal bantuan & tujuan pembelajaran */
+  .modal {
+    position: fixed; inset: 0; z-index: 20; background: rgba(29, 53, 87, .55);
+    display: grid; place-items: center; overflow: auto;
+    padding: max(16px, env(safe-area-inset-top, 0px)) 16px max(16px, env(safe-area-inset-bottom, 0px));
+  }
+  .modal-card { width: 100%; max-width: 640px; padding: 20px 22px 24px; display: flex; flex-direction: column; gap: 16px; }
+  .modal-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+  .modal h3 { margin: 0; font-family: var(--pixel); font-size: 10px; letter-spacing: 1px; color: var(--green); font-weight: 400; }
+  .modal p { margin: 0; font-size: 16px; line-height: 1.45; }
+  .modal section { display: flex; flex-direction: column; gap: 8px; }
+  .steps { margin: 0; padding-left: 22px; display: grid; gap: 8px; font-size: 16px; line-height: 1.4; }
+  .steps b, .modal p b { color: var(--lv3); font-weight: 700; }
+  .keys { margin: 0; display: grid; grid-template-columns: auto 1fr; gap: 8px 14px; font-size: 15px; align-items: baseline; }
+  .keys dt { font-family: var(--pixel); font-size: 9px; letter-spacing: 1px; white-space: nowrap; }
+  .keys dd { margin: 0; }
+  .tp-list { margin: 0; padding: 0; list-style: none; display: grid; gap: 10px; }
+  .tp-list li { display: grid; grid-template-columns: 64px 1fr; gap: 12px; align-items: start; font-size: 16px; line-height: 1.4; }
+  .tp-code { font-family: var(--pixel); font-size: 10px; color: var(--ink); background: var(--cyan); padding: 5px 0; border-radius: 3px; text-align: center; }
+  .tp-list em { font-style: normal; font-weight: 700; color: var(--lv3); }
+  .cover-links { display: flex; flex-wrap: wrap; justify-content: center; gap: 12px; }
+  .btn.small { font-size: 10px; padding: 10px 14px; box-shadow: 3px 3px 0 var(--red); }
+  .card p { margin: 0; font-size: 17px; line-height: 1.45; }
+  .rules { margin: 0; padding: 0; list-style: none; display: grid; gap: 8px; font-size: 16px; line-height: 1.35; }
+  .rules li { display: grid; grid-template-columns: 22px 1fr; gap: 8px; }
+  .rules li::before { content: "▶"; color: var(--green); font-size: 12px; padding-top: 3px; }
+  .rules b { color: #e8471c; font-weight: 600; }
+  .hiline { font-family: var(--pixel); font-size: 10px; color: var(--green); letter-spacing: 1px; }
+  .hiline span { color: var(--ink); }
+
+  .btn {
+    font-family: var(--pixel); font-size: 13px; letter-spacing: 1px;
+    background: var(--yellow); color: var(--ink); border: 3px solid var(--ink); border-radius: 6px;
+    padding: 14px 20px; cursor: pointer; box-shadow: 5px 5px 0 var(--red); align-self: flex-start;
+  }
+  .btn:hover { transform: translate(-1px, -1px); box-shadow: 6px 6px 0 var(--red); }
+  .btn:active { transform: translate(3px, 3px); box-shadow: 2px 2px 0 var(--red); }
+  button:focus-visible { outline: 3px dashed var(--cyan); outline-offset: 3px; }
+
+  .levels { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
+  .lvl {
+    display: flex; flex-direction: column; gap: 6px; text-align: left; cursor: pointer;
+    background: var(--panel); color: var(--ink); border: 3px solid var(--ink); border-radius: 6px;
+    padding: 12px; box-shadow: 4px 4px 0 var(--lvc); font-family: var(--body);
+  }
+  .lvl:hover { transform: translate(-1px, -1px); box-shadow: 6px 6px 0 var(--lvc); }
+  .lvl:active { transform: translate(3px, 3px); box-shadow: 1px 1px 0 var(--lvc); }
+  .lvl:disabled { cursor: not-allowed; opacity: .6; box-shadow: none; background: #eef3f8; }
+  .lvl:disabled:hover, .lvl:disabled:active { transform: none; box-shadow: none; }
+  .lvl-lock { font-family: var(--pixel); font-size: 8px; letter-spacing: 1px; color: var(--lv3); line-height: 1.6; }
+  .lvl-name { font-family: var(--pixel); font-size: 12px; color: var(--lvc); letter-spacing: 1px; }
+  .lvl-sub { font-size: 16px; font-weight: 700; }
+  .lvl-desc { font-size: 14px; line-height: 1.35; color: var(--muted); }
+  .lvl-hi { font-family: var(--pixel); font-size: 8px; letter-spacing: 1px; color: var(--ink); font-variant-numeric: tabular-nums; }
+  /* Halaman depan, pilih level & game over: panggung game memenuhi layar, HUD dan panel soal disembunyikan */
+  .app.cover-mode { max-width: none; padding: 0; gap: 0; }
+  .app.cover-mode .hud, .app.cover-mode .qpanel, .app.cover-mode .foot, .app.cover-mode .hint { display: none; }
+  .app.cover-mode .stage { border: 0; border-radius: 0; }
+  .overlay.cover { background: linear-gradient(rgba(29, 53, 87, .05), rgba(29, 53, 87, .4)); }
+  .cover-inner { display: flex; flex-direction: column; align-items: center; gap: 18px; text-align: center; max-width: 600px; }
+  .cover-kicker { margin: 0; font-family: var(--pixel); font-size: 10px; letter-spacing: 2px; color: #ffffff; background: var(--ink); padding: 7px 10px; border-radius: 3px; }
+  .cover-title {
+    margin: 0; font-family: var(--pixel); font-weight: 400; font-size: clamp(48px, min(13vw, 16vh), 128px); line-height: 1.1; letter-spacing: 2px;
+    color: var(--yellow); text-shadow: 5px 5px 0 var(--lv3), 10px 10px 0 var(--ink);
+  }
+  .cover-sub { margin: 0; font-size: clamp(18px, 2.6vw, 24px); font-weight: 700; color: #ffffff; text-shadow: 2px 2px 0 var(--ink); text-wrap: balance; }
+  .btn.big { font-size: 18px; padding: 18px 36px; align-self: center; }
+  .blink-hint { margin: 0; font-family: var(--pixel); font-size: 9px; letter-spacing: 1px; color: #ffffff; text-shadow: 1px 1px 0 var(--ink); animation: blink 1s steps(2) infinite; }
+  .cover .credit { color: #ffffff; text-shadow: 1px 1px 0 var(--ink); }
+  .cover .credit b { color: var(--yellow); }
+  .card .back { order: 3; }
+  .btnrow { display: flex; flex-wrap: wrap; gap: 14px; }
+  .btn.alt { background: var(--panel); }
+  .bigscore { font-family: var(--pixel); font-size: clamp(26px, 6vw, 40px); color: var(--ink); font-variant-numeric: tabular-nums; }
+  .stats { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px 16px; }
+  .stats div { display: flex; flex-direction: column; gap: 4px; }
+  .stats dt { font-family: var(--pixel); font-size: 8px; color: var(--green); letter-spacing: 1px; }
+  .stats dd { margin: 0; font-size: 20px; font-weight: 600; font-variant-numeric: tabular-nums; }
+  .record { font-family: var(--pixel); font-size: 11px; color: #ffffff; background: var(--green); padding: 6px 8px; align-self: flex-start; border-radius: 3px; animation: blink 0.8s steps(2) infinite; }
+  @keyframes blink { 50% { opacity: .35; } }
+
+  #overMsg { font-weight: 600; }
+  .credit { margin: 0; font-size: 14px; color: var(--muted); }
+  .credit b { color: var(--ink); font-weight: 700; }
+  .card .credit { order: 3; }
+  .foot { display: flex; justify-content: center; }
+  .hint { font-size: 14px; color: var(--muted); text-align: center; }
+  .hint kbd { font-family: var(--pixel); font-size: 9px; color: var(--ink); border: 2px solid var(--muted); border-radius: 3px; padding: 2px 4px; }
+
+  @media (max-width: 640px) {
+    .levels { grid-template-columns: 1fr; }
+    .blink-hint { display: none; }
+    .card .rules { order: 2; }
+    .tools { width: 100%; }
+    .tools .tbtn { flex: 1 1 auto; padding: 10px 6px; white-space: nowrap; }
+    .app { gap: 8px; padding-block: 8px; }
+    .brand { font-size: 11px; width: 100%; padding: 6px 10px; }
+    .stat { min-width: 0; flex: 1; padding: 6px 8px; }
+    .stat .val { font-size: 11px; }
+    .hint { display: none; }
+    .qpanel { padding: 8px 10px 10px; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .record, .blink-hint { animation: none; }
+    .btn:hover, .btn:active, .lvl:hover, .lvl:active { transform: none; }
+  }
+</style>
+</head>
+<body>
+
+<div class="app cover-mode" id="app">
+  <header class="hud">
+    <div class="brand box">BEBEK IPS</div>
+    <div class="stat box"><span class="lbl">SKOR</span><span class="val" id="score">000000</span></div>
+    <div class="stat box"><span class="lbl">TOP</span><span class="val" id="hi">000000</span></div>
+    <div class="stat box"><span class="lbl">NYAWA</span><span class="val" id="lives">♥♥♥</span></div>
+    <div class="tools">
+      <button class="tbtn" data-open="helpModal" type="button">BANTUAN</button>
+      <button class="tbtn" data-open="tpModal" type="button">TP</button>
+      <button class="tbtn" id="muteBtn" type="button">SUARA ON</button>
+      <button class="tbtn" id="pauseBtn" type="button">JEDA</button>
+      <button class="tbtn give" id="giveBtn" type="button" hidden>MENYERAH</button>
+    </div>
+  </header>
+
+  <section class="qpanel box" aria-live="polite">
+    <div class="qmeta">
+      <span id="qnum">IPS SMP · 3 LEVEL</span>
+      <span class="cat" id="qcat">TP 3.1 – 3.6</span>
+      <span id="combo"></span>
+    </div>
+    <p id="qtext">Pilih level, lalu tembak bebek yang membawa jawaban benar.</p>
+    <p id="feedback" hidden></p>
+    <div class="timer"><div id="timerbar"></div></div>
+  </section>
+
+  <div class="stage box" id="stage">
+    <canvas id="cv"></canvas>
+
+    <div class="overlay cover" id="coverScreen">
+      <div class="cover-inner">
+        <p class="cover-kicker">IPS SMP · TP 3.1 – 3.6</p>
+        <h1 class="cover-title">BEBEK<br>IPS</h1>
+        <p class="cover-sub">Tembak bebek yang membawa jawaban benar!</p>
+        <button class="btn big" id="startBtn" type="button">MULAI</button>
+        <div class="cover-links">
+          <button class="btn small alt" data-open="helpModal" type="button">BANTUAN</button>
+          <button class="btn small alt" data-open="tpModal" type="button">TUJUAN PEMBELAJARAN</button>
+        </div>
+        <p class="blink-hint">ATAU TEKAN ENTER</p>
+        <p class="credit">Dibuat oleh <b>Tryas Sukmaning Sakti</b></p>
+      </div>
+    </div>
+
+    <div class="overlay" id="titleScreen" hidden>
+      <div class="card box">
+        <h2>PILIH LEVEL</h2>
+        <ul class="rules">
+          <li><span>Klik atau ketuk bebek yang membawa <b>jawaban benar</b>. Keyboard: tekan <b>A–E</b>.</span></li>
+          <li><span><b>3 nyawa.</b> Salah tembak atau waktu habis, nyawa berkurang satu.</span></li>
+          <li><span>Tiap level berisi <b>20 soal acak</b> dari bank 50 soal, mencakup keenam tujuan pembelajaran. Tuntaskan 20 soal untuk <b>membuka level berikutnya</b>.</span></li>
+          <li><span>Jawab cepat untuk bonus waktu. Benar beruntun memberi <b>bonus combo</b>.</span></li>
+        </ul>
+        <div class="levels" id="levelList"></div>
+        <div class="btnrow back">
+          <button class="btn alt" id="backBtn" type="button">KEMBALI</button>
+          <button class="btn small alt" data-open="helpModal" type="button">BANTUAN</button>
+          <button class="btn small alt" data-open="tpModal" type="button">TUJUAN PEMBELAJARAN</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="overlay" id="pauseScreen" hidden>
+      <div class="card box">
+        <h2>JEDA</h2>
+        <p>Bebek sedang menunggu. Soal dan waktu berhenti sampai kamu lanjut.</p>
+        <button class="btn" id="resumeBtn" type="button">LANJUTKAN</button>
+      </div>
+    </div>
+
+    <div class="overlay" id="overScreen" hidden>
+      <div class="card box">
+        <h2 id="overTitle">GAME OVER</h2>
+        <span class="record" id="recordBadge" hidden>REKOR BARU!</span>
+        <p id="overMsg"></p>
+        <div class="bigscore" id="finalScore">000000</div>
+        <dl class="stats">
+          <div><dt>JAWABAN BENAR</dt><dd id="stCorrect">0 / 0</dd></div>
+          <div><dt>AKURASI</dt><dd id="stAcc">0%</dd></div>
+          <div><dt>COMBO TERBAIK</dt><dd id="stCombo">0</dd></div>
+          <div><dt>TOP LEVEL INI</dt><dd id="stHi">0</dd></div>
+        </dl>
+        <div class="btnrow">
+          <button class="btn" id="nextBtn" type="button" hidden>LANJUT</button>
+          <button class="btn" id="againBtn" type="button">MAIN LAGI</button>
+          <button class="btn alt" id="menuBtn" type="button">PILIH LEVEL</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <footer class="foot">
+    <p class="credit">Dibuat oleh <b>Tryas Sukmaning Sakti</b></p>
+  </footer>
+  <p class="hint"><kbd>1</kbd>–<kbd>3</kbd> pilih level · <kbd>A</kbd>–<kbd>E</kbd> tembak bebek · <kbd>P</kbd> jeda · tombol MENYERAH untuk berhenti · <kbd>M</kbd> suara</p>
+</div>
+
+<div class="modal" id="helpModal" role="dialog" aria-modal="true" aria-labelledby="helpTitle" hidden>
+  <div class="modal-card box">
+    <div class="modal-head">
+      <h2 id="helpTitle">CARA BERMAIN</h2>
+      <button class="tbtn" data-close type="button">TUTUP</button>
+    </div>
+    <section>
+      <h3>LANGKAH</h3>
+      <ol class="steps">
+        <li><b>Pilih level.</b> Level 1 terbuka sejak awal. Level 2 dan 3 terbuka setelah level sebelumnya tuntas.</li>
+        <li><b>Baca soal</b> di panel atas. Sisa waktu terlihat dari bar hijau di bawah soal.</li>
+        <li><b>Tembak bebek</b> yang membawa jawaban benar dengan klik atau ketuk bebeknya, atau tekan huruf A–E.</li>
+        <li><b>Jaga 3 nyawa.</b> Salah tembak atau waktu habis mengurangi satu nyawa, lalu jawaban benar ditampilkan.</li>
+        <li><b>Tuntaskan 20 soal</b> sebelum nyawa habis untuk membuka level berikutnya.</li>
+      </ol>
+    </section>
+    <section>
+      <h3>SKOR</h3>
+      <p>Setiap jawaban benar bernilai <b>100 poin</b>, ditambah <b>10 poin</b> untuk tiap detik tersisa. Jawaban benar beruntun memberi bonus combo <b>+25 poin</b> per soal, paling banyak +250. Total poin dikali <b>×1</b> di Level 1, <b>×1,5</b> di Level 2, dan <b>×2</b> di Level 3.</p>
+    </section>
+    <section>
+      <h3>TOMBOL</h3>
+      <dl class="keys">
+        <dt>A – E</dt><dd>Tembak bebek dengan huruf itu</dd>
+        <dt>1 – 3</dt><dd>Pilih level di layar Pilih Level</dd>
+        <dt>P / ESC</dt><dd>Jeda dan lanjutkan permainan</dd>
+        <dt>M</dt><dd>Nyalakan atau matikan suara</dd>
+        <dt>MENYERAH</dt><dd>Klik dua kali untuk berhenti di tengah permainan</dd>
+      </dl>
+    </section>
+  </div>
+</div>
+
+<div class="modal" id="tpModal" role="dialog" aria-modal="true" aria-labelledby="tpTitle" hidden>
+  <div class="modal-card box">
+    <div class="modal-head">
+      <h2 id="tpTitle">TUJUAN PEMBELAJARAN</h2>
+      <button class="tbtn" data-close type="button">TUTUP</button>
+    </div>
+    <ul class="tp-list">
+      <li><span class="tp-code">3.1</span><span>Peserta didik <em>menganalisis</em> potensi alam di Indonesia.</span></li>
+      <li><span class="tp-code">3.2</span><span>Peserta didik <em>mengklasifikasikan</em> pemanfaatan dan pelestarian potensi sumber daya alam.</span></li>
+      <li><span class="tp-code">3.3</span><span>Peserta didik <em>menjelaskan</em> faktor yang menyebabkan perubahan potensi sumber daya alam.</span></li>
+      <li><span class="tp-code">3.4</span><span>Peserta didik <em>mendemonstrasikan</em> penentuan harga dan pasar di lingkungan sekitar.</span></li>
+      <li><span class="tp-code">3.5</span><span>Peserta didik <em>menganalisis</em> potensi Indonesia menjadi negara maju.</span></li>
+      <li><span class="tp-code">3.6</span><span>Peserta didik <em>mendemonstrasikan</em> interaksi sosial dalam masyarakat.</span></li>
+    </ul>
+    <section>
+      <h3>DI DALAM GAME</h3>
+      <p>Setiap permainan berisi 20 soal dengan <b>3–4 soal dari tiap TP</b>. Label TP tampil di atas setiap soal. Level 1 menguji ingatan dan pemahaman, Level 2 penerapan pada contoh kasus, dan Level 3 analisis sebab-akibat.</p>
+    </section>
+  </div>
+</div>
+
+<script>
+(() => {
+  // Format soal: [topik, pertanyaan, [jawaban benar, pengecoh...]]. Urutan pilihan diacak saat main.
+  const PER_GAME = 20; // soal per permainan, diambil acak dari bank soal tiap level
+  const T1 = "TP 3.1 · Potensi alam", T2 = "TP 3.2 · Pemanfaatan SDA", T3 = "TP 3.3 · Perubahan SDA",
+        T4 = "TP 3.4 · Harga & pasar", T5 = "TP 3.5 · Negara maju", T6 = "TP 3.6 · Interaksi sosial";
+  const LEVELS = [
+    {
+      name: "LEVEL 1", kelas: "Mudah", tag: "Mengingat & memahami", time: 18, minTime: 14, speed: .8, mult: 1, color: "var(--lv1)",
+      qs: [
+        [T1, "Segala sesuatu di alam yang dapat dimanfaatkan untuk memenuhi kebutuhan manusia disebut...", ["Sumber daya alam", "Sumber daya manusia", "Sumber daya buatan"]],
+        [T1, "Indonesia kaya hasil laut karena sebagian besar wilayahnya berupa...", ["Perairan", "Gurun", "Pegunungan es"]],
+        [T1, "Tanah di sekitar gunung api umumnya subur karena mengandung...", ["Abu vulkanik", "Pasir pantai", "Garam laut"]],
+        [T1, "Hutan hujan tropis yang luas di Indonesia banyak terdapat di Pulau...", ["Kalimantan", "Madura", "Bali"]],
+        [T1, "Tambang emas dan tembaga terbesar di Indonesia terdapat di...", ["Papua", "Jawa Tengah", "Bali"]],
+        [T1, "Daerah penghasil timah terbesar di Indonesia adalah...", ["Bangka Belitung", "Yogyakarta", "Bali"]],
+        [T1, "Batu bara banyak ditambang di Pulau...", ["Kalimantan", "Bali", "Madura"]],
+        [T1, "Sinar matahari yang bersinar sepanjang tahun cocok untuk pembangkit listrik tenaga...", ["Surya", "Nuklir", "Batu bara"]],
+        [T1, "Keindahan alam seperti Danau Toba dan Raja Ampat merupakan potensi di bidang...", ["Pariwisata", "Pertambangan", "Perindustrian"]],
+        [T2, "Contoh sumber daya alam yang dapat diperbarui adalah...", ["Hutan", "Minyak bumi", "Batu bara"]],
+        [T2, "Contoh sumber daya alam yang tidak dapat diperbarui adalah...", ["Minyak bumi", "Air", "Ikan"]],
+        [T2, "Sinar matahari dan angin termasuk sumber daya alam yang...", ["Tidak akan habis", "Tidak dapat diperbarui", "Hanya ada di kutub"]],
+        [T2, "Menanam kembali hutan yang gundul disebut...", ["Reboisasi", "Erosi", "Abrasi"]],
+        [T2, "Menangkap ikan dengan bom dapat merusak...", ["Terumbu karang", "Gunung api", "Padang pasir"]],
+        [T2, "Tempat perlindungan hewan langka agar tidak punah disebut...", ["Suaka margasatwa", "Kebun sayur", "Pasar hewan"]],
+        [T2, "Hutan bakau (mangrove) di tepi pantai berfungsi mencegah...", ["Abrasi", "Kebakaran", "Gempa"]],
+        [T2, "Contoh pemanfaatan air sungai adalah...", ["Irigasi sawah", "Bahan bakar kendaraan", "Bahan baku emas"]],
+        [T2, "Prinsip 3R untuk menjaga lingkungan adalah Reduce, Reuse, dan...", ["Recycle", "Relax", "Remove"]],
+        [T3, "Penebangan hutan secara besar-besaran disebut...", ["Deforestasi", "Reboisasi", "Irigasi"]],
+        [T3, "Pengikisan tanah oleh air hujan disebut...", ["Erosi", "Abrasi", "Reboisasi"]],
+        [T3, "Pengikisan pantai oleh gelombang laut disebut...", ["Abrasi", "Erosi", "Irigasi"]],
+        [T3, "Contoh faktor alam yang dapat mengubah potensi sumber daya alam adalah...", ["Letusan gunung api", "Membangun sekolah", "Membuka toko"]],
+        [T3, "Jumlah penduduk yang terus bertambah membuat kebutuhan sumber daya alam...", ["Meningkat", "Menurun", "Tetap"]],
+        [T3, "Sawah yang diubah menjadi perumahan membuat lahan pertanian...", ["Berkurang", "Bertambah", "Tetap"]],
+        [T3, "Penggunaan teknologi pertanian modern dapat membuat hasil panen...", ["Meningkat", "Menurun drastis", "Tidak berubah"]],
+        [T3, "Membuang sampah ke sungai dapat menyebabkan...", ["Pencemaran air", "Air menjadi jernih", "Ikan bertambah"]],
+        [T4, "Tempat bertemunya penjual dan pembeli disebut...", ["Pasar", "Bank", "Sekolah"]],
+        [T4, "Jumlah barang yang ingin dibeli pembeli pada harga tertentu disebut...", ["Permintaan", "Penawaran", "Produksi"]],
+        [T4, "Jumlah barang yang ditawarkan penjual pada harga tertentu disebut...", ["Penawaran", "Permintaan", "Konsumsi"]],
+        [T4, "Jika harga suatu barang naik, permintaan barang itu biasanya...", ["Turun", "Naik", "Tetap"]],
+        [T4, "Jika harga suatu barang naik, penawaran barang itu biasanya...", ["Naik", "Turun", "Tetap"]],
+        [T4, "Pasar tempat penjual dan pembeli bertemu langsung dan bisa tawar-menawar disebut pasar...", ["Tradisional", "Modern", "Saham"]],
+        [T4, "Supermarket dan minimarket termasuk pasar...", ["Modern", "Tradisional", "Tahunan"]],
+        [T4, "Harga yang terbentuk saat permintaan sama dengan penawaran disebut harga...", ["Keseimbangan", "Diskon", "Grosir"]],
+        [T4, "Membeli barang melalui aplikasi di internet disebut...", ["Belanja daring", "Pasar malam", "Pasar induk"]],
+        [T5, "Negara yang penduduknya sejahtera, berpendapatan tinggi, dan teknologinya maju disebut negara...", ["Maju", "Berkembang", "Miskin"]],
+        [T5, "Saat ini Indonesia tergolong negara...", ["Berkembang", "Maju", "Terbelakang"]],
+        [T5, "Cita-cita Indonesia menjadi negara maju pada tahun 2045 dikenal dengan sebutan...", ["Indonesia Emas 2045", "Indonesia Hijau 2030", "Indonesia Baru 2020"]],
+        [T5, "Jumlah penduduk usia produktif yang besar disebut...", ["Bonus demografi", "Ledakan bayi", "Urbanisasi"]],
+        [T5, "Salah satu ciri negara maju adalah angka buta hurufnya...", ["Rendah", "Tinggi", "Terus naik"]],
+        [T5, "Pendapatan rata-rata penduduk suatu negara disebut pendapatan...", ["Per kapita", "Harian", "Keluarga"]],
+        [T5, "Kunci utama meningkatkan kualitas sumber daya manusia adalah...", ["Pendidikan", "Hiburan", "Liburan"]],
+        [T5, "Contoh negara maju di Asia adalah...", ["Jepang", "Laos", "Timor-Leste"]],
+        [T6, "Hubungan timbal balik antarindividu atau antarkelompok disebut...", ["Interaksi sosial", "Mobilitas sosial", "Stratifikasi sosial"]],
+        [T6, "Syarat terjadinya interaksi sosial adalah kontak sosial dan...", ["Komunikasi", "Pertengkaran", "Perlombaan"]],
+        [T6, "Gotong royong membersihkan kampung adalah contoh...", ["Kerja sama", "Persaingan", "Pertentangan"]],
+        [T6, "Dua siswa berlomba meraih juara kelas adalah contoh...", ["Persaingan", "Kerja sama", "Akomodasi"]],
+        [T6, "Interaksi sosial yang mengarah pada persatuan disebut interaksi...", ["Asosiatif", "Disosiatif", "Konflik"]],
+        [T6, "Interaksi sosial yang mengarah pada perpecahan disebut interaksi...", ["Disosiatif", "Asosiatif", "Kerja sama"]],
+        [T6, "Manusia disebut makhluk sosial karena...", ["Membutuhkan orang lain", "Bisa hidup sendiri", "Suka menyendiri"]]
+      ]
+    },
+    {
+      name: "LEVEL 2", kelas: "Sedang", tag: "Menerapkan", time: 14, minTime: 11, speed: 1, mult: 1.5, color: "var(--lv2)",
+      qs: [
+        [T1, "Pantai dengan ombak besar seperti di selatan Pulau Jawa berpotensi dikembangkan untuk...", ["Wisata selancar", "Tambang emas", "Kebun teh", "Sawah padi"]],
+        [T1, "Dataran tinggi yang sejuk seperti Puncak, Bogor, cocok untuk perkebunan...", ["Teh", "Kelapa", "Kelapa sawit", "Tebu"]],
+        [T1, "Pesisir dengan air laut jernih dan terumbu karang indah paling cocok dikembangkan sebagai...", ["Wisata bahari", "Tambang batu bara", "Kebun apel", "Industri berat"]],
+        [T1, "Daerah perbukitan kapur seperti Gunungkidul berpotensi menghasilkan...", ["Batu kapur", "Minyak bumi", "Teh", "Timah"]],
+        [T1, "Pembangkit Listrik Tenaga Panas Bumi (PLTP) paling cocok dibangun di daerah...", ["Gunung api", "Pantai", "Rawa gambut", "Padang rumput"]],
+        [T1, "Sungai yang deras dan berbatu berpotensi dimanfaatkan untuk...", ["PLTA dan arung jeram", "Tambang minyak", "Kebun sawit", "Tambak garam"]],
+        [T1, "Laut Indonesia yang sangat luas menjadi potensi besar di sektor...", ["Perikanan", "Kehutanan", "Peternakan sapi", "Perkebunan kopi"]],
+        [T1, "Dataran rendah yang subur dengan irigasi yang baik paling cocok untuk...", ["Sawah padi", "Kebun teh", "Tambang timah", "Wisata ski"]],
+        [T1, "Potensi tambang utama Provinsi Kalimantan Timur adalah...", ["Batu bara", "Timah", "Salju abadi", "Kebun apel"]],
+        [T2, "Pak Budi memakai botol plastik bekas sebagai pot tanaman. Ini contoh...", ["Reuse", "Reduce", "Recycle", "Reboisasi"]],
+        [T2, "Membawa tas belanja sendiri agar tidak memakai kantong plastik adalah contoh...", ["Reduce", "Reuse", "Recycle", "Reboisasi"]],
+        [T2, "Mengolah sampah plastik menjadi biji plastik baru adalah contoh...", ["Recycle", "Reduce", "Reuse", "Reboisasi"]],
+        [T2, "Nelayan menangkap ikan dengan jaring yang ramah lingkungan. Tujuannya adalah...", ["Menjaga kelestarian ikan", "Menambah sampah laut", "Merusak terumbu karang", "Menghabiskan ikan"]],
+        [T2, "Sistem tebang pilih dalam kehutanan artinya...", ["Hanya menebang pohon tua", "Menebang semua pohon", "Membakar hutan", "Menanam satu jenis pohon"]],
+        [T2, "Pembuatan terasering di lereng gunung bertujuan untuk...", ["Mencegah erosi", "Mempercepat banjir", "Mengurangi hasil panen", "Menambah abrasi"]],
+        [T2, "Minyak bumi, batu bara, dan gas alam termasuk sumber daya alam yang...", ["Tidak dapat diperbarui", "Dapat diperbarui", "Tidak terbatas", "Hayati"]],
+        [T2, "Hutan, ikan, dan hewan ternak termasuk sumber daya alam...", ["Hayati", "Nonhayati", "Mineral", "Energi fosil"]],
+        [T2, "Contoh sumber daya alam nonhayati adalah...", ["Batu bara", "Padi", "Sapi", "Hutan jati"]],
+        [T3, "Penangkapan ikan yang berlebihan di suatu perairan dapat menyebabkan...", ["Jumlah ikan berkurang", "Ikan makin banyak", "Air laut makin jernih", "Terumbu karang tumbuh"]],
+        [T3, "Kebakaran hutan yang luas membuat potensi hutan...", ["Berkurang", "Bertambah", "Tetap", "Berlipat ganda"]],
+        [T3, "Pabrik di tepi sungai membuang limbah tanpa diolah. Akibatnya...", ["Sungai tercemar", "Ikan bertambah", "Air makin bersih", "Banjir berkurang"]],
+        [T3, "Letusan gunung api merusak lahan pertanian, tetapi dalam jangka panjang membuat tanah...", ["Lebih subur", "Tandus", "Asin", "Berpasir laut"]],
+        [T3, "Musim kemarau yang makin panjang akibat perubahan iklim berdampak pada...", ["Hasil panen menurun", "Air sungai melimpah", "Sawah makin subur", "Hutan makin lebat"]],
+        [T3, "Teknologi pengeboran lepas pantai membuat potensi minyak yang dapat dimanfaatkan...", ["Bertambah", "Berkurang", "Hilang", "Tidak berubah"]],
+        [T3, "Banyak hutan di Riau berubah menjadi kebun sawit. Faktor penyebabnya adalah...", ["Alih fungsi lahan", "Letusan gunung api", "Gempa bumi", "Tsunami"]],
+        [T3, "Penambangan pasir sungai yang berlebihan dapat menyebabkan...", ["Tebing sungai longsor", "Air sungai lebih jernih", "Ikan sungai bertambah", "Sawah makin subur"]],
+        [T4, "Menjelang Lebaran, harga daging sapi naik karena...", ["Permintaan meningkat", "Penawaran meningkat", "Pembeli berkurang", "Sapi terlalu banyak"]],
+        [T4, "Saat panen raya, harga cabai turun karena...", ["Penawaran meningkat", "Permintaan meningkat", "Petani mogok", "Cabai langka"]],
+        [T4, "Ibu membeli 5 kg beras seharga Rp60.000. Harga beras per kilogram adalah...", ["Rp12.000", "Rp10.000", "Rp15.000", "Rp6.000"]],
+        [T4, "Pedagang membeli barang Rp8.000 lalu menjualnya Rp10.000. Keuntungannya adalah...", ["Rp2.000", "Rp18.000", "Rp8.000", "Rp1.000"]],
+        [T4, "Penjual dan pembeli sepakat pada harga Rp20.000 setelah tawar-menawar. Harga ini disebut harga...", ["Keseimbangan", "Pokok", "Grosir", "Diskon"]],
+        [T4, "Pasar yang hanya buka setiap hari Minggu disebut pasar...", ["Mingguan", "Harian", "Bulanan", "Tahunan"]],
+        [T4, "Harga barang di supermarket umumnya...", ["Sudah pasti, tidak bisa ditawar", "Bisa ditawar", "Selalu gratis", "Ditentukan pembeli"]],
+        [T4, "Faktor yang memengaruhi permintaan adalah...", ["Pendapatan pembeli", "Biaya produksi", "Teknologi produksi", "Jumlah pabrik"]],
+        [T4, "Faktor yang memengaruhi penawaran adalah...", ["Biaya produksi", "Selera pembeli", "Pendapatan pembeli", "Jumlah pembeli"]],
+        [T5, "Upaya yang paling tepat agar Indonesia menjadi negara maju adalah...", ["Meningkatkan mutu pendidikan", "Mengurangi jumlah sekolah", "Menambah impor barang mewah", "Menjual semua SDA mentah"]],
+        [T5, "Mengolah bahan mentah di dalam negeri sebelum diekspor (hilirisasi) bertujuan...", ["Menambah nilai jual", "Mengurangi lapangan kerja", "Menambah impor", "Merusak industri"]],
+        [T5, "Contoh hilirisasi adalah...", ["Mengolah nikel jadi baterai", "Menjual kayu gelondongan", "Mengekspor bijih mentah", "Mengimpor mobil"]],
+        [T5, "Bonus demografi menjadi keuntungan jika penduduk usia produktif...", ["Terdidik dan bekerja", "Banyak menganggur", "Tidak bersekolah", "Pindah ke luar negeri"]],
+        [T5, "Letak Indonesia di jalur perdagangan dunia menjadi potensi untuk...", ["Pelabuhan dan perdagangan", "Tambang salju", "Pertanian gandum", "Industri es"]],
+        [T5, "Salah satu hambatan Indonesia menjadi negara maju adalah...", ["Pembangunan belum merata", "Kekayaan alam melimpah", "Penduduk produktif banyak", "Letak yang strategis"]],
+        [T5, "Pembangunan jalan tol dan pelabuhan di berbagai daerah bertujuan...", ["Memperlancar distribusi barang", "Mengurangi perdagangan", "Menghambat pariwisata", "Menambah kemacetan"]],
+        [T5, "UMKM yang berjualan lewat internet dapat...", ["Memperluas pasar", "Kehilangan pembeli", "Menutup usahanya", "Menaikkan biaya sewa toko"]],
+        [T6, "Warga desa membantu tetangga yang sedang membangun rumah. Bentuk interaksi ini adalah...", ["Kerja sama", "Persaingan", "Kontravensi", "Konflik"]],
+        [T6, "Dua kelompok yang bertikai didamaikan oleh kepala desa. Bentuk interaksi ini adalah...", ["Akomodasi", "Kompetisi", "Kontravensi", "Asimilasi"]],
+        [T6, "Diam-diam menyebarkan fitnah tentang teman adalah contoh...", ["Kontravensi", "Kerja sama", "Akomodasi", "Asimilasi"]],
+        [T6, "Mengobrol dengan teman melalui telepon adalah contoh kontak sosial...", ["Sekunder", "Primer", "Fisik", "Asosiatif"]],
+        [T6, "Siswa bersalaman dengan guru saat bertemu adalah contoh kontak sosial...", ["Primer", "Sekunder", "Tidak langsung", "Disosiatif"]],
+        [T6, "Perpaduan budaya Jawa dan Hindu pada pertunjukan wayang adalah contoh...", ["Akulturasi", "Kompetisi", "Kontravensi", "Konflik"]],
+        [T6, "Tawuran antarpelajar merupakan bentuk interaksi...", ["Disosiatif", "Asosiatif", "Akomodatif", "Kooperatif"]]
+      ]
+    },
+    {
+      name: "LEVEL 3", kelas: "Sulit", tag: "Menganalisis", time: 10, minTime: 8, speed: 1.25, mult: 2, color: "var(--lv3)",
+      qs: [
+        [T1, "Indonesia memiliki banyak gunung api aktif. Potensi yang paling tepat dikembangkan dari kondisi ini adalah...", ["Panas bumi dan pertanian", "Tambang salju", "Kebun gandum", "Industri es", "Tambak garam"]],
+        [T1, "Mengapa keanekaragaman hayati Indonesia sangat tinggi?", ["Iklim tropis dan wilayah kepulauan", "Suhu dingin sepanjang tahun", "Wilayahnya berupa gurun", "Tidak pernah turun hujan", "Letaknya di dekat kutub"]],
+        [T1, "Papua kaya tambang mineral, sedangkan Jawa unggul di pertanian. Perbedaan ini terutama disebabkan...", ["Kondisi geologi dan tanah", "Jumlah sekolah", "Bahasa daerah", "Jenis makanan", "Jumlah kendaraan"]],
+        [T1, "Selat Malaka yang ramai dilewati kapal dunia menjadi potensi Indonesia di bidang...", ["Perdagangan dan pelayaran", "Pertambangan emas", "Perkebunan teh", "Peternakan", "Wisata salju"]],
+        [T1, "Mengapa Nusa Tenggara Timur lebih cocok untuk peternakan daripada sawah padi?", ["Curah hujan rendah, banyak sabana", "Tanahnya sangat basah", "Wilayahnya penuh rawa", "Suhunya sangat dingin", "Tidak ada rumput sama sekali"]],
+        [T1, "Wilayah dengan angin kencang seperti Sidrap, Sulawesi Selatan, paling cocok untuk pembangkit listrik tenaga...", ["Bayu (angin)", "Air", "Panas bumi", "Nuklir", "Uap batu bara"]],
+        [T1, "Pernyataan yang paling tepat tentang potensi laut Indonesia adalah...", ["Perikanan, wisata, dan transportasi", "Hanya untuk perikanan", "Tidak dapat dimanfaatkan", "Hanya untuk wisata", "Hanya untuk tambang"]],
+        [T1, "Bali lebih mengandalkan pariwisata daripada pertambangan. Alasan yang paling tepat adalah...", ["Alam dan budayanya unik", "Bali kaya batu bara", "Bali tidak berpenduduk", "Tanahnya tandus total", "Bali tidak punya pantai"]],
+        [T1, "Bagaimana potensi alam suatu daerah memengaruhi penduduknya?", ["Mata pencaharian mengikuti potensi alam", "Tidak ada pengaruhnya", "Semua penduduk jadi petani", "Semua penduduk jadi nelayan", "Penduduk pindah ke luar negeri"]],
+        [T2, "Mengapa minyak bumi harus digunakan secara hemat?", ["Terbentuk dalam jutaan tahun", "Jumlahnya tidak terbatas", "Bisa ditanam kembali", "Harganya selalu murah", "Tidak ada gunanya"]],
+        [T2, "Cara paling tepat untuk memanfaatkan hutan sekaligus melestarikannya adalah...", ["Tebang pilih dan tanam kembali", "Tebang habis", "Membakar hutan untuk lahan", "Melarang semua orang ke hutan", "Mengubah hutan jadi kebun"]],
+        [T2, "Desa pesisir menanam mangrove lalu membuka wisata mangrove. Manfaat ganda kegiatan ini adalah...", ["Melindungi pantai dan menambah pendapatan", "Mempercepat abrasi", "Mengurangi jumlah ikan", "Menambah sampah plastik", "Merusak terumbu karang"]],
+        [T2, "Sumber energi yang paling ramah lingkungan untuk menggantikan PLTU batu bara adalah...", ["Tenaga surya", "Minyak solar", "Batu bara muda", "Gas buang", "Kayu bakar"]],
+        [T2, "Pasangan sumber daya alam dan cara pelestariannya yang tepat adalah...", ["Hutan – reboisasi", "Laut – bom ikan", "Sungai – buang limbah", "Lereng – tebang habis", "Tanah – bakar lahan"]],
+        [T2, "Mengapa penggunaan pupuk kimia secara berlebihan tidak dianjurkan?", ["Merusak kesuburan tanah", "Tanah subur selamanya", "Murah dan selalu aman", "Menambah cacing tanah", "Menjernihkan air sungai"]],
+        [T2, "Pemanfaatan sumber daya alam yang paling memberi nilai tambah bagi daerah adalah...", ["Mengolah jadi produk jadi", "Menjual bahan mentah saja", "Membiarkan hasil bumi membusuk", "Membuang hasil panen", "Mengimpor bahan yang sama"]],
+        [T2, "Program bank sampah di lingkungan RT memberi manfaat berupa...", ["Lingkungan lestari, warga dapat uang", "Eksploitasi sumber daya alam", "Pencemaran lingkungan", "Penebangan hutan", "Pemborosan energi"]],
+        [T2, "Mengapa menangkap ikan dengan pukat harimau dilarang?", ["Menjaring ikan kecil dan merusak dasar laut", "Terlalu ramah lingkungan", "Hasil tangkapannya sedikit", "Tidak bisa menangkap ikan", "Harganya terlalu murah"]],
+        [T3, "Lahan gambut di Kalimantan dikeringkan untuk perkebunan. Risiko terbesarnya adalah...", ["Kebakaran lahan saat kemarau", "Banjir lahar", "Tsunami", "Gempa vulkanik", "Salju longsor"]],
+        [T3, "Hubungan pertambahan penduduk dengan sumber daya alam yang paling tepat adalah...", ["Kebutuhan naik, SDA makin tertekan", "SDA ikut bertambah", "Tidak ada hubungannya", "SDA menjadi tak terbatas", "Kebutuhan SDA menurun"]],
+        [T3, "Mengapa perubahan iklim dapat mengancam ketersediaan pangan?", ["Musim tak menentu mengganggu masa tanam", "Hujan selalu teratur", "Suhu makin stabil", "Hama menghilang", "Air selalu cukup"]],
+        [T3, "Kegiatan manusia yang paling cepat mengurangi potensi hutan adalah...", ["Pembalakan liar", "Reboisasi", "Tebang pilih", "Penghijauan", "Ekowisata"]],
+        [T3, "Bekas tambang batu bara ditinggalkan tanpa reklamasi. Akibatnya adalah...", ["Lahan rusak dan lubang berbahaya", "Tanah makin subur", "Hutan tumbuh cepat", "Air makin jernih", "Hasil panen naik"]],
+        [T3, "Dampak berantai penggundulan hutan di hulu sungai adalah...", ["Erosi, pendangkalan, lalu banjir", "Sungai makin dalam", "Air makin jernih", "Banjir berkurang", "Tanah makin subur"]],
+        [T3, "Contoh teknologi yang meningkatkan potensi sumber daya alam adalah...", ["Bibit unggul menaikkan panen", "Teknologi menghentikan gempa", "Minyak bumi jadi tak habis", "Musim kemarau dihapus", "Hujan berhenti selamanya"]],
+        [T3, "Contoh perubahan potensi sumber daya alam karena faktor alam, bukan manusia, adalah...", ["Lahan rusak akibat tsunami", "Hutan ditebang untuk kebun", "Sungai tercemar limbah", "Sawah jadi perumahan", "Ikan habis karena bom"]],
+        [T4, "Harga beras naik tajam karena gagal panen. Langkah pemerintah yang paling tepat adalah...", ["Operasi pasar dari stok Bulog", "Melarang orang makan nasi", "Menutup semua pasar", "Menaikkan pajak beras", "Membiarkan harga naik"]],
+        [T4, "Di pasar ada banyak penjual sayur dengan barang sejenis. Akibatnya harga cenderung...", ["Bersaing dan wajar", "Sangat mahal", "Ditentukan satu penjual", "Tidak pernah berubah", "Gratis"]],
+        [T4, "Harga minyak goreng naik. Dampak yang paling mungkin bagi pedagang gorengan adalah...", ["Biaya produksi naik", "Biaya produksi turun", "Pembeli bertambah pesat", "Tidak ada dampak", "Minyak menjadi gratis"]],
+        [T4, "Mengapa harga tiket pesawat naik saat libur Lebaran?", ["Permintaan melonjak, kursi terbatas", "Kursi pesawat berlimpah", "Pembeli berkurang", "Bahan bakar gratis", "Maskapai baru bertambah"]],
+        [T4, "Harga naik tetapi orang tetap membeli dalam jumlah yang sama. Barang itu kemungkinan besar adalah...", ["Kebutuhan pokok seperti beras", "Barang mewah", "Mainan", "Perhiasan", "Tiket konser"]],
+        [T4, "Pemerintah menetapkan Harga Eceran Tertinggi (HET) elpiji 3 kg. Tujuannya adalah...", ["Melindungi konsumen", "Menguntungkan penimbun", "Menaikkan harga", "Mengurangi pasokan", "Menghapus pasar"]],
+        [T4, "Penjual online bisa memberi harga lebih murah daripada toko fisik karena...", ["Tidak perlu biaya sewa toko", "Barangnya didapat gratis", "Tidak ada biaya produksi", "Pembelinya sedikit", "Toko fisik dilarang"]],
+        [T4, "Titik potong kurva permintaan dan kurva penawaran menunjukkan...", ["Harga dan jumlah keseimbangan", "Harga tertinggi", "Harga terendah", "Jumlah pembeli", "Biaya produksi"]],
+        [T4, "Pedagang menimbun barang menjelang hari raya. Akibatnya adalah...", ["Barang langka, harga naik", "Harga turun", "Barang melimpah", "Pembeli berkurang", "Pasar tutup"]],
+        [T5, "Mengapa kekayaan alam saja belum cukup untuk menjadikan Indonesia negara maju?", ["Perlu SDM berkualitas untuk mengolahnya", "SDA tidak ada gunanya", "Negara maju tak butuh SDA", "SDA pasti habis tahun ini", "Penduduknya terlalu sedikit"]],
+        [T5, "Bonus demografi dapat berubah menjadi beban jika...", ["Banyak usia produktif menganggur", "Pendidikan merata", "Lapangan kerja banyak", "Kesehatan penduduk baik", "Teknologi dikuasai"]],
+        [T5, "Ekspor nikel mentah dihentikan agar diolah di dalam negeri. Dampak positif yang diharapkan adalah...", ["Nilai ekspor dan lapangan kerja naik", "Pendapatan negara turun", "Pabrik-pabrik tutup", "Pengangguran naik", "Nikel langsung habis"]],
+        [T5, "Perekonomian negara maju umumnya bertumpu pada sektor...", ["Industri dan jasa", "Pertanian tradisional", "Berburu", "Meramu", "Barter"]],
+        [T5, "Indikator yang paling tepat untuk membandingkan kesejahteraan antarnegara adalah...", ["Indeks Pembangunan Manusia", "Jumlah gunung", "Luas lautan", "Jumlah pulau", "Jumlah bahasa daerah"]],
+        [T5, "Pemindahan ibu kota ke Kalimantan Timur bertujuan untuk...", ["Mengurangi kesenjangan wilayah", "Menambah kepadatan Jawa", "Mengurangi pembangunan", "Memusatkan ekonomi di Jakarta", "Menghapus provinsi"]],
+        [T5, "Faktor yang paling menghambat daya saing Indonesia adalah...", ["SDM dan infrastruktur belum merata", "Kekayaan alam melimpah", "Letak yang strategis", "Banyak penduduk usia produktif", "Budaya yang beragam"]],
+        [T5, "Korea Selatan menjadi negara maju walau sumber daya alamnya terbatas. Pelajaran yang dapat diambil adalah...", ["Pendidikan dan teknologi adalah kunci", "SDA satu-satunya kunci", "Negara maju tak perlu belajar", "Jumlah pulau yang menentukan", "Luas wilayah yang menentukan"]],
+        [T6, "Warga pendatang dan warga asli lama-kelamaan membentuk budaya baru dan budaya lamanya memudar. Proses ini disebut...", ["Asimilasi", "Akulturasi", "Kontravensi", "Kompetisi", "Akomodasi"]],
+        [T6, "Konflik diselesaikan dengan bantuan pihak ketiga netral yang hanya memberi saran. Cara ini disebut...", ["Mediasi", "Arbitrase", "Koersi", "Kompromi", "Toleransi"]],
+        [T6, "Dua pihak yang berselisih sama-sama mengurangi tuntutannya agar sepakat. Cara ini disebut...", ["Kompromi", "Koersi", "Mediasi", "Arbitrase", "Toleransi"]],
+        [T6, "Media sosial dapat memicu interaksi disosiatif jika digunakan untuk...", ["Menyebar hoaks dan kebencian", "Belajar bersama", "Berbagi informasi benar", "Menjalin silaturahmi", "Mempromosikan usaha"]],
+        [T6, "Mengapa persaingan yang sehat dapat berdampak positif?", ["Mendorong orang lebih berprestasi", "Selalu menimbulkan permusuhan", "Membuat orang malas", "Memecah masyarakat", "Menghentikan kerja sama"]],
+        [T6, "Interaksi petani dan pedagang di pasar menunjukkan bahwa interaksi sosial berkaitan erat dengan kegiatan...", ["Ekonomi", "Olahraga", "Hiburan", "Kesenian", "Keagamaan"]],
+        [T6, "Sikap yang paling tepat untuk mencegah konflik di masyarakat yang beragam adalah...", ["Toleransi dan saling menghargai", "Etnosentrisme", "Prasangka buruk", "Diskriminasi", "Menutup diri"]]
+      ]
+    }
+  ];
+
+  const $ = id => document.getElementById(id);
+  const cv = $("cv"), ctx = cv.getContext("2d"), stage = $("stage");
+  const LABEL_FONT = '"Pixelify Sans", system-ui, sans-serif';
+  const PIXEL_FONT = '"Press Start 2P", "Courier New", monospace';
+  const reduceMotion = matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  const store = {
+    get(k, d) { try { const v = localStorage.getItem(k); return v == null ? d : JSON.parse(v); } catch (e) { return d; } },
+    set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} }
+  };
+
+  const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
+  const rand = (a, b) => a + Math.random() * (b - a);
+  const shuffle = arr => { for (let i = arr.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [arr[i], arr[j]] = [arr[j], arr[i]]; } return arr; };
+  const pad6 = n => String(Math.max(0, Math.floor(n))).padStart(6, "0");
+
+  let W = 1, H = 1, dpr = 1, grassTop = 1, S = 28;
+  let his = store.get("bebekips.smp.hi", [0, 0, 0]);
+  if (!Array.isArray(his) || his.length !== 3) his = [0, 0, 0];
+  const hiOf = l => his[l] || 0;
+  let unlocked = clamp(Math.floor(Number(store.get("bebekips.smp.unlocked", 0)) || 0), 0, 2);
+  function saveHi() { if (G.score > hiOf(G.level)) { his[G.level] = G.score; store.set("bebekips.smp.hi", his); return true; } return false; }
+  let muted = store.get("bebekips.muted", false);
+
+  const G = {
+    phase: "title", paused: false, level: 0, order: [], idx: 0,
+    score: 0, lives: 3, streak: 0, bestStreak: 0, correct: 0, answered: 0,
+    timeLeft: 0, qTime: 1, revealT: 0, speed: 60, q: null,
+    ducks: [], floats: [], flash: 0, sky: "blue", newRecord: false,
+    dog: { mode: null, t: 0, delay: 0, x: 0, cued: false }
+  };
+  const pointer = { x: 0, y: 0, show: false };
+  const clouds = [{ x: .15, y: .12, s: 1 }, { x: .55, y: .22, s: .75 }, { x: .85, y: .08, s: .9 }];
+
+  /* ---------- Sound ---------- */
+  let ac = null;
+  function audio() {
+    if (!ac) { try { ac = new (window.AudioContext || window.webkitAudioContext)(); } catch (e) {} }
+    if (ac && ac.state === "suspended") ac.resume();
+    return ac;
+  }
+  function tone(freq, dur, type = "square", vol = .06, when = 0, slideTo = null) {
+    if (muted || !ac) return;
+    const t = ac.currentTime + when, o = ac.createOscillator(), g = ac.createGain();
+    o.type = type; o.frequency.setValueAtTime(freq, t);
+    if (slideTo) o.frequency.exponentialRampToValueAtTime(slideTo, t + dur);
+    g.gain.setValueAtTime(vol, t); g.gain.exponentialRampToValueAtTime(.0001, t + dur);
+    o.connect(g).connect(ac.destination); o.start(t); o.stop(t + dur + .02);
+  }
+  function noise(dur, vol = .2) {
+    if (muted || !ac) return;
+    const n = Math.floor(ac.sampleRate * dur), b = ac.createBuffer(1, n, ac.sampleRate), d = b.getChannelData(0);
+    for (let i = 0; i < n; i++) d[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / n, 2);
+    const s = ac.createBufferSource(), g = ac.createGain();
+    s.buffer = b; g.gain.value = vol; s.connect(g).connect(ac.destination); s.start();
+  }
+  const sfx = {
+    shot() { noise(.22, .3); tone(160, .12, "square", .05, 0, 50); },
+    quack() { tone(560, .09, "sawtooth", .04, 0, 400); tone(540, .1, "sawtooth", .04, .12, 380); },
+    good() { [523, 659, 784, 1047].forEach((f, i) => tone(f, .12, "square", .05, .15 + i * .08)); },
+    bad() { tone(330, .18, "square", .06, .1, 220); tone(220, .32, "square", .06, .28, 130); },
+    laugh() { for (let i = 0; i < 6; i++) tone(i % 2 ? 392 : 466, .08, "square", .045, i * .11); },
+    fall() { tone(900, .5, "triangle", .05, 0, 200); },
+    start() { [262, 330, 392, 523, 392, 523, 659].forEach((f, i) => tone(f, .1, "square", .045, i * .09)); },
+    over(win) {
+      const notes = win ? [523, 659, 784, 1047, 784, 1047] : [392, 330, 262, 196];
+      notes.forEach((f, i) => tone(f, .22, "triangle", .08, i * .18));
+    }
+  };
+
+  /* ---------- Layout ---------- */
+  function resize() {
+    const r = stage.getBoundingClientRect();
+    dpr = Math.min(window.devicePixelRatio || 1, 2);
+    W = Math.max(1, r.width); H = Math.max(1, r.height);
+    cv.width = Math.round(W * dpr); cv.height = Math.round(H * dpr);
+    cv.style.width = W + "px"; cv.style.height = H + "px";
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    grassTop = H - Math.max(52, H * .16);
+    S = clamp(Math.min(W, H) * .05, 18, 32);
+    G.ducks.forEach(layoutLabel);
+  }
+  new ResizeObserver(resize).observe(stage);
+
+  function wrap(text, maxW) {
+    const words = text.split(" "), lines = [];
+    let cur = "";
+    for (const w of words) {
+      const t = cur ? cur + " " + w : w;
+      if (ctx.measureText(t).width <= maxW || !cur) cur = t; else { lines.push(cur); cur = w; }
+    }
+    if (cur) lines.push(cur);
+    return lines;
+  }
+  function layoutLabel(d) {
+    if (!d.opt) { d.lw = 0; d.lh = 0; return; }
+    const fs = clamp(W * .016 + 7, 12, 16);
+    ctx.font = `600 ${fs}px ${LABEL_FONT}`;
+    const maxText = clamp(W * .3, 90, 180);
+    d.fs = fs; d.pad = 6; d.badge = fs + 6; d.lineH = fs * 1.18;
+    d.lines = wrap(d.opt, maxText);
+    let tw = 0; for (const l of d.lines) tw = Math.max(tw, ctx.measureText(l).width);
+    d.lw = d.pad * 2 + d.badge + 6 + tw;
+    d.lh = d.pad * 2 + Math.max(d.badge, d.lines.length * d.lineH);
+  }
+  function box(d) {
+    const hw = Math.max(S * 1.8, d.lw / 2);
+    const below = d.opt ? S * .6 + 12 + d.lh : S * .7;
+    return { l: d.x - hw, r: d.x + hw, t: d.y - S * 1.1, b: d.y + below, hw, below };
+  }
+  function bounds(d) {
+    const b = box(d);
+    let minX = b.hw + 4, maxX = W - b.hw - 4;
+    if (minX > maxX) minX = maxX = W / 2;
+    const minY = S * 1.2 + 4;
+    const maxY = Math.max(minY + 10, grassTop - b.below - 6);
+    return { minX, maxX, minY, maxY };
+  }
+
+  /* ---------- HUD ---------- */
+  function updateHUD() {
+    $("score").textContent = pad6(G.score);
+    $("hi").textContent = pad6(Math.max(hiOf(G.level), G.phase === "title" ? 0 : G.score));
+    let h = "";
+    for (let i = 0; i < 3; i++) h += i < G.lives ? "♥" : '<span class="lost">♥</span>';
+    $("lives").innerHTML = h;
+    $("lives").setAttribute("aria-label", G.lives + " nyawa");
+    $("combo").textContent = G.streak >= 2 ? `COMBO x${G.streak}` : "";
+    $("muteBtn").textContent = muted ? "SUARA OFF" : "SUARA ON";
+    $("pauseBtn").textContent = G.paused ? "LANJUT" : "JEDA";
+    $("giveBtn").hidden = !(G.phase === "play" || G.phase === "reveal");
+  }
+  function setQuestionUI() {
+    $("qnum").textContent = `LV${G.level + 1} · SOAL ${G.idx + 1}/${G.order.length}`;
+    $("qcat").textContent = G.q.cat.toUpperCase();
+    $("qtext").textContent = G.q.text;
+    $("feedback").hidden = true;
+    $("timerbar").style.width = "100%";
+    $("timerbar").classList.remove("low");
+  }
+  function showFeedback(text, good) {
+    const f = $("feedback");
+    f.textContent = text; f.className = good ? "good" : "bad"; f.hidden = false;
+  }
+
+  /* ---------- Game flow ---------- */
+  function spawnDemo() {
+    G.ducks = [0, 1, 2].map(i => {
+      const d = { x: W * (.25 + i * .25), y: H * (.25 + (i % 2) * .15), vx: 0, vy: 0, opt: null, state: "fly", t: 0, flap: rand(0, 6), turn: 0, face: 1 };
+      layoutLabel(d); return d;
+    });
+  }
+
+  // Ambil soal bergiliran dari tiap TP supaya semua tujuan pembelajaran muncul di setiap permainan
+  function pickQuestions(qs) {
+    const groups = {};
+    qs.forEach((q, i) => (groups[q[0]] = groups[q[0]] || []).push(i));
+    const lists = shuffle(Object.values(groups).map(shuffle));
+    const out = [];
+    while (out.length < PER_GAME && lists.some(l => l.length)) {
+      for (const l of lists) if (l.length && out.length < PER_GAME) out.push(l.pop());
+    }
+    return shuffle(out);
+  }
+
+  function startGame(level, restore) {
+    audio();
+    G.level = level;
+    G.order = restore ? restore.order : pickQuestions(LEVELS[level].qs);
+    G.idx = restore ? restore.idx : 0;
+    G.score = restore ? restore.score : 0;
+    G.lives = restore ? restore.lives : 3;
+    G.streak = restore ? restore.streak : 0;
+    G.bestStreak = restore ? restore.bestStreak : 0;
+    G.correct = restore ? restore.correct : 0;
+    G.answered = restore ? restore.answered : 0;
+    G.newRecord = false; G.paused = false; G.floats = [];
+    setCover(false);
+    $("coverScreen").hidden = true; $("titleScreen").hidden = true; $("overScreen").hidden = true; $("pauseScreen").hidden = true;
+    stage.classList.add("aim");
+    if (!restore) sfx.start();
+    updateHUD();
+    nextQuestion();
+  }
+
+  function nextQuestion() {
+    const LV = LEVELS[G.level];
+    const raw = LV.qs[G.order[G.idx]];
+    const opts = shuffle(raw[2].map((t, i) => ({ t, correct: i === 0 })));
+    G.q = { cat: raw[0], text: raw[1], answer: raw[2][0] };
+    const round = Math.floor(G.idx / 5);
+    G.qTime = Math.max(LV.minTime, LV.time - round);
+    G.timeLeft = G.qTime;
+    G.speed = clamp(W * .065, 42, 80) * LV.speed * (1 + .08 * round);
+    G.sky = "blue";
+    G.dog = { mode: null, t: 0, delay: 0, x: 0, cued: false };
+    const n = opts.length, slots = shuffle([...Array(n).keys()]);
+    G.ducks = opts.map((o, i) => {
+      const d = {
+        x: W * (slots[i] + .5) / n, y: grassTop + S * 1.5, vx: 0, vy: 0,
+        opt: o.t, letter: "ABCDE"[i], correct: o.correct,
+        state: "rise", t: rand(0, .35), flap: rand(0, 6), turn: 0, face: Math.random() < .5 ? -1 : 1, mark: null
+      };
+      layoutLabel(d);
+      const b = bounds(d);
+      d.x = clamp(d.x, b.minX, b.maxX);
+      d.riseTo = rand(b.minY + (b.maxY - b.minY) * .25, b.maxY);
+      return d;
+    });
+    G.phase = "play";
+    setQuestionUI();
+    updateHUD();
+    sfx.quack();
+  }
+
+  function shoot(x, y, forced) {
+    if (G.phase !== "play" || G.paused) return;
+    audio();
+    sfx.shot();
+    if (!reduceMotion) G.flash = .07;
+    let hit = forced || null;
+    if (!hit) {
+      for (let i = G.ducks.length - 1; i >= 0; i--) {
+        const d = G.ducks[i];
+        if (d.state !== "fly" && d.state !== "rise") continue;
+        const b = box(d);
+        if (x >= b.l && x <= b.r && y >= b.t && y <= b.b) { hit = d; break; }
+      }
+    }
+    if (!hit) { G.floats.push({ x, y, text: "MELESET", color: "#ffffff", t: 0, size: 10 }); return; }
+    hit.state = "hit"; hit.t = 0;
+    if (hit.correct) {
+      G.streak++; G.correct++;
+      G.bestStreak = Math.max(G.bestStreak, G.streak);
+      const pts = Math.round((100 + Math.ceil(G.timeLeft) * 10 + Math.min(G.streak - 1, 10) * 25) * LEVELS[G.level].mult);
+      G.score += pts;
+      hit.mark = "good";
+      G.floats.push({ x: hit.x, y: hit.y - S * 1.4, text: "+" + pts, color: "#fcd000", t: 0, size: 14 });
+      sfx.good();
+      endQuestion("correct", hit);
+    } else {
+      G.lives--; G.streak = 0;
+      hit.mark = "bad";
+      G.floats.push({ x: hit.x, y: hit.y - S * 1.4, text: "SALAH!", color: "#f83800", t: 0, size: 14 });
+      sfx.bad();
+      endQuestion("wrong", hit);
+    }
+  }
+
+  function endQuestion(kind, hitDuck) {
+    G.phase = "reveal";
+    G.answered++;
+    G.revealT = kind === "correct" ? 2.3 : 2.9;
+    for (const d of G.ducks) {
+      if (d === hitDuck) continue;
+      if (d.correct) d.mark = "good";
+      if (d.state === "rise" || d.state === "fly") { d.state = "away"; d.vx = rand(-.4, .4) * G.speed; }
+    }
+    if (kind === "correct") {
+      showFeedback("Benar! " + G.q.answer, true);
+      G.dog = { mode: "hold", t: 0, delay: .95, x: clamp(hitDuck.x, W * .1, W * .9), cued: false };
+    } else {
+      G.sky = "pink";
+      showFeedback((kind === "timeout" ? "Waktu habis! " : "Salah! ") + "Jawaban benar: " + G.q.answer, false);
+      G.dog = { mode: "laugh", t: 0, delay: .7, x: W * .5, cued: false };
+    }
+    if (saveHi()) G.newRecord = true;
+    updateHUD();
+  }
+
+  function gameOver(finished, gaveUp) {
+    G.phase = "over";
+    G.paused = false;
+    resetGive();
+    $("pauseScreen").hidden = true;
+    stage.classList.remove("aim");
+    for (const d of G.ducks) if (d.state === "fly" || d.state === "rise") { d.state = "away"; d.vx = rand(-.4, .4) * G.speed; }
+    if (saveHi()) G.newRecord = true;
+    const lv = G.level + 1, hasNext = G.level < LEVELS.length - 1;
+    let unlockedNow = false;
+    if (finished && hasNext && unlocked < G.level + 1) { unlocked = G.level + 1; store.set("bebekips.smp.unlocked", unlocked); unlockedNow = true; }
+    $("overTitle").textContent = finished ? `LEVEL ${lv} TUNTAS!` : gaveUp ? `MENYERAH · LV${lv}` : `GAME OVER · LV${lv}`;
+    const lockedNext = hasNext && unlocked < G.level + 1;
+    $("overMsg").textContent = finished
+      ? (hasNext ? (unlockedNow ? `Level ${lv + 1} sekarang terbuka!` : `Level ${lv + 1} sudah terbuka.`) : "Semua level sudah kamu tuntaskan. Hebat!")
+      : (gaveUp ? `Kamu menyerah di soal ${G.idx + 1} dari ${G.order.length}.` : `Nyawa habis di soal ${G.idx + 1} dari ${G.order.length}.`) +
+        (lockedNext ? ` Tuntaskan ${G.order.length} soal untuk membuka Level ${lv + 1}.` : "");
+    $("nextBtn").hidden = !(hasNext && unlocked >= G.level + 1);
+    $("nextBtn").textContent = `LANJUT LEVEL ${lv + 1}`;
+    $("againBtn").classList.toggle("alt", !$("nextBtn").hidden);
+    $("finalScore").textContent = pad6(G.score);
+    $("stCorrect").textContent = `${G.correct} / ${G.answered}`;
+    $("stAcc").textContent = G.answered ? Math.round(G.correct / G.answered * 100) + "%" : "0%";
+    $("stCombo").textContent = G.bestStreak;
+    $("stHi").textContent = pad6(hiOf(G.level));
+    $("recordBadge").hidden = !G.newRecord;
+    $("qnum").textContent = finished ? `LEVEL ${lv} TUNTAS` : `BERHENTI DI SOAL ${G.idx + 1}`;
+    sfx.over(finished);
+    updateHUD();
+    setTimeout(() => { if (G.phase === "over") { setCover(true); $("overScreen").hidden = false; ($("nextBtn").hidden ? $("againBtn") : $("nextBtn")).focus(); } }, 700);
+  }
+
+  function renderLevels() {
+    const list = $("levelList");
+    list.innerHTML = "";
+    LEVELS.forEach((lv, i) => {
+      const b = document.createElement("button");
+      b.type = "button"; b.className = "lvl"; b.id = "lvl" + i;
+      b.style.setProperty("--lvc", lv.color);
+      const locked = i > unlocked;
+      b.disabled = locked;
+      b.innerHTML = `<span class="lvl-name">${lv.name}</span>` +
+        `<span class="lvl-sub">${lv.kelas} · ${lv.tag}</span>` +
+        `<span class="lvl-desc">${PER_GAME} soal acak · ${lv.qs[0][2].length} pilihan · ${lv.time} detik · poin ×${String(lv.mult).replace(".", ",")}</span>` +
+        (locked ? `<span class="lvl-lock">TERKUNCI · TUNTASKAN LEVEL ${i}</span>` : `<span class="lvl-hi">TOP ${pad6(hiOf(i))}</span>`);
+      b.addEventListener("click", () => startGame(i));
+      list.appendChild(b);
+    });
+  }
+
+  function setCover(on) { $("app").classList.toggle("cover-mode", on); }
+
+  function showLevels() {
+    audio();
+    setCover(true);
+    $("coverScreen").hidden = true; $("titleScreen").hidden = false;
+    renderLevels();
+    const first = document.querySelector(".lvl:not(:disabled)");
+    if (first) first.focus();
+  }
+  function showCover() {
+    setCover(true);
+    $("titleScreen").hidden = true; $("coverScreen").hidden = false;
+    $("startBtn").focus();
+  }
+
+  function showMenu() {
+    G.phase = "title"; G.paused = false; G.sky = "blue"; G.dog.mode = null; G.floats = [];
+    setCover(true);
+    $("overScreen").hidden = true; $("pauseScreen").hidden = true; $("coverScreen").hidden = true; $("titleScreen").hidden = false;
+    stage.classList.remove("aim");
+    $("qnum").textContent = "IPS SMP · 3 LEVEL";
+    $("qcat").textContent = "TP 3.1 – 3.6";
+    $("qtext").textContent = "Pilih level, lalu tembak bebek yang membawa jawaban benar.";
+    $("feedback").hidden = true;
+    $("timerbar").style.width = "100%"; $("timerbar").classList.remove("low");
+    renderLevels(); updateHUD(); spawnDemo();
+  }
+
+  let giveArmed = false, giveTimer = 0;
+  function resetGive() {
+    giveArmed = false; clearTimeout(giveTimer);
+    $("giveBtn").textContent = "MENYERAH"; $("giveBtn").classList.remove("armed");
+  }
+  function giveUp() {
+    if (G.phase !== "play" && G.phase !== "reveal") return;
+    if (!giveArmed) {
+      giveArmed = true;
+      $("giveBtn").textContent = "YAKIN? KLIK LAGI";
+      $("giveBtn").classList.add("armed");
+      giveTimer = setTimeout(resetGive, 3000);
+      return;
+    }
+    gameOver(false, true);
+  }
+
+  function togglePause() {
+    if (G.phase !== "play" && G.phase !== "reveal") return;
+    G.paused = !G.paused;
+    $("pauseScreen").hidden = !G.paused;
+    stage.classList.toggle("aim", !G.paused);
+    if (G.paused) $("resumeBtn").focus();
+    updateHUD();
+  }
+  function toggleMute() { muted = !muted; store.set("bebekips.muted", muted); if (!muted) audio(); updateHUD(); }
+
+  /* ---------- Update ---------- */
+  function updateDuck(d, dt) {
+    const b = bounds(d);
+    const flapping = d.state === "fly" || d.state === "rise" || d.state === "away";
+    if (flapping) d.flap += dt * 16;
+
+    if (d.state === "rise") {
+      d.t -= dt;
+      if (d.t > 0) return;
+      d.y -= G.speed * 1.6 * dt;
+      if (d.y <= (d.riseTo ?? b.maxY)) { d.state = "fly"; d.turn = 0; }
+    } else if (d.state === "fly") {
+      d.turn -= dt;
+      if (d.turn <= 0) {
+        const a = rand(0, Math.PI * 2);
+        d.vx = Math.cos(a) * G.speed; d.vy = Math.sin(a) * G.speed * .75;
+        d.turn = rand(1.2, 2.8);
+      }
+      d.x += d.vx * dt; d.y += d.vy * dt;
+      if (d.x < b.minX) { d.x = b.minX; d.vx = Math.abs(d.vx); }
+      if (d.x > b.maxX) { d.x = b.maxX; d.vx = -Math.abs(d.vx); }
+      if (d.y < b.minY) { d.y = b.minY; d.vy = Math.abs(d.vy); }
+      if (d.y > b.maxY) { d.y = b.maxY; d.vy = -Math.abs(d.vy); }
+    } else if (d.state === "hit") {
+      d.t += dt;
+      if (d.t > .45) { d.state = "fall"; d.vy = 0; sfx.fall(); }
+    } else if (d.state === "fall") {
+      d.vy += 900 * dt; d.y += d.vy * dt;
+      if (d.y > H + S * 2) d.state = "gone";
+    } else if (d.state === "away") {
+      d.y -= G.speed * 2.4 * dt; d.x += d.vx * dt;
+      if (d.y < -S * 2 - d.lh - 40) d.state = "gone";
+    }
+    if (Math.abs(d.vx) > 4 && d.state !== "hit" && d.state !== "fall") d.face = d.vx < 0 ? -1 : 1;
+  }
+
+  function separate(dt) {
+    const live = G.ducks.filter(d => d.state === "fly");
+    for (let i = 0; i < live.length; i++) {
+      for (let j = i + 1; j < live.length; j++) {
+        const a = live[i], c = live[j], A = box(a), B = box(c);
+        const ox = Math.min(A.r, B.r) - Math.max(A.l, B.l) + 8;
+        const oy = Math.min(A.b, B.b) - Math.max(A.t, B.t) + 8;
+        if (ox <= 0 || oy <= 0) continue;
+        const push = 120 * dt;
+        if (ox < oy) {
+          const s = Math.sign(a.x - c.x) || 1;
+          a.x += s * push; c.x -= s * push;
+          a.vx = Math.abs(a.vx) * s; c.vx = -Math.abs(c.vx) * s;
+        } else {
+          const s = Math.sign(a.y - c.y) || 1;
+          a.y += s * push; c.y -= s * push;
+          a.vy = Math.abs(a.vy) * s; c.vy = -Math.abs(c.vy) * s;
+        }
+      }
+    }
+  }
+
+  function update(dt) {
+    for (const c of clouds) { c.x += dt * .006 * c.s; if (c.x > 1.2) c.x = -.2; }
+    if (G.flash > 0) G.flash -= dt;
+    if (G.paused) return;
+
+    if (G.phase === "play") {
+      G.timeLeft -= dt;
+      const pct = clamp(G.timeLeft / G.qTime, 0, 1);
+      $("timerbar").style.width = (pct * 100).toFixed(1) + "%";
+      $("timerbar").classList.toggle("low", pct < .3);
+      if (G.timeLeft <= 0) {
+        G.lives--; G.streak = 0;
+        sfx.bad();
+        endQuestion("timeout", null);
+      }
+    }
+
+    for (const d of G.ducks) updateDuck(d, dt);
+    separate(dt);
+    G.ducks = G.ducks.filter(d => d.state !== "gone");
+    if (G.phase === "title" && G.ducks.length === 0) spawnDemo();
+
+    const dog = G.dog;
+    if (dog.mode) {
+      if (dog.delay > 0) dog.delay -= dt;
+      else {
+        if (!dog.cued) { dog.cued = true; if (dog.mode === "laugh") sfx.laugh(); }
+        dog.t += dt;
+        if (dog.t > 2) dog.mode = null;
+      }
+    }
+
+    for (const f of G.floats) f.t += dt;
+    G.floats = G.floats.filter(f => f.t < 1.2);
+
+    if (G.phase === "reveal") {
+      G.revealT -= dt;
+      if (G.revealT <= 0) {
+        if (G.lives <= 0) return gameOver(false);
+        G.idx++;
+        if (G.idx >= G.order.length) return gameOver(true);
+        nextQuestion();
+      }
+    }
+  }
+
+  /* ---------- Drawing ---------- */
+  function ellipse(x, y, rx, ry, color, rot = 0) {
+    ctx.fillStyle = color; ctx.beginPath(); ctx.ellipse(x, y, rx, ry, rot, 0, Math.PI * 2); ctx.fill();
+  }
+
+  function drawDuckBody(x, y, s, face, flap, state) {
+    ctx.save();
+    ctx.translate(x, y);
+    if (state === "fall") { ctx.rotate(Math.PI / 2 * face); ctx.translate(Math.sin(performance.now() / 60) * 2, 0); }
+    ctx.scale(face, 1);
+    ctx.lineWidth = 2; ctx.strokeStyle = "#1d3557";
+    // tail
+    ctx.fillStyle = "#2a1c10";
+    ctx.beginPath(); ctx.moveTo(-s * .8, -s * .1); ctx.lineTo(-s * 1.35, -s * .35); ctx.lineTo(-s * 1.2, s * .15); ctx.closePath(); ctx.fill();
+    // body
+    ellipse(0, 0, s * .95, s * .55, "#6b4424");
+    ellipse(s * .05, s * .2, s * .72, s * .3, "#c9a36a");
+    // head & neck
+    ellipse(s * .7, -s * .35, s * .22, s * .3, "#1c7a3a", -.4);
+    ctx.fillStyle = "#f4f4f4"; ctx.fillRect(s * .52, -s * .22, s * .34, s * .1);
+    ellipse(s * .95, -s * .62, s * .36, s * .33, "#1f8f43");
+    // beak
+    ctx.fillStyle = "#f4b400";
+    ctx.beginPath(); ctx.moveTo(s * 1.22, -s * .7); ctx.lineTo(s * 1.72, -s * .55); ctx.lineTo(s * 1.22, -s * .48); ctx.closePath(); ctx.fill();
+    // eye
+    if (state === "hit" || state === "fall" || state === "held") {
+      ctx.strokeStyle = "#1d3557"; ctx.lineWidth = 2; ctx.beginPath();
+      ctx.moveTo(s * .95, -s * .78); ctx.lineTo(s * 1.13, -s * .6); ctx.moveTo(s * 1.13, -s * .78); ctx.lineTo(s * .95, -s * .6); ctx.stroke();
+    } else {
+      ellipse(s * 1.04, -s * .7, s * .1, s * .1, "#fff");
+      ellipse(s * 1.07, -s * .7, s * .05, s * .06, "#1d3557");
+    }
+    // wing
+    const f = state === "hit" ? 1 : state === "fall" || state === "held" ? -.4 : Math.sin(flap);
+    ctx.fillStyle = "#3b2616";
+    ctx.beginPath();
+    ctx.moveTo(s * .3, -s * .15); ctx.lineTo(-s * .55, -s * .15);
+    ctx.lineTo(-s * .45 + f * s * .1, -s * .15 - s * .95 * f);
+    ctx.closePath(); ctx.fill();
+    ctx.fillStyle = "#2b6fd6";
+    ctx.beginPath();
+    ctx.moveTo(-s * .05, -s * .15); ctx.lineTo(-s * .3, -s * .15);
+    ctx.lineTo(-s * .3 + f * s * .06, -s * .15 - s * .4 * f); ctx.closePath(); ctx.fill();
+    // feet when hanging on the way up
+    if (state === "rise" || state === "fly" || state === "away") {
+      ctx.fillStyle = "#f08a24"; ctx.fillRect(-s * .1, s * .5, s * .22, s * .12);
+    }
+    ctx.restore();
+  }
+
+  function roundRect(x, y, w, h, r) {
+    ctx.beginPath(); ctx.moveTo(x + r, y); ctx.arcTo(x + w, y, x + w, y + h, r); ctx.arcTo(x + w, y + h, x, y + h, r);
+    ctx.arcTo(x, y + h, x, y, r); ctx.arcTo(x, y, x + w, y, r); ctx.closePath();
+  }
+
+  function drawLabel(d) {
+    if (!d.opt) return;
+    const lx = d.x - d.lw / 2, ly = d.y + S * .6 + 12;
+    const reveal = G.phase !== "play";
+    const good = reveal && d.mark === "good", bad = d.mark === "bad";
+    // string
+    ctx.strokeStyle = "#1d3557"; ctx.lineWidth = 1.5;
+    ctx.beginPath(); ctx.moveTo(d.x, d.y + S * .45); ctx.lineTo(d.x, ly); ctx.stroke();
+    const dim = reveal && !good && !bad;
+    ctx.globalAlpha = dim ? .55 : 1;
+    roundRect(lx, ly, d.lw, d.lh, 4);
+    ctx.fillStyle = good ? "#b8f28c" : bad ? "#ffa08a" : "#fff6dc"; ctx.fill();
+    ctx.lineWidth = 2.5; ctx.strokeStyle = good ? "#1d6b12" : bad ? "#a01e00" : "#1d3557"; ctx.stroke();
+    // letter badge
+    const bx = lx + d.pad, by = ly + (d.lh - d.badge) / 2;
+    ctx.fillStyle = good ? "#1d6b12" : bad ? "#a01e00" : "#1d3557";
+    ctx.fillRect(bx, by, d.badge, d.badge);
+    ctx.fillStyle = "#fcd000";
+    ctx.font = `${Math.round(d.badge * .5)}px ${PIXEL_FONT}`;
+    ctx.textAlign = "center"; ctx.textBaseline = "middle";
+    ctx.fillText(d.letter, bx + d.badge / 2 + .5, by + d.badge / 2 + 1);
+    // text
+    ctx.fillStyle = "#1d3557"; ctx.textAlign = "left";
+    ctx.font = `600 ${d.fs}px ${LABEL_FONT}`;
+    const tx = bx + d.badge + 6, textH = d.lines.length * d.lineH;
+    let ty = ly + (d.lh - textH) / 2 + d.lineH / 2;
+    for (const l of d.lines) { ctx.fillText(l, tx, ty); ty += d.lineH; }
+    ctx.globalAlpha = 1;
+  }
+
+  function drawDog() {
+    const dog = G.dog;
+    if (!dog.mode || dog.delay > 0) return;
+    const t = dog.t;
+    const pop = t < .3 ? t / .3 : t < 1.6 ? 1 : t < 1.9 ? 1 - (t - 1.6) / .3 : 0;
+    if (pop <= 0) return;
+    const u = S * 1.05;
+    const bob = dog.mode === "laugh" && !reduceMotion ? Math.abs(Math.sin(t * 18)) * u * .12 : 0;
+    const x = dog.x, y = grassTop + u * .9 - pop * u * 2.4 - bob;
+    ctx.save(); ctx.translate(x, y);
+    // body
+    ellipse(0, u * 1.7, u * .95, u * 1.1, "#b8692a");
+    ellipse(0, u * 1.55, u * .5, u * .75, "#f0dcc0");
+    // ears
+    ellipse(-u * .72, u * .15, u * .26, u * .6, "#5e3313", .25);
+    ellipse(u * .72, u * .15, u * .26, u * .6, "#5e3313", -.25);
+    // head
+    ellipse(0, 0, u * .72, u * .68, "#b8692a");
+    ellipse(0, u * .32, u * .5, u * .36, "#eed4ae");
+    ellipse(0, u * .08, u * .17, u * .12, "#1d3557");
+    ctx.strokeStyle = "#1d3557"; ctx.lineWidth = 2.5; ctx.lineCap = "round";
+    if (dog.mode === "laugh") {
+      ctx.beginPath(); ctx.arc(-u * .28, -u * .2, u * .12, Math.PI * 1.1, Math.PI * 1.9); ctx.stroke();
+      ctx.beginPath(); ctx.arc(u * .28, -u * .2, u * .12, Math.PI * 1.1, Math.PI * 1.9); ctx.stroke();
+      ellipse(0, u * .45, u * .26, u * .17, "#3a0d0d");
+      ellipse(0, u * .52, u * .14, u * .08, "#e85a6a");
+      // paws over mouth
+      ellipse(-u * .45, u * .75, u * .2, u * .16, "#b8692a");
+      ellipse(u * .45, u * .75, u * .2, u * .16, "#b8692a");
+    } else {
+      ellipse(-u * .28, -u * .2, u * .1, u * .11, "#fff"); ellipse(-u * .26, -u * .19, u * .05, u * .06, "#1d3557");
+      ellipse(u * .28, -u * .2, u * .1, u * .11, "#fff"); ellipse(u * .30, -u * .19, u * .05, u * .06, "#1d3557");
+      ctx.beginPath(); ctx.arc(0, u * .35, u * .2, Math.PI * .15, Math.PI * .85); ctx.stroke();
+      // raised paw with the duck
+      ellipse(u * 1.05, -u * .35, u * .2, u * .5, "#b8692a", .3);
+      drawDuckBody(u * 1.1, -u * 1.25, S * .8, 1, 0, "held");
+      ellipse(u * 1.12, -u * .75, u * .2, u * .17, "#b8692a");
+    }
+    ctx.restore();
+  }
+
+  function drawScene() {
+    const sky = G.sky === "pink" ? "#fcbcb0" : "#3cbcfc";
+    ctx.fillStyle = sky; ctx.fillRect(0, 0, W, H);
+
+    // clouds
+    for (const c of clouds) {
+      const cx = c.x * W, cy = c.y * grassTop + 20, r = S * 1.1 * c.s;
+      ctx.fillStyle = "rgba(255,255,255,.9)";
+      ctx.beginPath();
+      ctx.arc(cx, cy, r, 0, Math.PI * 2); ctx.arc(cx + r * 1.1, cy - r * .3, r * 1.2, 0, Math.PI * 2);
+      ctx.arc(cx + r * 2.2, cy, r * .9, 0, Math.PI * 2); ctx.fill();
+      ctx.fillRect(cx, cy, r * 2.2, r * .9);
+    }
+
+    // tree (left)
+    const tx = Math.max(40, W * .1), th = Math.min(H * .5, 260);
+    ctx.fillStyle = "#7a3f12"; ctx.fillRect(tx - S * .35, grassTop - th * .55, S * .7, th * .55 + 10);
+    ctx.fillStyle = "#1e7a30";
+    ctx.beginPath();
+    ctx.arc(tx, grassTop - th * .72, th * .24, 0, Math.PI * 2);
+    ctx.arc(tx - th * .16, grassTop - th * .55, th * .18, 0, Math.PI * 2);
+    ctx.arc(tx + th * .17, grassTop - th * .56, th * .19, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.fillStyle = "#56b83a";
+    ctx.beginPath(); ctx.arc(tx - th * .06, grassTop - th * .8, th * .1, 0, Math.PI * 2); ctx.fill();
+
+    // bush (right)
+    const bx = W * .86;
+    ctx.fillStyle = "#1e7a30";
+    ctx.beginPath();
+    ctx.arc(bx, grassTop - S * .6, S * 1.6, 0, Math.PI * 2);
+    ctx.arc(bx + S * 1.5, grassTop - S * .2, S * 1.2, 0, Math.PI * 2);
+    ctx.arc(bx - S * 1.4, grassTop - S * .1, S * 1.1, 0, Math.PI * 2);
+    ctx.fill();
+
+    // ducks & labels
+    for (const d of G.ducks) {
+      drawLabel(d);
+      drawDuckBody(d.x, d.y, S, d.face, d.flap, d.state);
+    }
+
+    drawDog();
+
+    // grass & dirt (foreground, ducks rise from behind it)
+    ctx.fillStyle = "#8a5a1c"; ctx.fillRect(0, grassTop + 10, W, H - grassTop);
+    ctx.fillStyle = "#6e4413";
+    for (let x = 0; x < W; x += 28) {
+      const yy = grassTop + 24 + ((x * 7) % 17);
+      if (yy < H - 4) ctx.fillRect(x + ((x * 13) % 11), yy, 6, 4);
+    }
+    const layers = [["#2f8f22", 0, 26], ["#48b830", 6, 18]];
+    for (const [col, off, hgt] of layers) {
+      ctx.fillStyle = col;
+      ctx.beginPath(); ctx.moveTo(0, grassTop + 16);
+      for (let x = -off; x <= W + 12; x += 12) {
+        const h = hgt * (.55 + ((x * 37 + off * 11) % 23) / 46);
+        ctx.lineTo(x, grassTop - h + 14); ctx.lineTo(x + 6, grassTop + 6);
+      }
+      ctx.lineTo(W, grassTop + 16); ctx.closePath(); ctx.fill();
+    }
+
+    // floating scores
+    ctx.textAlign = "center"; ctx.textBaseline = "middle";
+    for (const f of G.floats) {
+      ctx.globalAlpha = clamp(1 - f.t / 1.2, 0, 1);
+      ctx.font = `${f.size}px ${PIXEL_FONT}`;
+      const y = f.y - f.t * 40;
+      ctx.lineWidth = 4; ctx.strokeStyle = "#1d3557"; ctx.strokeText(f.text, f.x, y);
+      ctx.fillStyle = f.color; ctx.fillText(f.text, f.x, y);
+    }
+    ctx.globalAlpha = 1;
+
+    // muzzle flash
+    if (G.flash > 0) { ctx.fillStyle = "rgba(255,255,255,.45)"; ctx.fillRect(0, 0, W, H); }
+
+    // crosshair
+    if (pointer.show && G.phase === "play" && !G.paused) {
+      const { x, y } = pointer, r = 14;
+      ctx.lineWidth = 4; ctx.strokeStyle = "#1d3557";
+      ctx.beginPath(); ctx.arc(x, y, r, 0, Math.PI * 2); ctx.stroke();
+      ctx.lineWidth = 2; ctx.strokeStyle = "#fff";
+      ctx.beginPath(); ctx.arc(x, y, r, 0, Math.PI * 2);
+      ctx.moveTo(x - r - 6, y); ctx.lineTo(x - 4, y); ctx.moveTo(x + 4, y); ctx.lineTo(x + r + 6, y);
+      ctx.moveTo(x, y - r - 6); ctx.lineTo(x, y - 4); ctx.moveTo(x, y + 4); ctx.lineTo(x, y + r + 6);
+      ctx.stroke();
+    }
+  }
+
+  let last = performance.now();
+  function frame(now) {
+    const dt = Math.min(.05, (now - last) / 1000); last = now;
+    update(dt);
+    drawScene();
+    requestAnimationFrame(frame);
+  }
+
+  /* ---------- Input ---------- */
+  function localPos(e) { const r = cv.getBoundingClientRect(); return { x: e.clientX - r.left, y: e.clientY - r.top }; }
+  cv.addEventListener("pointerdown", e => {
+    const p = localPos(e);
+    pointer.x = p.x; pointer.y = p.y; pointer.show = e.pointerType === "mouse";
+    shoot(p.x, p.y);
+  });
+  cv.addEventListener("pointermove", e => {
+    if (e.pointerType !== "mouse") return;
+    const p = localPos(e); pointer.x = p.x; pointer.y = p.y; pointer.show = true;
+  });
+  cv.addEventListener("pointerleave", () => { pointer.show = false; });
+
+  $("againBtn").addEventListener("click", () => startGame(G.level));
+  $("menuBtn").addEventListener("click", showMenu);
+  $("startBtn").addEventListener("click", () => { showLevels(); sfx.quack(); });
+  $("backBtn").addEventListener("click", showCover);
+  $("nextBtn").addEventListener("click", () => startGame(G.level + 1));
+  $("giveBtn").addEventListener("click", giveUp);
+
+  let modalReturn = null;
+  const openModalEl = () => document.querySelector(".modal:not([hidden])");
+  function openModal(id, opener) {
+    if ((G.phase === "play" || G.phase === "reveal") && !G.paused) togglePause();
+    document.querySelectorAll(".modal").forEach(m => { m.hidden = true; });
+    modalReturn = opener || null;
+    $(id).hidden = false;
+    $(id).querySelector("[data-close]").focus();
+  }
+  function closeModal() {
+    document.querySelectorAll(".modal").forEach(m => { m.hidden = true; });
+    if (G.paused) $("resumeBtn").focus();
+    else if (modalReturn && modalReturn.isConnected) modalReturn.focus();
+  }
+  document.querySelectorAll("[data-open]").forEach(b => b.addEventListener("click", () => openModal(b.dataset.open, b)));
+  document.querySelectorAll("[data-close]").forEach(b => b.addEventListener("click", closeModal));
+  document.querySelectorAll(".modal").forEach(m => m.addEventListener("click", e => { if (e.target === m) closeModal(); }));
+  $("resumeBtn").addEventListener("click", togglePause);
+  $("pauseBtn").addEventListener("click", togglePause);
+  $("muteBtn").addEventListener("click", toggleMute);
+
+  addEventListener("keydown", e => {
+    const k = e.key.toLowerCase();
+    if (openModalEl()) { if (k === "escape") closeModal(); return; }
+    const onButton = e.target && e.target.closest && e.target.closest("button");
+    if (G.phase === "title" || G.phase === "over") {
+      if (G.phase === "title" && !$("coverScreen").hidden) {
+        if ((k === "enter" || k === " ") && !onButton) { e.preventDefault(); showLevels(); sfx.quack(); }
+        if (k === "m") toggleMute();
+        return;
+      }
+      if (G.phase === "title" && k === "escape") { showCover(); return; }
+      if (G.phase === "title" && ["1", "2", "3"].includes(k)) { if (+k - 1 <= unlocked) startGame(+k - 1); return; }
+      if ((k === "enter" || k === " ") && !onButton && G.phase === "over" && !$("overScreen").hidden) {
+        e.preventDefault(); startGame(G.level);
+      }
+      if (k === "m") toggleMute();
+      return;
+    }
+    if (k === "p" || k === "escape") { togglePause(); return; }
+    if (k === "m") { toggleMute(); return; }
+    const i = "abcde".indexOf(k);
+    if (i >= 0 && G.phase === "play" && !G.paused) {
+      const d = G.ducks.find(d => d.letter === k.toUpperCase() && (d.state === "fly" || d.state === "rise"));
+      if (d) shoot(d.x, d.y, d);
+    }
+  });
+
+  document.addEventListener("visibilitychange", () => {
+    if (document.hidden && (G.phase === "play" || G.phase === "reveal") && !G.paused) togglePause();
+  });
+
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => G.ducks.forEach(layoutLabel));
+
+  /* ---------- Boot (keeps a running game across page updates) ---------- */
+  try {
+    window.claude?.hot?.snapshot?.(() => {
+      if (G.phase !== "play" && G.phase !== "reveal") return {};
+      const done = G.phase === "reveal";
+      return { game: { level: G.level, order: G.order, idx: G.idx + (done ? 1 : 0), score: G.score, lives: G.lives, streak: G.streak, bestStreak: G.bestStreak, correct: G.correct, answered: G.answered } };
+    });
+  } catch (e) {}
+
+  function boot(data) {
+    resize();
+    updateHUD();
+    const g = data && data.game;
+    renderLevels();
+    if (g && LEVELS[g.level] && Array.isArray(g.order) && g.lives > 0 && g.idx < g.order.length && g.order.length <= PER_GAME && g.level <= unlocked) {
+      startGame(g.level, g);
+    } else {
+      spawnDemo();
+    }
+    requestAnimationFrame(t => { last = t; frame(t); });
+  }
+  window.claude?.hot?.ready ? window.claude.hot.ready(boot) : boot(window.claude?.hot?.data ?? {});
+})();
+</script>
+</body>
+</html>

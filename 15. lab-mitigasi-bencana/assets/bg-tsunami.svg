@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 380" width="720" height="380" preserveAspectRatio="none">
+<defs><linearGradient id="s" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#bfe3fb"/><stop offset="1" stop-color="#eaf6ff"/></linearGradient></defs>
+<rect width="720" height="380" fill="url(#s)"/>
+<circle cx="600" cy="66" r="30" fill="#FDC500" opacity=".9"/>
+<g fill="#fff" opacity=".8"><ellipse cx="230" cy="70" rx="52" ry="16"/><ellipse cx="285" cy="62" rx="38" ry="13"/></g>
+<!-- pasir pantai (daratan) -->
+<rect y="274" width="720" height="106" fill="#e7d6a8"/>
+<line x1="0" y1="274" x2="720" y2="274" stroke="#cbb87e" stroke-width="2"/>
+<!-- pohon kelapa di daratan (kanan) -->
+<g><rect x="536" y="220" width="8" height="54" fill="#7a5a34"/>
+<g fill="#2f8f4e"><ellipse cx="540" cy="216" rx="30" ry="8"/><ellipse cx="522" cy="222" rx="22" ry="7" transform="rotate(-25 522 222)"/><ellipse cx="558" cy="222" rx="22" ry="7" transform="rotate(25 558 222)"/></g></g>
+</svg>

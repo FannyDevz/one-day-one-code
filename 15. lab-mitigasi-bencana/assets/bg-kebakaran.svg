@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 380" width="720" height="380" preserveAspectRatio="none">
+<defs><linearGradient id="s" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#cbb6a0"/><stop offset="1" stop-color="#e9ddcf"/></linearGradient></defs>
+<rect width="720" height="380" fill="url(#s)"/>
+<circle cx="600" cy="72" r="30" fill="#E8912A" opacity=".7"/>
+<!-- bukit berhutan jauh -->
+<path d="M0,274 Q160,214 360,258 T720,250 L720,274 Z" fill="#6f9e57"/>
+<g fill="#3f7a3a" opacity=".8"><ellipse cx="90" cy="250" rx="18" ry="22"/><ellipse cx="140" cy="256" rx="16" ry="20"/><ellipse cx="640" cy="248" rx="18" ry="22"/></g>
+<rect y="274" width="720" height="106" fill="#cfe3b0"/>
+<line x1="0" y1="274" x2="720" y2="274" stroke="#a9c78a" stroke-width="2"/>
+</svg>

@@ -21,6 +21,9 @@ A collection of daily web experiments — one day, one project. Each folder hold
 | 11 | [IRONFORGE Gym](11.%20fitness-gym/) | 🎬 Landing Page | High-energy gym landing page — oversized type, pricing tiers & class schedule. |
 | 12 | [Axion AI](12.%20saas-ai-assistant/) | 🎬 Landing Page | Clean SaaS landing page for an AI assistant — dashboard-mockup hero, pricing & FAQ. |
 | 13 | [Check Khodam](13.%20check-khodam/) | 🎮 Game | A tongue-in-cheek "cek khodam" generator — type a name, get a random guardian spirit. |
+| 14 | [Jelajah Nusantara](14.%20jelajah-nusantara/) | 🎓 Education | Interactive Indonesia map game — place islands, regional quiz, plus a webcam multiplayer true/false mode. |
+| 15 | [Lab Mitigasi Bencana](15.%20lab-mitigasi-bencana/) | 🎓 Education | Virtual disaster lab — simulate 5 disasters, apply mitigation, compare before vs. after. |
+| 16 | [Bebek IPS](16.%20bebek-ips/) | 🎓 Education | Pixel-art Duck Hunt-style quiz — shoot the duck carrying the right social-studies answer. |
 
 ## Running the catalog & projects
 
@@ -35,7 +38,7 @@ python3 -m http.server 8000
 cd "01. haystack-hunt " && python3 -m http.server 8000
 ```
 
-Purely static projects (e.g. `03`, `04`, `05`, `13`, and the landing pages `07`–`12`) can also be opened by double-clicking `index.html`.
+Purely static projects (e.g. `03`, `04`, `05`, `13`–`16`, and the landing pages `07`–`12`) can also be opened by double-clicking `index.html`.
 
 > **`06. investment-simulator`** needs an HTTP origin (Service Worker / PWA manifest), so run it through a local server rather than `file://`. It's still static — no backend required.
 
@@ -59,14 +62,17 @@ one-day-one-code/
 ├── 10. fine-dining/                    # Restaurant landing page + preview.png
 ├── 11. fitness-gym/                    # Gym landing page + preview.png
 ├── 12. saas-ai-assistant/              # SaaS landing page + preview.png
-└── 13. check-khodam/                   # "Cek khodam" web toy + preview.png
+├── 13. check-khodam/                   # "Cek khodam" web toy + preview.png
+├── 14. jelajah-nusantara/              # Indonesia map game (IPS) + preview.png
+├── 15. lab-mitigasi-bencana/           # Disaster-mitigation virtual lab (IPS) + preview.png
+└── 16. bebek-ips/                      # Duck Hunt-style IPS quiz + preview.png
 ```
 
 ## Categories
 
 - **🎮 Game** — interactive games & playful logic (3D/WebGL, puzzles, novelty toys).
 - **🎬 Landing Page** — cinematic presentation & marketing pages with animation.
-- **🎓 Education** — interactive learning labs & games (Ruang Murid, Rumah Pendidikan).
+- **🎓 Education** — interactive learning labs & games (Ruang Murid, Rumah Pendidikan, Festival Biru Putih).
 
 ---
 
