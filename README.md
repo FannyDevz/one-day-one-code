@@ -24,6 +24,7 @@ A collection of daily web experiments — one day, one project. Each folder hold
 | 14 | [Jelajah Nusantara](14.%20jelajah-nusantara/) | 🎓 Education | Interactive Indonesia map game — place islands, regional quiz, plus a webcam multiplayer true/false mode. |
 | 15 | [Lab Mitigasi Bencana](15.%20lab-mitigasi-bencana/) | 🎓 Education | Virtual disaster lab — simulate 5 disasters, apply mitigation, compare before vs. after. |
 | 16 | [Bebek IPS](16.%20bebek-ips/) | 🎓 Education | Pixel-art Duck Hunt-style quiz — shoot the duck carrying the right social-studies answer. |
+| 17 | [Tarik Tambang IPS](17.%20tarik-tambang-ips/) | 🎓 Education | 2-player real-time tug-of-war quiz — answer social-studies questions to pull the rope your way. |
 
 ## Running the catalog & projects
 
@@ -38,7 +39,7 @@ python3 -m http.server 8000
 cd "01. haystack-hunt " && python3 -m http.server 8000
 ```
 
-Purely static projects (e.g. `03`, `04`, `05`, `13`–`16`, and the landing pages `07`–`12`) can also be opened by double-clicking `index.html`.
+Purely static projects (e.g. `03`, `04`, `05`, `13`–`17`, and the landing pages `07`–`12`) can also be opened by double-clicking `index.html`.
 
 > **`06. investment-simulator`** needs an HTTP origin (Service Worker / PWA manifest), so run it through a local server rather than `file://`. It's still static — no backend required.
 
@@ -65,7 +66,8 @@ one-day-one-code/
 ├── 13. check-khodam/                   # "Cek khodam" web toy + preview.png
 ├── 14. jelajah-nusantara/              # Indonesia map game (IPS) + preview.png
 ├── 15. lab-mitigasi-bencana/           # Disaster-mitigation virtual lab (IPS) + preview.png
-└── 16. bebek-ips/                      # Duck Hunt-style IPS quiz + preview.png
+├── 16. bebek-ips/                      # Duck Hunt-style IPS quiz + preview.png
+└── 17. tarik-tambang-ips/              # 2-player tug-of-war IPS quiz + preview.png
 ```
 
 ## Categories
