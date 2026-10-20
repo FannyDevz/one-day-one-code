@@ -14,12 +14,12 @@ A collection of daily web experiments — one day, one project. Each folder hold
 | 04 | [Lab Coding Blok](04.%20block-coding-for-basic-logic-lab/) | 🎓 Education | Visual block-coding lab — snap blocks (move/loop/if) into a program and run it. 5 levels, 17 challenges. |
 | 05 | [Gizi Seimbang](05.%20nutrition-health-literacy-game/) | 🎓 Education | Drag-and-drop nutrition game — build balanced meals with live calorie & macro scoring. |
 | 06 | [Pasar Saham Virtual](06.%20investment-simulator/) | 🎓 Education | Virtual investing simulator (SCORM/PWA) — manage Rp 10M across 5 rounds of economic news. |
-| 07 | [Foliage Coffee](07.%20coffee-shop/) | 🎬 Landing Page | Warm, editorial landing page for a slow coffee bar — floating cup hero, story, menu & beans. |
-| 08 | [Luminary Studio](08.%20digital-agency/) | 🎬 Landing Page | Bold dark landing page for a creative digital agency, with animated stats. |
-| 09 | [VELOURA](09.%20fashion-brand/) | 🎬 Landing Page | Editorial fashion landing page (AW 2025) — split hero, product grid & manifesto. |
-| 10 | [Aurum](10.%20fine-dining/) | 🎬 Landing Page | Luxury fine-dining landing page — dark-and-gold hero, tasting menu & reservations. |
-| 11 | [IRONFORGE Gym](11.%20fitness-gym/) | 🎬 Landing Page | High-energy gym landing page — oversized type, pricing tiers & class schedule. |
-| 12 | [Axion AI](12.%20saas-ai-assistant/) | 🎬 Landing Page | Clean SaaS landing page for an AI assistant — dashboard-mockup hero, pricing & FAQ. |
+| 07 | [Foliage Coffee](07.%20coffee-shop/) | 🖥️ Frontend | Warm, editorial landing page for a slow coffee bar — floating cup hero, story, menu & beans. |
+| 08 | [Luminary Studio](08.%20digital-agency/) | 🖥️ Frontend | Bold dark landing page for a creative digital agency, with animated stats. |
+| 09 | [VELOURA](09.%20fashion-brand/) | 🖥️ Frontend | Editorial fashion landing page (AW 2025) — split hero, product grid & manifesto. |
+| 10 | [Aurum](10.%20fine-dining/) | 🖥️ Frontend | Luxury fine-dining landing page — dark-and-gold hero, tasting menu & reservations. |
+| 11 | [IRONFORGE Gym](11.%20fitness-gym/) | 🖥️ Frontend | High-energy gym landing page — oversized type, pricing tiers & class schedule. |
+| 12 | [Axion AI](12.%20saas-ai-assistant/) | 🖥️ Frontend | Clean SaaS landing page for an AI assistant — dashboard-mockup hero, pricing & FAQ. |
 | 13 | [Check Khodam](13.%20check-khodam/) | 🎮 Game | A tongue-in-cheek "cek khodam" generator — type a name, get a random guardian spirit. |
 | 14 | [Jelajah Nusantara](14.%20jelajah-nusantara/) | 🎓 Education | Interactive Indonesia map game — place islands, regional quiz, plus a webcam multiplayer true/false mode. |
 | 15 | [Lab Mitigasi Bencana](15.%20lab-mitigasi-bencana/) | 🎓 Education | Virtual disaster lab — simulate 5 disasters, apply mitigation, compare before vs. after. |
@@ -74,6 +74,7 @@ one-day-one-code/
 
 - **🎮 Game** — interactive games & playful logic (3D/WebGL, puzzles, novelty toys).
 - **🎬 Landing Page** — cinematic presentation & marketing pages with animation.
+- **🖥️ Frontend** — landing-page exercises (07–12); hidden from the catalog's "All" view, shown only when the Frontend category is selected.
 - **🎓 Education** — interactive learning labs & games (Ruang Murid, Rumah Pendidikan, Festival Biru Putih).
 
 ---

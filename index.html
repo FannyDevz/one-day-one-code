@@ -877,6 +877,8 @@ const CATS = {
   game:    { label:"Game",         color:"#22c55e" },
   landing: { label:"Landing Page", color:"#a78bfa" },
   edu:     { label:"Education",    color:"#ec4899" },
+  // hideInAll: not shown under "All" — only when this category is picked
+  frontend:{ label:"Frontend",     color:"#38bdf8", hideInAll:true },
 };
 
 const PROJECTS = [
@@ -930,7 +932,7 @@ const PROJECTS = [
   },
   {
     n:"07", id:"coffee", title:"Foliage Coffee",
-    jp:"Foliage · Slow Coffee Bar", cat:"landing",
+    jp:"Foliage · Slow Coffee Bar", cat:"frontend",
     shot:"07. coffee-shop/preview.png", folder:"07. coffee-shop",
     desc:"A warm, editorial landing page for a slow coffee bar — floating cup hero with a live 'featured bean' card, story, menu, bean journey, and visit sections.",
     tags:["Single-file","CSS animation","Responsive","Coffee"],
@@ -938,7 +940,7 @@ const PROJECTS = [
   },
   {
     n:"08", id:"agency", title:"Luminary Studio",
-    jp:"Luminary · Creative Digital Studio", cat:"landing",
+    jp:"Luminary · Creative Digital Studio", cat:"frontend",
     shot:"08. digital-agency/preview.png", folder:"08. digital-agency",
     desc:"A bold, dark landing page for a creative digital agency — gradient hero with animated stats, services, work, process, about, and contact.",
     tags:["Single-file","Dark UI","Gradient","Agency"],
@@ -946,7 +948,7 @@ const PROJECTS = [
   },
   {
     n:"09", id:"fashion", title:"VELOURA",
-    jp:"VELOURA · Automne–Hiver 2025", cat:"landing",
+    jp:"VELOURA · Automne–Hiver 2025", cat:"frontend",
     shot:"09. fashion-brand/preview.png", folder:"09. fashion-brand",
     desc:"An editorial fashion landing page (AW 2025) — split hero, announcement bar, cart badge, a new-arrivals product grid, and a quiet-luxury manifesto.",
     tags:["Single-file","Editorial","E-commerce","Fashion"],
@@ -954,7 +956,7 @@ const PROJECTS = [
   },
   {
     n:"10", id:"finedining", title:"Aurum",
-    jp:"Aurum · Fine Dining, Jakarta", cat:"landing",
+    jp:"Aurum · Fine Dining, Jakarta", cat:"frontend",
     shot:"10. fine-dining/preview.png", folder:"10. fine-dining",
     desc:"A luxury fine-dining landing page — cinematic dark-and-gold hero, signature dishes, a 7-course tasting menu, chef story, private dining, and reservations.",
     tags:["Single-file","Luxury","Reservation","Restaurant"],
@@ -962,7 +964,7 @@ const PROJECTS = [
   },
   {
     n:"11", id:"gym", title:"IRONFORGE Gym",
-    jp:"IRONFORGE · Forge Your Legend", cat:"landing",
+    jp:"IRONFORGE · Forge Your Legend", cat:"frontend",
     shot:"11. fitness-gym/preview.png", folder:"11. fitness-gym",
     desc:"A high-energy gym landing page — oversized type, animated hero, programs, trainers, three pricing tiers, a weekly class schedule, and testimonials.",
     tags:["Single-file","Bold type","Pricing","Fitness"],
@@ -970,7 +972,7 @@ const PROJECTS = [
   },
   {
     n:"12", id:"saas", title:"Axion AI",
-    jp:"Axion AI · Intelligent Work Assistant", cat:"landing",
+    jp:"Axion AI · Intelligent Work Assistant", cat:"frontend",
     shot:"12. saas-ai-assistant/preview.png", folder:"12. saas-ai-assistant",
     desc:"A clean SaaS landing page for an AI assistant — dashboard-mockup hero, feature grid, how-it-works, testimonials, pricing, and FAQ.",
     tags:["Single-file","SaaS","Dashboard UI","Pricing"],
@@ -1028,12 +1030,13 @@ $('#stCat').textContent = new Set(PROJECTS.map(p=>p.cat)).size;
 
 // ---- filter chips ----
 function catCount(c){ return PROJECTS.filter(p=>p.cat===c).length; }
+const allCount = PROJECTS.filter(p=>!CATS[p.cat].hideInAll).length;
 const catChips = [{key:"all",label:"All",color:"#f5a623"}]
   .concat(Object.entries(CATS).map(([k,v])=>({key:k,label:v.label,color:v.color})));
 catRow.innerHTML = catChips.map(c=>`
   <button class="chip cat ${c.key==='all'?'active':''}" data-cat="${c.key}">
     <span class="dot" style="background:${c.color}"></span>${c.label}
-    <span class="count">${c.key==='all'?PROJECTS.length:catCount(c.key)}</span>
+    <span class="count">${c.key==='all'?allCount:catCount(c.key)}</span>
   </button>`).join('');
 
 const tagCounts = {};
@@ -1074,7 +1077,7 @@ function apply(){
   const term = q.value.trim().toLowerCase();
   let shown = 0;
   grid.querySelectorAll('.card').forEach(card=>{
-    const okCat = activeCat==="all" || card.dataset.cat===activeCat;
+    const okCat = activeCat==="all" ? !CATS[card.dataset.cat].hideInAll : card.dataset.cat===activeCat;
     const cardTags = card.dataset.tags.split('|');
     const okTags = activeTags.size===0 || [...activeTags].some(t=>cardTags.includes(t));
     const okTerm = !term || card.dataset.search.includes(term);

@@ -38,6 +38,7 @@ cd "<project folder>" && python3 -m http.server 8000   # open http://localhost:8
 - **Language: English** for all catalog UI copy and project descriptions.
 - **Views**: thumbnail (grid) and list. List view hides the screenshot and puts the action buttons on the right.
 - **Filtering** lives in a **modal** (opened by the Filter button): single-select Category + multi-select Tech/Tags, plus free-text search. Active filters show as removable pills under the toolbar.
+- **Hidden categories**: a `CATS` entry with `hideInAll:true` (currently `frontend`, projects 07–12) is left out of the "All" view and its count, and its projects show only when that category is selected.
 - **README modal**: the README button renders each project's README as markdown inside a modal. The markdown is **embedded** in `index.html` as `<script type="text/markdown" data-readme="<id>">…</script>` blocks so it renders even over `file://`. **Keep these blocks in sync** with the actual `README.md` files. Content must be flush-left (no indentation) inside the script block, and must not contain the literal `</script>`.
 - **Mobile**: thumbnail grid is 2 columns; modals become bottom sheets.
 
